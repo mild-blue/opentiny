@@ -34,7 +34,10 @@ describe('browser.tinymce.core.EditorRemovedApiTest', () => {
     editor.queryCommandValue('bold');
     editor.queryCommandSupported('bold');
     editor.uploadImages();
-    editor.setContent('a');
+    try {
+      editor.setContent('a');
+      throw new Error('This should not be reached');
+    } catch (e) { }
     editor.insertContent('a');
     editor.execCommand('bold');
     editor.focus();
