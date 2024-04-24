@@ -25,6 +25,6 @@ jobs:
         run: npm version "$(git tag --sort=committerdate | tail -1)" --no-git-tag-version
 
       - run: npm install
-      - run: npm run publish
+      - run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
