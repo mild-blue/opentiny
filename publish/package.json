@@ -1,0 +1,30 @@
+{
+  "name": "opentiny",
+  "version": "0.0.1",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mild-blue/opentiny"
+  },
+  "description": "OpenTiny rich text editor",
+  "author": "MildBlue",
+  "bugs": {
+    "url": "https://github.com/mild-blue/opentiny/issues"
+  },
+  "main": "tinymce.js",
+  "types": "tinymce.d.ts",
+  "license": "MIT",
+  "keywords": [
+    "wysiwyg",
+    "tinymce",
+    "richtext",
+    "javascript",
+    "html",
+    "text",
+    "rich editor",
+    "rich text editor",
+    "rte",
+    "rich text",
+    "contenteditable",
+    "editing"
+  ]
+}
