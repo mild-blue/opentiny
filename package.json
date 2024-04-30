@@ -1,6 +1,11 @@
 {
   "name": "tinymce-monorepo",
+  "private": true,
+  "workspaces": [
+    "modules/*"
+  ],
   "scripts": {
+    "postinstall": "patch-package",
     "tinymce-grunt": "grunt --gruntfile modules/tinymce/Gruntfile.js",
     "tinymce-rollup": "run-s \"tinymce-grunt dev rollup\"",
     "oxide-icons-build": "yarn -s --cwd modules/oxide-icons-default build",
@@ -32,6 +37,7 @@
     "test-one": "yarn tsc && yarn bedrock-auto -b chrome-headless -f"
   },
   "devDependencies": {
+    "patch-package": "^7.0.0",
     "@ephox/bedrock-client": "^14.1.0",
     "@ephox/bedrock-server": "^14.1.2",
     "@ephox/oxide-icons-tools": "^3.1.1",
