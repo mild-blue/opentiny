@@ -24,8 +24,7 @@ jobs:
         run: yarn build
 
       - name: Copy package.json for OpenTiny
-        run: cp publish/package.json .
-        working-directory: js/tinymce
+        run: cp ./publish/package.json ./js/tinymce
 
       - name: Bump version in package.json
         run: npm version "$(git tag --sort=committerdate | tail -1)" --no-git-tag-version
