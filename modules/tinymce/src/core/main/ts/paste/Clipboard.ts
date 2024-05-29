@@ -28,6 +28,8 @@ export interface ClipboardContents {
   [key: string]: string;
 }
 
+const defaultMaxImageWidthPx = 300;
+
 const uniqueId = PasteUtils.createIdGenerator('mceclip');
 
 const createPasteDataTransfer = (html: string): DataTransfer => {
@@ -128,7 +130,17 @@ const pasteImage = (editor: Editor, imageItem: FileResult): void => {
     const existingBlobInfo = blobCache.getByData(base64, type);
     const blobInfo = existingBlobInfo ?? createBlobInfo(editor, blobCache, file, base64);
 
-    pasteHtml(editor, `<img src="${blobInfo.blobUri()}">`, false, true);
+    const img = new Image();
+        img.src = blobInfo.blobUri();
+        img.onload = () => {
+          const contentBodyElement = editor.dom.select('.mce-content-body')[0];
+          const maxImageWidth = contentBodyElement ? parseInt(window.getComputedStyle(contentBodyElement).width) : defaultMaxImageWidthPx;
+          const imageWidth = Math.min(img.naturalWidth, maxImageWidth)
+          pasteHtml(editor, `<img src="${ blobInfo.blobUri() }" width="${ imageWidth }px">`, false, true);
+        };
+        img.onerror = err => {
+          console.error('Failed to load the image blob:', err);
+        };
   });
 };
 
