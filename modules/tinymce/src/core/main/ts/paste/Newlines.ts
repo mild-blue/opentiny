@@ -25,13 +25,9 @@ const openContainer = (rootTag: string, rootAttrs: Record<string, string>): stri
 };
 
 const toBlockElements = (text: string, rootTag: string, rootAttrs: Record<string, string>): string => {
-  const blocks = text.split(/\n\n/);
+  const paragraphs = text.split(/\n/);
   const tagOpen = openContainer(rootTag, rootAttrs);
   const tagClose = '</' + rootTag + '>';
-
-  const paragraphs = Arr.map(blocks, (p) => {
-    return p.split(/\n/).join('<br />');
-  });
 
   const stitch = (p: string): string => {
     return tagOpen + p + tagClose;
