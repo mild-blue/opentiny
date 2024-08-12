@@ -49,7 +49,11 @@ const isEverythingSelected = (root: SugarElement<Node>, rng: Range): boolean => 
 
 const emptyEditor = (editor: Editor): Optional<() => void> => {
   return Optional.some(() => {
-    editor.setContent('');
+    if (editor.hasEditableRoot()) {
+      editor.setContent('');
+    } else {
+      editor.setContent(`<div class=${editor.getParam('editable_class')}>${editor.getParam('placeholder')}</div>`);
+    }
     editor.selection.setCursorLocation();
   });
 };
