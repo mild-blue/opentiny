@@ -19,7 +19,7 @@ const getItems = (editor: Editor, classes: Dialog.ListBoxItemSpec[], insertNewTa
     }
   ];
 
-  const alwaysItems: Dialog.BodyComponentSpec[] = [
+  const tableSettingsItems: Dialog.BodyComponentSpec[] = [
     {
       type: 'input',
       name: 'width',
@@ -29,10 +29,7 @@ const getItems = (editor: Editor, classes: Dialog.ListBoxItemSpec[], insertNewTa
       type: 'input',
       name: 'height',
       label: 'Height'
-    }
-  ];
-
-  const appearanceItems: Dialog.BodyComponentSpec[] = Options.hasAppearanceOptions(editor) ? [
+    },
     {
       type: 'input',
       name: 'cellspacing',
@@ -53,6 +50,7 @@ const getItems = (editor: Editor, classes: Dialog.ListBoxItemSpec[], insertNewTa
     {
       type: 'label',
       label: 'Caption',
+      name: 'caption',
       items: [
         {
           type: 'checkbox',
@@ -60,10 +58,7 @@ const getItems = (editor: Editor, classes: Dialog.ListBoxItemSpec[], insertNewTa
           label: 'Show caption'
         }
       ]
-    }
-  ] : [];
-
-  const alignmentItem: Dialog.ListBoxSpec[] = [
+    },
     {
       type: 'listbox',
       name: 'align',
@@ -77,16 +72,21 @@ const getItems = (editor: Editor, classes: Dialog.ListBoxItemSpec[], insertNewTa
     }
   ];
 
-  const classListItem: Dialog.ListBoxSpec[] = classes.length > 0 ? [
-    {
+  if (classes.length > 0) {
+    tableSettingsItems.push({
       name: 'class',
       type: 'listbox',
       label: 'Class',
       items: classes
-    }
-  ] : [];
+    })
+  }
 
-  return rowColCountItems.concat(alwaysItems).concat(appearanceItems).concat(alignmentItem).concat(classListItem);
+  const inputs = Options.getTableInputs(editor).split(" ");
+  const filteredTableSettingsItems = tableSettingsItems.filter((item) => inputs.includes(item.name))
+  const sortedItems = filteredTableSettingsItems.sort((a, b) => 
+    inputs.indexOf(a.name) - inputs.indexOf(b.name)
+  );
+  return rowColCountItems.concat(sortedItems);
 };
 
 export { getItems };

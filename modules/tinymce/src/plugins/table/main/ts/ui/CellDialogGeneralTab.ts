@@ -62,8 +62,14 @@ const children: Dialog.BodyComponentSpec[] = [
   }
 ];
 
-const getItems = (editor: Editor): Dialog.BodyComponentSpec[] =>
-  children.concat(getClassList(editor).toArray());
+const getItems = (editor: Editor): Dialog.BodyComponentSpec[] => {
+  const inputs = Options.getTableCellInputs(editor).split(" ");
+  const allItems = children.concat(getClassList(editor).toArray());
+  const filteredItems = allItems.filter((item) => inputs.includes(item.name));
+  return filteredItems.sort((a, b) => 
+    inputs.indexOf(a.name) - inputs.indexOf(b.name)
+  );
+}
 
 export {
   getItems

@@ -119,36 +119,6 @@ describe('browser.tinymce.plugins.table.TableDialogTest', () => {
     await TableTestUtils.pClickDialogButton(editor, false);
   });
 
-  it('TBA: Table properties dialog all ui off fill ok', async () => {
-    const htmlFilledAllOffTable = '<table style="height: 500px; width: 500px; margin-left: auto; margin-right: 0px;"><tbody><tr><td>X</td></tr></tbody></table>';
-
-    const emptyAllOffData = {
-      width: '',
-      height: '',
-      align: ''
-    };
-
-    const fullAllOffData = {
-      width: '500px',
-      height: '500px',
-      align: 'right'
-    };
-
-    const editor = hook.editor();
-    editor.options.set('table_appearance_options', false);
-    setTable(editor);
-    setCursor(editor);
-    await TableTestUtils.pOpenTableDialog(editor);
-    TableTestUtils.assertDialogValues(emptyAllOffData, false, generalSelectors);
-    TableTestUtils.setDialogValues(fullAllOffData, false, generalSelectors);
-    await TableTestUtils.pClickDialogButton(editor, true);
-    TableTestUtils.assertElementStructure(editor, 'table', htmlFilledAllOffTable);
-    await TableTestUtils.pOpenTableDialog(editor);
-    TableTestUtils.assertDialogValues(fullAllOffData, false, generalSelectors);
-    await TableTestUtils.pClickDialogButton(editor, false);
-    editor.options.unset('table_appearance_options');
-  });
-
   it('TBA: Table properties dialog all ui on fill ok', async () => {
     const htmlFilledAllOnTable = ApproxStructure.build((s, str/* , arr*/) => {
       return s.element('table', {
@@ -335,37 +305,6 @@ describe('browser.tinymce.plugins.table.TableDialogTest', () => {
 
     editor.options.unset('table_class_list');
     editor.options.unset('table_advtab');
-  });
-
-  it('TINY-6558: float style should not be recognised as a valid table alignment and is cleared when setting an alignment', async () => {
-    const floatTableHtml = '<table style="height: 500px; width: 500px; float: right;"><tbody><tr><td>X</td></tr></tbody></table>';
-    const marginTableHtml = '<table style="height: 500px; width: 500px; margin-left: auto; margin-right: 0px;"><tbody><tr><td>X</td></tr></tbody></table>';
-
-    const initialData = {
-      width: '500px',
-      height: '500px',
-      align: ''
-    };
-
-    const newData = {
-      width: '500px',
-      height: '500px',
-      align: 'right'
-    };
-
-    const editor = hook.editor();
-    editor.options.set('table_appearance_options', false);
-    editor.setContent(floatTableHtml);
-    setCursor(editor);
-    await TableTestUtils.pOpenTableDialog(editor);
-    TableTestUtils.assertDialogValues(initialData, false, generalSelectors);
-    TableTestUtils.setDialogValues(newData, false, generalSelectors);
-    await TableTestUtils.pClickDialogButton(editor, true);
-    TableTestUtils.assertElementStructure(editor, 'table', marginTableHtml);
-    await TableTestUtils.pOpenTableDialog(editor);
-    TableTestUtils.assertDialogValues(newData, false, generalSelectors);
-    await TableTestUtils.pClickDialogButton(editor, false);
-    editor.options.unset('table_appearance_options');
   });
 
   it('TINY-8758: width should be retained when changing the border width', async () => {

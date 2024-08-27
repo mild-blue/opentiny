@@ -9,6 +9,10 @@ import { UserListItem, UserListValue } from '../ui/UiUtils';
 
 const defaultTableToolbar = 'tableprops tabledelete | tableinsertrowbefore tableinsertrowafter tabledeleterow | tableinsertcolbefore tableinsertcolafter tabledeletecol';
 
+const defaultTableCellInputs = 'width celltype scope halign valign class';
+const defaultTableRowInputs = 'type align height class';
+const defaultTableInputs = 'width height cellspacing cellpadding border caption align class';
+
 const defaultCellBorderWidths = Arr.range(5, (i) => {
   const size = `${i + 1}px`;
   return { title: size, value: size };
@@ -84,9 +88,19 @@ const register = (editor: Editor): void => {
     default: true
   });
 
-  registerOption('table_appearance_options', {
-    processor: 'boolean',
-    default: true
+  registerOption('table_cell_inputs', {
+    processor: 'string',
+    default: defaultTableCellInputs
+  });
+
+  registerOption('table_row_inputs', {
+    processor: 'string',
+    default: defaultTableRowInputs
+  });
+
+  registerOption('table_inputs', {
+    processor: 'string',
+    default: defaultTableInputs
   });
 
   registerOption('table_grid', {
@@ -132,7 +146,9 @@ const getTableBorderStyles = option<UserListValue[]>('table_border_styles');
 const hasAdvancedCellTab = option<boolean>('table_cell_advtab');
 const hasAdvancedRowTab = option<boolean>('table_row_advtab');
 const hasAdvancedTableTab = option<boolean>('table_advtab');
-const hasAppearanceOptions = option<boolean>('table_appearance_options');
+const getTableCellInputs = option<string>('table_cell_inputs');
+const getTableRowInputs = option<string>('table_row_inputs');
+const getTableInputs = option<string>('table_inputs');
 const hasTableGrid = option<boolean>('table_grid');
 const shouldStyleWithCss = option<boolean>('table_style_by_css');
 const getCellClassList = option<UserListItem[]>('table_cell_class_list');
@@ -169,7 +185,9 @@ export {
   hasAdvancedCellTab,
   hasAdvancedRowTab,
   hasAdvancedTableTab,
-  hasAppearanceOptions,
+  getTableCellInputs,
+  getTableRowInputs,
+  getTableInputs,
   hasTableGrid,
   shouldStyleWithCss,
   getCellClassList,
