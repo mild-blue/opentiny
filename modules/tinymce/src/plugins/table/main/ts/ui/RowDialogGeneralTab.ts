@@ -47,10 +47,12 @@ const formChildren: Dialog.BodyComponentSpec[] = [
 const getItems = (editor: Editor): Dialog.BodyComponentSpec[] => {
   const inputs = Options.getTableRowInputs(editor).split(" ");
   const allItems = formChildren.concat(getClassList(editor).toArray());
-  const filteredItems = allItems.filter((item) => inputs.includes(item.name));
-  return filteredItems.sort((a, b) => 
-    inputs.indexOf(a.name) - inputs.indexOf(b.name)
-  );
+  const filteredItems = allItems.filter((item) => 'name' in item && inputs.includes(item.name));
+  return filteredItems.sort((a, b) => {
+    const nameA = 'name' in a ? a.name : '';
+    const nameB = 'name' in b ? b.name : '';
+    return inputs.indexOf(nameA) - inputs.indexOf(nameB);
+  });
 }
 
 export {
