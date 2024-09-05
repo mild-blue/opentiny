@@ -7,6 +7,7 @@ type Alignment = 'start' | 'center' | 'end';
 
 export interface LabelSpec {
   type: 'label';
+  name?: string;
   label: string;
   items: BodyComponentSpec[];
   align?: Alignment;

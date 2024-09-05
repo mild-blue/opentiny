@@ -82,10 +82,12 @@ const getItems = (editor: Editor, classes: Dialog.ListBoxItemSpec[], insertNewTa
   }
 
   const inputs = Options.getTableInputs(editor).split(" ");
-  const filteredTableSettingsItems = tableSettingsItems.filter((item) => inputs.includes(item.name))
-  const sortedItems = filteredTableSettingsItems.sort((a, b) => 
-    inputs.indexOf(a.name) - inputs.indexOf(b.name)
-  );
+  const filteredTableSettingsItems = tableSettingsItems.filter((item) => 'name' in item && inputs.includes(item.name));
+  const sortedItems = filteredTableSettingsItems.sort((a, b) => {
+    const nameA = 'name' in a ? a.name : '';
+    const nameB = 'name' in b ? b.name : '';
+    return inputs.indexOf(nameA) - inputs.indexOf(nameB);
+  });
   return rowColCountItems.concat(sortedItems);
 };
 
