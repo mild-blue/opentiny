@@ -60,8 +60,9 @@ const updateAdvancedProps = (modifier: DomModifier, data: Required<CellData>, sh
   if (shouldUpdate('borderstyle')) {
     modifier.setFormat('tablecellborderstyle', data.borderstyle);
   }
-  if (shouldUpdate('borderwidth')) {
-    modifier.setFormat('tablecellborderwidth', Utils.addPxSuffix(data.borderwidth));
+  if (shouldUpdate('borderwidth') || data.borderstyle === "double") {
+    const borderWidth = Helpers.getValidBorderWidth(data.borderwidth, data.borderstyle);
+    modifier.setFormat('tablecellborderwidth', Utils.addPxSuffix(borderWidth));
   }
 };
 

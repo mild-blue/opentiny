@@ -232,12 +232,22 @@ const extractDataFromCellElement = (editor: Editor, cell: HTMLTableCellElement, 
   };
 };
 
+const getValidBorderWidth = (borderWidth: string, borderStyle?: string): string => {
+  if (!borderStyle || borderStyle !== 'double') return borderWidth;
+  
+  const floatBorder = parseFloat(borderWidth);
+  const isValidDoubleBorderWidth = floatBorder !== undefined && (floatBorder === 0 || floatBorder >= 3);
+  
+  return isValidDoubleBorderWidth ? borderWidth : '3px';
+}
+
 export {
   extractAdvancedStyles,
   getSharedValues,
   extractDataFromTableElement,
   extractDataFromRowElement,
   extractDataFromCellElement,
-  extractDataFromSettings
+  extractDataFromSettings,
+  getValidBorderWidth
 };
 
