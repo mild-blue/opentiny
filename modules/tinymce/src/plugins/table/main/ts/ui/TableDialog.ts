@@ -49,6 +49,7 @@ const applyDataToElement = (editor: Editor, tableElm: HTMLTableElement, data: Ta
   const shouldStyleWithCss = Options.shouldStyleWithCss(editor);
   const hasAdvancedTableTab = Options.hasAdvancedTableTab(editor);
   const borderIsZero = parseFloat(data.border) === 0;
+  const borderWidth = Helpers.getValidBorderWidth(data.border, data.borderstyle);
 
   if (!Type.isUndefined(data.class) && data.class !== 'mce-no-match') {
     attrs.class = data.class;
@@ -67,12 +68,12 @@ const applyDataToElement = (editor: Editor, tableElm: HTMLTableElement, data: Ta
       attrs.border = 0;
       styles['border-width'] = '';
     } else {
-      styles['border-width'] = Utils.addPxSuffix(data.border);
+      styles['border-width'] = Utils.addPxSuffix(borderWidth);
       attrs.border = 1;
     }
     styles['border-spacing'] = Utils.addPxSuffix(data.cellspacing);
   } else {
-    attrs.border = borderIsZero ? 0 : data.border;
+    attrs.border = borderIsZero ? 0 : borderWidth;
     attrs.cellpadding = data.cellpadding;
     attrs.cellspacing = data.cellspacing;
   }
@@ -83,7 +84,7 @@ const applyDataToElement = (editor: Editor, tableElm: HTMLTableElement, data: Ta
     if (borderIsZero) {
       cellStyles['border-width'] = '';
     } else if (shouldApplyOnCell.border) {
-      cellStyles['border-width'] = Utils.addPxSuffix(data.border);
+      cellStyles['border-width'] = Utils.addPxSuffix(borderWidth);
     }
     if (shouldApplyOnCell.cellpadding) {
       cellStyles.padding = Utils.addPxSuffix(data.cellpadding);
