@@ -2,6 +2,7 @@ import { FieldProcessor, FieldSchema } from '@ephox/boulder';
 
 import * as ComponentSchema from '../../core/ComponentSchema';
 import { BodyComponent, BodyComponentSpec } from './BodyComponent';
+import { Optional } from '@ephox/katamari';
 
 type Alignment = 'start' | 'center' | 'end';
 
@@ -11,6 +12,7 @@ export interface LabelSpec {
   label: string;
   items: BodyComponentSpec[];
   align?: Alignment;
+  tooltip?: string;
 }
 
 export interface Label {
@@ -18,11 +20,13 @@ export interface Label {
   label: string;
   items: BodyComponent[];
   align: Alignment;
+  tooltip: Optional<string>;
 }
 
 export const createLabelFields = (itemsField: FieldProcessor): FieldProcessor[] => [
   ComponentSchema.type,
   ComponentSchema.label,
   itemsField,
-  FieldSchema.defaultedStringEnum('align', 'start', [ 'start', 'center', 'end' ])
+  FieldSchema.defaultedStringEnum('align', 'start', [ 'start', 'center', 'end' ]),
+  ComponentSchema.optionalTooltip
 ];

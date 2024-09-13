@@ -4,7 +4,42 @@ import { Dialog } from 'tinymce/core/api/ui/Ui';
 import * as Options from '../api/Options';
 import { buildListItems } from './UiUtils';
 
-const getAdvancedTab = (editor: Editor, dialogName: 'table' | 'row' | 'cell'): Dialog.TabSpec => {
+type DialogName = 'table' | 'row' | 'cell';
+
+const getBorderStyleTooltip = (dialogName: DialogName): string => `Style of the outer border of the ${dialogName}.`;
+
+const getBorderColorTooltip = (dialogName: DialogName): string => {
+  switch (dialogName) {
+    case 'table':
+      return 'Color of the border for the entire table and individual cells.';
+    case 'row':
+    case 'cell':
+      return `Color of the outer border of the ${dialogName}.`;
+  }
+};
+
+const getBackgroundColourTooltip = (dialogName: DialogName): string => {
+  switch (dialogName) {
+    case 'table':
+      return 'Changes the background color of all cells in the table, except for those set individually through Cell Properties or Row Properties.';
+    case 'row':
+      return 'Changes the background color of all cells in the row, except for those set individually through Cell Properties.';
+    case 'cell':
+      return `Background color of the cell.`;
+  }
+};
+
+const getBorderWidthTooltip = (dialogName: DialogName): string | undefined => {
+  switch (dialogName) {
+    case 'table':
+    case 'row':
+      return undefined;
+    case 'cell':
+      return 'Width of the outer border of the cell.';
+  }
+};
+
+const getAdvancedTab = (editor: Editor, dialogName: DialogName): Dialog.TabSpec => {
   const emptyBorderStyle: Dialog.ListBoxItemSpec[] = [{ text: 'Select...', value: '' }];
 
   const advTabItems: Dialog.BodyComponentSpec[] = [
@@ -12,24 +47,28 @@ const getAdvancedTab = (editor: Editor, dialogName: 'table' | 'row' | 'cell'): D
       name: 'borderstyle',
       type: 'listbox',
       label: 'Border style',
+      tooltip: getBorderStyleTooltip(dialogName),
       items: emptyBorderStyle.concat(buildListItems(Options.getTableBorderStyles(editor)))
     },
     {
       name: 'bordercolor',
       type: 'colorinput',
-      label: 'Border color'
+      label: 'Border color',
+      tooltip: getBorderColorTooltip(dialogName)
     },
     {
       name: 'backgroundcolor',
       type: 'colorinput',
-      label: 'Background color'
+      label: 'Background color',
+      tooltip: getBackgroundColourTooltip(dialogName)
     }
   ];
 
   const borderWidth: Dialog.InputSpec = {
     name: 'borderwidth',
     type: 'input',
-    label: 'Border width'
+    label: 'Border width',
+    tooltip: getBorderWidthTooltip(dialogName)
   };
 
   const items = dialogName === 'cell' ? ([ borderWidth ] as Dialog.BodyComponentSpec[]).concat(advTabItems) : advTabItems;

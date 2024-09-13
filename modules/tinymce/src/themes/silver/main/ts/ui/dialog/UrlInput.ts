@@ -185,7 +185,7 @@ export const renderUrlInput = (
     factory: AlloyTypeahead
   });
 
-  const pLabel = spec.label.map((label) => renderLabel(label, providersBackstage));
+  const pLabel = spec.label.map((label) => renderLabel(label, spec.tooltip.getOr(''), providersBackstage));
 
   // TODO: Consider a way of merging with Checkbox.
   const makeIcon = (name: string, errId: Optional<string>, icon: string = name, label: string = name): SimpleSpec =>

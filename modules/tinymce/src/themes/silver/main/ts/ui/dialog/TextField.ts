@@ -19,6 +19,7 @@ export interface TextField {
   readonly classname: string;
   readonly flex: boolean;
   readonly label: Optional<string>;
+  readonly tooltip: Optional<string>;
   readonly inputMode: Optional<string>;
   readonly placeholder: Optional<string>;
   readonly disabled: boolean;
@@ -34,7 +35,7 @@ type InputSpec = Omit<Dialog.Input, 'type'>;
 type TextAreaSpec = Omit<Dialog.TextArea, 'type'>;
 
 const renderTextField = (spec: TextField, providersBackstage: UiFactoryBackstageProviders) => {
-  const pLabel = spec.label.map((label) => renderLabel(label, providersBackstage));
+  const pLabel = spec.label.map((label) => renderLabel(label, spec.tooltip.getOr(''), providersBackstage));
 
   const baseInputBehaviours: Behaviour.NamedConfiguredBehaviour<any, any, any>[] = [
     Disabling.config({
@@ -60,7 +61,6 @@ const renderTextField = (spec: TextField, providersBackstage: UiFactoryBackstage
     ]),
     Tabstopping.config({})
   ];
-
   const validatingBehaviours = spec.validation.map((vl) => Invalidating.config({
     getRoot: (input) => {
       return Traverse.parentElement(input.element);
@@ -131,6 +131,7 @@ const renderInput = (spec: InputSpec, providersBackstage: UiFactoryBackstageProv
   name: spec.name,
   multiline: false,
   label: spec.label,
+  tooltip: spec.tooltip,
   inputMode: spec.inputMode,
   placeholder: spec.placeholder,
   flex: false,
@@ -145,6 +146,7 @@ const renderTextarea = (spec: TextAreaSpec, providersBackstage: UiFactoryBacksta
   name: spec.name,
   multiline: true,
   label: spec.label,
+  tooltip: spec.tooltip,
   inputMode: Optional.none(), // type attribute is not valid for textareas
   placeholder: spec.placeholder,
   flex: true,

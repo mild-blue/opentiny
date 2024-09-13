@@ -14,10 +14,12 @@ export interface FormComponent {
 
 export interface FormComponentWithLabelSpec extends FormComponentSpec {
   label?: string;
+  tooltip?: string;
 }
 
 export interface FormComponentWithLabel extends FormComponent {
   label: Optional<string>;
+  tooltip: Optional<string>;
 }
 
 export const formComponentFields = [
@@ -26,5 +28,6 @@ export const formComponentFields = [
 ];
 
 export const formComponentWithLabelFields = formComponentFields.concat([
-  ComponentSchema.optionalLabel
+  ComponentSchema.optionalLabel,
+  ComponentSchema.optionalTooltip
 ]);

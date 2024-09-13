@@ -58,7 +58,7 @@ export const renderListBox = (spec: ListBoxSpec, backstage: UiFactoryBackstage, 
     .bind((value) => findItemByValue(spec.items, value))
     .orThunk(() => Arr.head(spec.items).filter(isSingleListItem));
 
-  const pLabel = spec.label.map((label) => renderLabel(label, providersBackstage));
+  const pLabel = spec.label.map((label) => renderLabel(label, spec.tooltip.getOr(''), providersBackstage));
 
   const pField = AlloyFormField.parts.field({
     dom: { },

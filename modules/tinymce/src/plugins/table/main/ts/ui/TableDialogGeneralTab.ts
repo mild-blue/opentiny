@@ -23,34 +23,40 @@ const getItems = (editor: Editor, classes: Dialog.ListBoxItemSpec[], insertNewTa
     {
       type: 'input',
       name: 'width',
-      label: 'Width'
+      label: 'Width',
+      tooltip: 'Total width of the table in pixels or percentage (e.g., 500px or 100%).'
     },
     {
       type: 'input',
       name: 'height',
-      label: 'Height'
+      label: 'Height',
+      tooltip: 'Total height of the table in pixels (e.g., 500px).'
     },
     {
       type: 'input',
       name: 'cellspacing',
       label: 'Cell spacing',
-      inputMode: 'numeric'
+      inputMode: 'numeric',
+      tooltip: 'The space between individual table cells, measured in pixels (e.g., 5px).'
     },
     {
       type: 'input',
       name: 'cellpadding',
       label: 'Cell padding',
-      inputMode: 'numeric'
+      inputMode: 'numeric',
+      tooltip: 'Inner text padding in cells, e.g., 0px 5px (where 0px is vertical padding, and 5px is horizontal padding).'
     },
     {
       type: 'input',
       name: 'border',
-      label: 'Border width'
+      label: 'Border width',
+      tooltip: 'Width of the border for the entire table and individual cells.'
     },
     {
       type: 'label',
       label: 'Caption',
       name: 'caption',
+      tooltip: 'Adds a caption above the table, which can be edited.',
       items: [
         {
           type: 'checkbox',
@@ -63,6 +69,7 @@ const getItems = (editor: Editor, classes: Dialog.ListBoxItemSpec[], insertNewTa
       type: 'listbox',
       name: 'align',
       label: 'Alignment',
+      tooltip: 'Alignment of the entire table (not the content within the table).',
       items: [
         { text: 'None', value: '' },
         { text: 'Left', value: 'left' },
@@ -78,10 +85,10 @@ const getItems = (editor: Editor, classes: Dialog.ListBoxItemSpec[], insertNewTa
       type: 'listbox',
       label: 'Class',
       items: classes
-    })
+    });
   }
 
-  const inputs = Options.getTableInputs(editor).split(" ");
+  const inputs = Options.getTableInputs(editor).split(' ');
   const filteredTableSettingsItems = tableSettingsItems.filter((item) => 'name' in item && inputs.includes(item.name));
   const sortedItems = filteredTableSettingsItems.sort((a, b) => {
     const nameA = 'name' in a ? a.name : '';

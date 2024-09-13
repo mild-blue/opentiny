@@ -18,6 +18,7 @@ describe('headless.tinymce.themes.silver.components.listbox.ListBoxTest', () => 
       name: 'selector',
       label: Optional.some('selector'),
       enabled: true,
+      tooltip: Optional.none(),
       items: [
         { value: 'one', text: 'One' },
         { value: 'two', text: 'Two' },

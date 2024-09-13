@@ -73,7 +73,8 @@ describe('browser.tinymce.themes.silver.editor.backstage.BackstageSinkTest', () 
       type: 'colorinput',
       label: Optional.some('color'),
       storageKey: 'test_storage_key',
-      name: 'color'
+      name: 'color',
+      tooltip: Optional.none()
     });
 
     const colorInputComp = GuiFactory.build(colorInputSpec);

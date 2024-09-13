@@ -1,10 +1,11 @@
-import { AlloySpec, Behaviour, GuiFactory, Keying, Replacing, SimpleSpec } from '@ephox/alloy';
+import { AlloySpec, Behaviour, GuiFactory, Keying, Replacing, SimpleSpec, Tooltipping } from '@ephox/alloy';
 import { Dialog } from '@ephox/bridge';
 import { Arr, Optional } from '@ephox/katamari';
 
 import { UiFactoryBackstageShared } from '../../backstage/Backstage';
 import { ComposingConfigs } from '../alien/ComposingConfigs';
 import * as RepresentingConfigs from '../alien/RepresentingConfigs';
+import * as Icons from '../icons/Icons';
 
 type LabelSpec = Omit<Dialog.Label, 'type'>;
 
@@ -23,6 +24,41 @@ export const renderLabel = (spec: LabelSpec, backstageShared: UiFactoryBackstage
     ]
   };
 
+  if (!spec.tooltip || spec.tooltip.getOr('') === '') {
+    return label;
+  }
+
+  const makeIcon = (iconName: string) =>
+    Icons.render(iconName, { tag: 'span', classes: [ 'tox-icon', 'tox-label-tooltip-icon' ] }, backstageShared.providers.icons);
+
+  const labelTooltip = {
+    dom: {
+      tag: 'div',
+      classes: [ 'tox-label-tooltip' ]
+    },
+    components: [
+      makeIcon('tooltip')
+    ],
+    behaviours: Behaviour.derive([
+      Tooltipping.config(
+        backstageShared.providers.tooltips.getConfig({
+          tooltipText: backstageShared.providers.translate(spec.tooltip.getOr('')),
+        })
+      ),
+    ])
+  };
+
+  const labelContainer = {
+    dom: {
+      tag: 'div',
+      classes: [ 'tox-form__label-container' ]
+    },
+    components: [
+      label,
+      labelTooltip
+    ]
+  };
+
   const comps = Arr.map(spec.items, backstageShared.interpreter);
   return {
     dom: {
@@ -30,7 +66,7 @@ export const renderLabel = (spec: LabelSpec, backstageShared: UiFactoryBackstage
       classes: [ 'tox-form__group' ]
     },
     components: [
-      label,
+      labelContainer,
       ...comps
     ],
     behaviours: Behaviour.derive([

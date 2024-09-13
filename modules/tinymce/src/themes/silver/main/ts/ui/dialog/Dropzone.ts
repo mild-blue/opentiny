@@ -145,7 +145,7 @@ export const renderDropZone = (spec: DropZoneSpec, providersBackstage: UiFactory
     ]
   });
 
-  const pLabel = spec.label.map((label) => renderLabel(label, providersBackstage));
+  const pLabel = spec.label.map((label) => renderLabel(label, spec.tooltip.getOr(''), providersBackstage));
   const pField = AlloyFormField.parts.field({
     factory: { sketch: renderField }
   });

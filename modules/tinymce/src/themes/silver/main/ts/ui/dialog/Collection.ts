@@ -28,7 +28,7 @@ export const renderCollection = (
   initialData: Optional<Dialog.CollectionItem[]>
 ): SketchSpec => {
   // DUPE with TextField.
-  const pLabel = spec.label.map((label) => renderLabel(label, providersBackstage));
+  const pLabel = spec.label.map((label) => renderLabel(label, spec.tooltip.getOr(''), providersBackstage));
 
   const icons = providersBackstage.icons();
 

@@ -138,7 +138,7 @@ const renderIFrame = (spec: IframeSpec, providersBackstage: Backstage.UiFactoryB
 
   const sourcing = getDynamicSource(initialData, spec.streamContent);
 
-  const pLabel = spec.label.map((label) => FieldLabeller.renderLabel(label, providersBackstage));
+  const pLabel = spec.label.map((label) => FieldLabeller.renderLabel(label, spec.tooltip.getOr(''), providersBackstage));
 
   const factory = (newSpec: { uid: string }) => NavigableObject.craft(
     Optional.from(containerBorderedClass),

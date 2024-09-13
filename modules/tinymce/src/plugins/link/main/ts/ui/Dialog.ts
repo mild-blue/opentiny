@@ -82,7 +82,8 @@ const makeDialog = (settings: LinkDialogInfo, onSubmit: (api: Dialog.DialogInsta
       type: 'urlinput',
       filetype: 'file',
       label: 'URL',
-      picker_text: 'Browse links'
+      picker_text: 'Browse links',
+      tooltip: 'The address of the linked webpage.'
     }
   ];
 
@@ -90,7 +91,8 @@ const makeDialog = (settings: LinkDialogInfo, onSubmit: (api: Dialog.DialogInsta
     {
       name: 'text',
       type: 'input',
-      label: 'Text to display'
+      label: 'Text to display',
+      tooltip: 'The text displayed in the document as a link.'
     }
   )).toArray();
 
@@ -98,7 +100,8 @@ const makeDialog = (settings: LinkDialogInfo, onSubmit: (api: Dialog.DialogInsta
     {
       name: 'title',
       type: 'input',
-      label: 'Title'
+      label: 'Title',
+      tooltip: 'The text that appears when hovering over the link.'
     }
   ] : [];
 

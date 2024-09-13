@@ -15,7 +15,8 @@ describe('headless.tinymce.themes.silver.components.colorpicker.ColorPickerTest'
   const hook = TestHelpers.GuiSetup.bddSetup((_store, _doc, _body) => GuiFactory.build(
     renderColorPicker({
       label: Optional.some('ColorPicker label'),
-      name: 'col1'
+      name: 'col1',
+      tooltip: Optional.none(),
     }, TestProviders, Optional.none())
   ));
 
