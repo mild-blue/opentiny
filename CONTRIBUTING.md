@@ -24,20 +24,20 @@ Most monorepos use a `packages` folder to hold the included projects, but we hav
 Install [Node.js](https://nodejs.org/en/) on your system.
 Clone this repository on your system
 ```
-$ git clone https://github.com/tinymce/tinymce.git
+$ git clone https://github.com/mild-blue/opentiny.git
 ```
 
 ### Install dependencies
 
 * `yarn`
 
-### Build TinyMCE
+### Build OpenTiny
 
 * `yarn build`
 
 This will produce an editor build in `modules/tinymce/js`, with distribution zips in `modules/tinymce/dist/tinymce_[number].zip`.
 
-## Developing TinyMCE
+## Developing OpenTiny
 
 * `yarn dev`
 
