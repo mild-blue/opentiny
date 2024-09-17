@@ -46,6 +46,7 @@ export interface UploaderSettings {
   url: string;
   basePath: string;
   credentials: boolean;
+  maxConcurrentUploads: number;
   handler?: UploadHandler;
 }
 
@@ -192,14 +193,45 @@ export const Uploader = (uploadStatus: UploadStatus, settings: UploaderSettings)
   };
 
   const uploadBlobs = (blobInfos: BlobInfo[], openNotification?: () => NotificationApi): Promise<UploadResult[]> => {
-    blobInfos = Tools.grep(blobInfos, (blobInfo) =>
-      !uploadStatus.isUploaded(blobInfo.blobUri())
-    );
+    blobInfos = Tools.grep(blobInfos, (blobInfo) => !uploadStatus.isUploaded(blobInfo.blobUri()));
 
-    return Promise.all(Tools.map(blobInfos, (blobInfo: BlobInfo) =>
-      uploadStatus.isPending(blobInfo.blobUri()) ?
-        pendingUploadBlobInfo(blobInfo) : uploadBlobInfo(blobInfo, uploadHandler, openNotification)
-    ));
+    let activeUploads = 0;
+    let index = 0;
+
+    return new Promise((resolve, reject) => {
+      const results: UploadResult[] = [];
+
+      const processNext = () => {
+        if (index >= blobInfos.length && activeUploads === 0) {
+          resolve(results);
+          return;
+        }
+
+        while (activeUploads < settings.maxConcurrentUploads && index < blobInfos.length) {
+          const blobInfo = blobInfos[index];
+          index++;
+
+          if (uploadStatus.isPending(blobInfo.blobUri())) {
+            pendingUploadBlobInfo(blobInfo).then(processNext);
+            continue;
+          }
+
+          activeUploads++;
+
+          uploadBlobInfo(blobInfo, uploadHandler, openNotification)
+            .then((result) => {
+              results.push(result);
+              activeUploads--;
+              processNext();
+            })
+            .catch((error) => {
+              reject(error);
+            });
+        }
+      };
+
+      processNext();
+    });
   };
 
   const upload = (blobInfos: BlobInfo[], openNotification?: () => NotificationApi) =>
