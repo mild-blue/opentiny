@@ -37,7 +37,7 @@ const tryEmailTransform = (data: LinkDialogOutput): Optional<Transformer> => {
 const tryProtocolTransform = (assumeExternalTargets: AssumeExternalTargets, defaultLinkProtocol: string) => (data: LinkDialogOutput): Optional<Transformer> => {
   const url = data.href;
   const suggestProtocol = (
-    assumeExternalTargets === AssumeExternalTargets.WARN && !Utils.hasProtocol(url) ||
+    assumeExternalTargets === AssumeExternalTargets.WARN && !Utils.hasProtocol(url) && !url.startsWith('#') ||
     assumeExternalTargets === AssumeExternalTargets.OFF && /^\s*www(\.|\d\.)/i.test(url)
   );
 
