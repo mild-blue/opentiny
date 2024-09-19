@@ -1,11 +1,11 @@
-TinyMCE - JavaScript Library for Rich Text Editing
+OpenTiny - JavaScript Library for Rich Text Editing
 ===================================================
 
-Building TinyMCE
+Building OpenTiny
 -----------------
 See the monorepo root readme file for installation instructions.
 
-Now, build TinyMCE by using `grunt`. If you don't have `grunt-cli` installed globally, prefix with `yarn` to execute the local grunt.
+Now, build OpenTiny by using `grunt`. If you don't have `grunt-cli` installed globally, prefix with `yarn` to execute the local grunt.
 ```
 $ yarn grunt
 ```
@@ -13,7 +13,7 @@ $ yarn grunt
 Build tasks
 ------------
 `grunt`
-Lints, compiles, minifies and creates release packages for TinyMCE. This will produce the production ready packages.
+Lints, compiles, minifies and creates release packages for OpenTiny. This will produce the production ready packages.
 
 `grunt start`
 Starts a webpack-dev-server that compiles the core, themes, plugins and all demos. Go to `localhost:3000` for a list of links to all the demo pages.
@@ -54,7 +54,7 @@ Bundle themes and plugins into a single file
 
 Minifies the core, adds the silver theme and adds the table and paste plugin into tinymce.min.js.
 
-Contributing to the TinyMCE project
+Contributing to the OpenTiny project
 ------------------------------------
 TinyMCE is an open source software project and we encourage developers to contribute patches and code to be included in the main package of TinyMCE.
 
@@ -69,19 +69,9 @@ These basic rules ensures that the contributed code remains open source and unde
 
 __How to Contribute to the Code__
 
-The TinyMCE source code is [hosted on Github](https://github.com/tinymce/tinymce). Through Github you can submit pull requests and log new bugs and feature requests.
+The OpenTiny source code is [hosted on Github](https://github.com/opentiny/opentiny). Through Github you can submit pull requests and log new bugs and feature requests.
 
 When you submit a pull request, you will get a notice about signing the __Contributors License Agreement (CLA)__.
 You should have a __valid email address on your GitHub account__, and you will be sent a key to verify your identity and digitally sign the agreement.
 
 After you signed your pull request will automatically be ready for review & merge.
-
-__How to Contribute to the Docs__
-
-Docs are hosted on Github in the [tinymce-docs](https://github.com/tinymce/tinymce-docs) repo.
-
-[How to contribute](https://github.com/tinymce/tinymce-docs/blob/main/CONTRIBUTING.md) to the docs, including a style guide, can be found on the GitHub repo.
-
-[Documentation](https://www.tiny.cloud/docs/tinymce/6/)
-
-[Log feedback](https://github.com/tinymce/tinymce/labels/6.x)

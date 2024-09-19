@@ -1,44 +1,34 @@
-# TinyMCE
+# OpenTiny
 
-The world's #1 open source rich text editor.
+**The world’s most customizable open-source rich text editor—built for developers by developers.**
 
-**Using an old version of TinyMCE?** We recommend you to upgrade to TinyMCE 7 to continue receiving security updates, or consider [TinyMCE 5 LTS](https://www.tiny.cloud/long-term-support/) if you need more time to upgrade.
+OpenTiny is a fork of TinyMCE, a well-established, open-source WYSIWYG editor. We're committed to maintaining and improving this powerful editor while keeping it forever under the MIT License, encouraging innovation and freedom for developers worldwide.
 
-Used and trusted by millions of developers, TinyMCE is the world’s most customizable, scalable, and flexible rich text editor. We’ve helped launch the likes of Atlassian, Medium, Evernote (and lots more that we can’t tell you), by empowering them to create exceptional content and experiences for their users.
+## Why OpenTiny?
 
-With more than 350M+ downloads every year, we’re also one of the most trusted enterprise-grade open source HTML editors on the internet. There’s currently more than 100M+ products worldwide, powered by Tiny. As a high powered WYSIWYG editor, TinyMCE is built to scale, designed to innovate, and thrives on delivering results to difficult edge-cases.
+We're using the last available MIT version of TinyMCE to build upon the strong foundation it provides, aiming to enhance the project with more flexibility, features, and a commitment to open-source principles. We encourage contributions from the community to help us shape the future of rich text editing on the web.
 
-You can access a [full featured demo of TinyMCE](https://www.tiny.cloud/docs/tinymce/6/premium-full-featured/) in the docs on the TinyMCE website.
+OpenTiny is designed to be:
+- **Lightweight and customizable**: Easily fit it into your project.
+- **Scalable and flexible**: Suited for small and large applications alike.
+- **Developer-friendly**: Contributions are welcome, and the project is maintained with open-source collaboration in mind.
 
-<p align="center">
-  <img alt="Screenshot of the TinyMCE Editor" src="https://www.tiny.cloud/storage/github-readme-images/tinymce-editor-6x.png"\>
-</p>
+## Get started with OpenTiny
 
-## Get started with TinyMCE
+Getting started with OpenTiny is simple. Whether you're deploying it via the cloud or self-hosting, you'll have a robust, customizable editor running in just a few minutes.
 
-Getting started with the TinyMCE rich text editor is easy, and for simple configurations can be done in less than 5 minutes.
+- [TinyMCE Cloud Deployment Quick Start Guide](https://www.tiny.cloud/docs/tinymce/6/cloud-quick-start/)
+- [TinyMCE Self-hosted Deployment Guide](https://www.tiny.cloud/docs/tinymce/6/npm-projects/)
 
-[TinyMCE Cloud Deployment Quick Start Guide](https://www.tiny.cloud/docs/tinymce/6/cloud-quick-start/)
-
-[TinyMCE Self-hosted Deployment Guide](https://www.tiny.cloud/docs/tinymce/6/npm-projects/)
-
-TinyMCE provides a range of configuration options that allow you to integrate it into your application. Start customizing with a [basic setup](https://www.tiny.cloud/docs/tinymce/6/basic-setup/).
-
-Configure it for one of three modes of editing:
-
-- [TinyMCE classic editing mode](https://www.tiny.cloud/docs/tinymce/6/use-tinymce-classic/).
-- [TinyMCE inline editing mode](https://www.tiny.cloud/docs/tinymce/6/use-tinymce-inline/).
-- [TinyMCE distraction-free editing mode](https://www.tiny.cloud/docs/tinymce/6/use-tinymce-distraction-free/).
+OpenTiny offers a wide range of configuration options, allowing you to easily integrate it into your application. Begin personalizing the editor with a [basic setup](https://www.tiny.cloud/docs/tinymce/6/basic-setup/) and expand as needed.
 
 ## Features
 
 ### Integration
 
-TinyMCE is easily integrated into your projects with the help of components such as:
+OpenTiny is easy to integrate into your projects with the help of various components. We maintain the [opentiny-react](https://github.com/mild-blue/opentiny-react) repository, which can be used as a replacement for [tinymce-react](https://github.com/tinymce/tinymce-react).
 
-- [tinymce-react](https://github.com/tinymce/tinymce-react)
-- [tinymce-vue](https://github.com/tinymce/tinymce-vue)
-- [tinymce-angular](https://github.com/tinymce/tinymce-angular)
+Although we don’t actively maintain the other integrations, such as [tinymce-vue](https://github.com/tinymce/tinymce-vue) and [tinymce-angular](https://github.com/tinymce/tinymce-angular), they can be forked and easily adapted for use with OpenTiny.
 
 With over 29 integrations, and 400+ APIs, see the TinyMCE docs for a full list of editor [integrations](https://www.tiny.cloud/docs/tinymce/6/integrations/).
 
@@ -56,15 +46,9 @@ Sometimes your editor requirements can be quite unique, and you need the freedom
 
 The TinyMCE [API](https://www.tiny.cloud/docs/tinymce/6/apis/tinymce.root/) is exposed to make it easier for you to write custom functionality that fits within the existing framework of TinyMCE [UI components](https://www.tiny.cloud/docs/tinymce/6/custom-ui-components/).
 
-### Extended Features and Support
-
-For the professional software teams that require more in-depth efficiency, compliance or collaborative features built to enterprise-grade standards, please [get in touch with our team](https://www.tiny.cloud/contact/).
-
-Tiny also offers dedicated SLAs and support for professional development teams.
-
 ## Compiling and contributing
 
-In 2019 the decision was made to transition our codebase to a monorepo. For information on compiling and contributing, see: [contribution guidelines](https://github.com/tinymce/tinymce/blob/master/CONTRIBUTING.md).
+For information on compiling and contributing, see: [contribution guidelines](CONTRIBUTING.md).
 
 As an open source product, we encourage and support the active development of our software.
 
