@@ -237,6 +237,11 @@ const register = (editor: Editor): void => {
     processor: 'function'
   });
 
+  registerOption('images_upload_max_concurrent_uploads', {
+    processor: 'number',
+    default: 5
+  });
+
   registerOption('language', {
     processor: 'string',
     default: 'en'
@@ -902,6 +907,7 @@ const getImageUploadUrl = option('images_upload_url');
 const getImageUploadBasePath = option('images_upload_base_path');
 const getImagesUploadCredentials = option('images_upload_credentials');
 const getImagesUploadHandler = option('images_upload_handler');
+const getImagesUploadMaxConcurrentUploads = option('images_upload_max_concurrent_uploads');
 const shouldUseContentCssCors = option('content_css_cors');
 const getReferrerPolicy = option('referrer_policy');
 const getLanguageCode = option('language');
@@ -1015,6 +1021,7 @@ export {
   getImageUploadBasePath,
   getImagesUploadCredentials,
   getImagesUploadHandler,
+  getImagesUploadMaxConcurrentUploads,
   shouldUseContentCssCors,
   getReferrerPolicy,
   getLanguageCode,

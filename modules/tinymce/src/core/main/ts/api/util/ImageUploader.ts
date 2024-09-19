@@ -23,6 +23,7 @@ export const createUploader = (editor: Editor, uploadStatus: UploadStatus): Uplo
     url: Options.getImageUploadUrl(editor),
     basePath: Options.getImageUploadBasePath(editor),
     credentials: Options.getImagesUploadCredentials(editor),
+    maxConcurrentUploads: Options.getImagesUploadMaxConcurrentUploads(editor),
     handler: Options.getImagesUploadHandler(editor)
   });
 
