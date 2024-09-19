@@ -147,7 +147,7 @@ const getLinkAttrs = (data: LinkDialogOutput): LinkAttrs => {
 const handleExternalTargets = (href: string, assumeExternalTargets: AssumeExternalTargets): string => {
   if ((assumeExternalTargets === AssumeExternalTargets.ALWAYS_HTTP
         || assumeExternalTargets === AssumeExternalTargets.ALWAYS_HTTPS)
-      && !hasProtocol(href)) {
+      && !hasProtocol(href) && !href.startsWith('#')) {
     return assumeExternalTargets + '://' + href;
   }
   return href;
