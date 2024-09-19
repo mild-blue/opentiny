@@ -1,9 +1,10 @@
-import { Fun, Optional, Type } from '@ephox/katamari';
+import {Fun, Optional, Type} from '@ephox/katamari';
 
-import { BlobInfo } from '../api/file/BlobCache';
-import { NotificationApi } from '../api/NotificationManager';
+import {BlobInfo} from '../api/file/BlobCache';
+import {NotificationApi} from '../api/NotificationManager';
 import Tools from '../api/util/Tools';
-import { UploadStatus } from './UploadStatus';
+import {UploadStatus} from './UploadStatus';
+import {concurrentQueue} from "tinymce/core/util/Queue";
 
 /**
  * Upload blobs or blob infos to the specified URL or handler.
@@ -51,7 +52,7 @@ export interface UploaderSettings {
 }
 
 export interface Uploader {
-  upload (blobInfos: BlobInfo[], openNotification?: () => NotificationApi): Promise<UploadResult[]>;
+  upload(blobInfos: BlobInfo[], openNotification?: () => NotificationApi): Promise<UploadResult[]>;
 }
 
 export const Uploader = (uploadStatus: UploadStatus, settings: UploaderSettings): Uploader => {
@@ -172,7 +173,7 @@ export const Uploader = (uploadStatus: UploadStatus, settings: UploaderSettings)
         };
 
         handler(blobInfo, progress).then(success, (err) => {
-          failure(Type.isString(err) ? { message: err } : err);
+          failure(Type.isString(err) ? {message: err} : err);
         });
       } catch (ex) {
         resolve(handlerFailure(blobInfo, ex as Error));
@@ -195,43 +196,8 @@ export const Uploader = (uploadStatus: UploadStatus, settings: UploaderSettings)
   const uploadBlobs = (blobInfos: BlobInfo[], openNotification?: () => NotificationApi): Promise<UploadResult[]> => {
     blobInfos = Tools.grep(blobInfos, (blobInfo) => !uploadStatus.isUploaded(blobInfo.blobUri()));
 
-    let activeUploads = 0;
-    let index = 0;
-
-    return new Promise((resolve, reject) => {
-      const results: UploadResult[] = [];
-
-      const processNext = () => {
-        if (index >= blobInfos.length && activeUploads === 0) {
-          resolve(results);
-          return;
-        }
-
-        while (activeUploads < settings.maxConcurrentUploads && index < blobInfos.length) {
-          const blobInfo = blobInfos[index];
-          index++;
-
-          if (uploadStatus.isPending(blobInfo.blobUri())) {
-            pendingUploadBlobInfo(blobInfo).then(processNext);
-            continue;
-          }
-
-          activeUploads++;
-
-          uploadBlobInfo(blobInfo, uploadHandler, openNotification)
-            .then((result) => {
-              results.push(result);
-              activeUploads--;
-              processNext();
-            })
-            .catch((error) => {
-              reject(error);
-            });
-        }
-      };
-
-      processNext();
-    });
+    return concurrentQueue(blobInfos, settings.maxConcurrentUploads, (blobInfo) => uploadStatus.isPending(blobInfo.blobUri()) ?
+      pendingUploadBlobInfo(blobInfo) : uploadBlobInfo(blobInfo, uploadHandler, openNotification))
   };
 
   const upload = (blobInfos: BlobInfo[], openNotification?: () => NotificationApi) =>
