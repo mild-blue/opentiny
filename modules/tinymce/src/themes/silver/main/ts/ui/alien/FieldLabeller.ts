@@ -1,7 +1,8 @@
-import { AlloySpec, Behaviour, FormField as AlloyFormField, GuiFactory, RawDomSchema, SketchSpec } from '@ephox/alloy';
+import { AlloySpec, Behaviour, FormField as AlloyFormField, GuiFactory, RawDomSchema, SketchSpec, Tooltipping } from '@ephox/alloy';
 import { Optional } from '@ephox/katamari';
 
 import { UiFactoryBackstageProviders } from '../../backstage/Backstage';
+import * as Icons from '../icons/Icons';
 
 type FormFieldSpec = Parameters<typeof AlloyFormField['sketch']>[0];
 
@@ -36,8 +37,8 @@ const renderFormFieldDomWith = (extraClasses: string[]): RawDomSchema => ({
   classes: [ 'tox-form__group' ].concat(extraClasses)
 });
 
-const renderLabel = (label: string, providersBackstage: UiFactoryBackstageProviders): AlloySpec =>
-  AlloyFormField.parts.label({
+const renderLabel = (label: string, tooltip: string, providersBackstage: UiFactoryBackstageProviders): AlloySpec => {
+  const labelElement = {
     dom: {
       tag: 'label',
       classes: [ 'tox-label' ]
@@ -45,7 +46,43 @@ const renderLabel = (label: string, providersBackstage: UiFactoryBackstageProvid
     components: [
       GuiFactory.text(providersBackstage.translate(label))
     ]
+  };
+
+  if (tooltip.trim() === '') {
+    return AlloyFormField.parts.label(labelElement);
+  }
+
+  const makeIcon = (iconName: string) =>
+    Icons.render(iconName, { tag: 'span', classes: [ 'tox-icon', 'tox-label-tooltip-icon' ] }, providersBackstage.icons);
+
+  const labelTooltip = {
+    dom: {
+      tag: 'div',
+      classes: [ 'tox-label-tooltip' ]
+    },
+    components: [
+      makeIcon('tooltip')
+    ],
+    behaviours: Behaviour.derive([
+      Tooltipping.config(
+        providersBackstage.tooltips.getConfig({
+          tooltipText: providersBackstage.translate(tooltip),
+        })
+      ),
+    ])
+  };
+
+  return AlloyFormField.parts.label({
+    dom: {
+      tag: 'div',
+      classes: [ 'tox-form__label-container' ]
+    },
+    components: [
+      labelElement,
+      labelTooltip
+    ]
   });
+};
 
 export {
   renderFormField,

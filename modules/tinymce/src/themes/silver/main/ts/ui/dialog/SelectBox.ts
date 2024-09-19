@@ -21,7 +21,7 @@ export const renderSelectBox = (spec: SelectBoxSpec, providersBackstage: UiFacto
   }));
 
   // DUPE with TextField.
-  const pLabel = spec.label.map((label) => renderLabel(label, providersBackstage));
+  const pLabel = spec.label.map((label) => renderLabel(label, spec.tooltip.getOr(''), providersBackstage));
 
   const pField = AlloyFormField.parts.field({
     // TODO: Alloy should not allow dom changing of an HTML select!

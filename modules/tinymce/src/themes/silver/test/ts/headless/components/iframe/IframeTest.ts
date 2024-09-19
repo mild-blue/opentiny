@@ -18,6 +18,7 @@ describe('headless.tinymce.themes.silver.components.iframe.IFrameTest', () => {
         renderIFrame({
           name: 'frame-a',
           label: Optional.some('iframe label'),
+          tooltip: Optional.none(),
           border: false,
           sandboxed: true,
           streamContent: false,
@@ -26,6 +27,7 @@ describe('headless.tinymce.themes.silver.components.iframe.IFrameTest', () => {
         renderIFrame({
           name: 'frame-b',
           label: Optional.some('iframe label'),
+          tooltip: Optional.none(),
           border: false,
           sandboxed: true,
           streamContent: false,
@@ -34,6 +36,7 @@ describe('headless.tinymce.themes.silver.components.iframe.IFrameTest', () => {
         renderIFrame({
           name: 'frame-c',
           label: Optional.some('iframe label'),
+          tooltip: Optional.none(),
           border: false,
           sandboxed: true,
           streamContent: true,
@@ -42,6 +45,7 @@ describe('headless.tinymce.themes.silver.components.iframe.IFrameTest', () => {
         renderIFrame({
           name: 'frame-d',
           label: Optional.some('iframe label'),
+          tooltip: Optional.none(),
           border: true,
           sandboxed: true,
           streamContent: false,

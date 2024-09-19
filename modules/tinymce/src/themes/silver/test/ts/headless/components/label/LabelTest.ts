@@ -1,7 +1,7 @@
 import { ApproxStructure, Assertions } from '@ephox/agar';
 import { AlloyComponent, GuiFactory, Memento, TestHelpers } from '@ephox/alloy';
 import { describe, it } from '@ephox/bedrock-client';
-import { Fun } from '@ephox/katamari';
+import { Fun, Optional } from '@ephox/katamari';
 
 import { UiFactoryBackstageShared } from 'tinymce/themes/silver/backstage/Backstage';
 import { renderLabel } from 'tinymce/themes/silver/ui/dialog/Label';
@@ -26,24 +26,28 @@ describe('headless.tinymce.themes.silver.components.label.LabelTest', () => {
   const memBasicLabel = Memento.record(renderLabel({
     label: 'Group of Options',
     items,
+    tooltip: Optional.none(),
     align: 'start'
   }, sharedBackstage));
 
   const memHtmlLabel = Memento.record(renderLabel({
     label: 'Some <html> like content',
     items,
+    tooltip: Optional.none(),
     align: 'start'
   }, sharedBackstage));
 
   const memCenterLabel = Memento.record(renderLabel({
     label: 'Group of Options',
     items,
+    tooltip: Optional.none(),
     align: 'center'
   }, sharedBackstage));
 
   const memEndLabel = Memento.record(renderLabel({
     label: 'Group of Options',
     items,
+    tooltip: Optional.none(),
     align: 'end'
   }, sharedBackstage));
 

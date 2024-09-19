@@ -91,7 +91,7 @@ export const renderColorInput = (
     selectOnFocus: false
   });
 
-  const pLabel: Optional<AlloySpec> = spec.label.map((label) => renderLabel(label, sharedBackstage.providers));
+  const pLabel: Optional<AlloySpec> = spec.label.map((label) => renderLabel(label, spec.tooltip.getOr(''), sharedBackstage.providers));
 
   const emitSwatchChange = (colorBit: AlloyComponent, value: string) => {
     AlloyTriggers.emitWith(colorBit, colorSwatchChangeEvent, {

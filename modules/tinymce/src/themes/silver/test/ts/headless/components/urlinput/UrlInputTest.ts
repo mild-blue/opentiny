@@ -20,7 +20,8 @@ describe('headless.tinymce.themes.silver.components.urlinput.UrlInputTest', () =
       picker_text: Optional.from(pickerText),
       name: 'col1',
       filetype: 'file',
-      enabled: true
+      enabled: true,
+      tooltip: Optional.none(),
     }, extrasHook.access().extras.backstages.popup, {
       getHistory: (_fileType) => [],
       addToHistory: (_url, _filetype) => store.adder('addToHistory')(),
