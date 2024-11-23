@@ -76,7 +76,7 @@ const getAdvancedTab = (editor: Editor, dialogName: DialogName): Dialog.TabSpec 
     tooltip: getBorderWidthTooltip(dialogName)
   };
 
-  const items = dialogName === 'cell' ? ([borderWidth] as Dialog.BodyComponentSpec[]).concat(advTabItems) : advTabItems;
+  const items = dialogName === 'cell' ? ([ borderWidth ] as Dialog.BodyComponentSpec[]).concat(advTabItems) : advTabItems;
 
   return {
     title: 'Advanced',
