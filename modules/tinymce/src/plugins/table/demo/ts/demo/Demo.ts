@@ -37,6 +37,12 @@ tinymce.init({
   //   html: '<iframe src="' + data.url + '" width="560" height="314" allowfullscreen="allowfullscreen"></iframe>'});
   // },
   height: 600,
+  table_border_styles:[
+    { title: 'Solid', value: 'solid' },
+    { title: 'Dotted', value: 'dotted' },
+    { title: 'Dashed', value: 'dashed' }
+    // None option is automatically added if no default border style is defined and is missing from defined options
+  ],
   content_style: 'td[data-mce-selected], th[data-mce-selected] { background-color: #2276d2 !important; }' + '.cat { border-color: green; color: red; background-color: }'
 });
 
