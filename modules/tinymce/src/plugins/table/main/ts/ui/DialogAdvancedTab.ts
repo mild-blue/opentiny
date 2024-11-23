@@ -40,7 +40,10 @@ const getBorderWidthTooltip = (dialogName: DialogName): string | undefined => {
 };
 
 const getAdvancedTab = (editor: Editor, dialogName: DialogName): Dialog.TabSpec => {
-  const emptyBorderStyle: Dialog.ListBoxItemSpec[] = [{ text: 'Select...', value: '' }];
+  const emptyBorderStyle: Dialog.ListBoxItemSpec[] = [{text: 'None', value: 'none'}];
+
+  const isDefinedDefaultBorderStyle = Options.getDefaultStyles(editor)["border-style"];
+  const optionsContainNone = Options.getTableBorderStyles(editor).some((item) => item.value === 'none');
 
   const advTabItems: Dialog.BodyComponentSpec[] = [
     {
@@ -48,7 +51,9 @@ const getAdvancedTab = (editor: Editor, dialogName: DialogName): Dialog.TabSpec 
       type: 'listbox',
       label: 'Border style',
       tooltip: getBorderStyleTooltip(dialogName),
-      items: emptyBorderStyle.concat(buildListItems(Options.getTableBorderStyles(editor)))
+      // in case user forgets to define an option for a table without border style and doesn't set default border style,
+      // we need to add it as none option
+      items: (!isDefinedDefaultBorderStyle && !optionsContainNone ? emptyBorderStyle : []).concat(buildListItems(Options.getTableBorderStyles(editor)))
     },
     {
       name: 'bordercolor',
@@ -71,7 +76,7 @@ const getAdvancedTab = (editor: Editor, dialogName: DialogName): Dialog.TabSpec 
     tooltip: getBorderWidthTooltip(dialogName)
   };
 
-  const items = dialogName === 'cell' ? ([ borderWidth ] as Dialog.BodyComponentSpec[]).concat(advTabItems) : advTabItems;
+  const items = dialogName === 'cell' ? ([borderWidth] as Dialog.BodyComponentSpec[]).concat(advTabItems) : advTabItems;
 
   return {
     title: 'Advanced',
