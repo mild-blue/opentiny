@@ -680,17 +680,28 @@ const getDefaultCharMap = (): CharMap[] => {
         [8700, 'left right arrow with double vertical stroke'],
         [8701, 'leftwards open-headed arrow'],
         [8702, 'rightwards open-headed arrow'],
-        [8703, 'left right open-headed arrow']
+        [8703, 'left right open-headed arrow'],
+        [10146, 'black small arrowhead'],
     ]        
     },
     {
       name: 'Other',
       characters: [
+        [9633, 'white square'],
+        [9642, 'black small square'],
+        [9643, 'white medium square'],
+        [9745, 'ballot box with check'],
+        [9786, 'white smiling face'],
+        [9826, 'black diamond suit'],
         [9984, 'black safety scissors'],
         [9985, 'upper blade scissors'],
         [9986, 'black scissors'],
         [9987, 'lower blade scissors'],
         [9988, 'white scissors'],
+        [9998, 'lower right pencil'],
+        [10022, 'black diamond'],
+        [10004, 'heavy check mark'],
+
       ]
     }
   ];
