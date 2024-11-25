@@ -18,7 +18,7 @@ const defaultCellBorderWidths = Arr.range(5, (i) => {
   return { title: size, value: size };
 });
 
-const defaultCellBorderStyles = Arr.map([ 'Solid', 'Dotted', 'Dashed', 'Double', 'Groove', 'Ridge', 'Inset', 'Outset', 'None', 'Hidden' ], (type) => {
+const defaultCellBorderStyles = Arr.map(['None', 'Solid', 'Dotted', 'Dashed', 'Double', 'Groove', 'Ridge', 'Inset', 'Outset', 'Hidden' ], (type) => {
   return { title: type, value: type.toLowerCase() };
 });
 
