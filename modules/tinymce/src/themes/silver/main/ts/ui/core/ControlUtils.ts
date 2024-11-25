@@ -63,6 +63,9 @@ const onSetupEvent = <T>(editor: Editor, event: string, f: (api: T) => void) => 
 const onActionToggleFormat = (editor: Editor) => (rawItem: FormatterFormatItem) => (): void => {
   editor.undoManager.transact(() => {
     editor.focus();
+    if (['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'].includes(rawItem.format)) {
+      editor.execCommand('RemoveFormat');
+  }
     editor.execCommand('mceToggleFormat', false, rawItem.format);
   });
 };
