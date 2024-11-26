@@ -1,6 +1,7 @@
 import Editor from 'tinymce/core/api/Editor';
 
 import * as Anchor from '../core/Anchor';
+import I18n from "tinymce/core/api/util/I18n";
 
 const insertAnchor = (editor: Editor, newId: string): boolean => {
   if (!Anchor.isValidId(newId)) {
@@ -25,7 +26,11 @@ const open = (editor: Editor): void => {
       items: [
         {
           type: 'htmlpanel',
-          html: '<p style="font-size: 14px; margin-bottom: 10px;">The anchor tool is used to create a link that allows the user to jump to a specific part of the document marked by the anchor. For example, you can link to an image or a specific section of text (e.g., a heading or a paragraph)<br><br>Enter an anchor identifier in the "ID" field (e.g., "anchor1") > click Save > Insert > Link > select the anchor in the "Anchors" field > the "Link URL" and "Link Text" fields will auto-fill > adjust the "Link Title" as needed.</p>'
+          html: '<p style="font-size: 14px; margin-bottom: 10px;">' +
+            I18n.translate('The anchor tool is used to create a link that allows the user to jump to a specific part of the document marked by the anchor. For example, you can link to an image or a specific section of text (e.g., a heading or a paragraph)') +
+            '<br><br>' +
+            I18n.translate('Enter an anchor identifier in the "ID" field (e.g., "anchor1") > click Save > Insert > Link > select the anchor in the "Anchors" field > the "Link URL" and "Link Text" fields will auto-fill > adjust the "Link Title" as needed.') +
+            '</p>'
         },
         {
           name: 'id',
