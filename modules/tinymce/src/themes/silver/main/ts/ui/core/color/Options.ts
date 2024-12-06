@@ -112,6 +112,11 @@ const register = (editor: Editor): void => {
     default: true
   });
 
+  registerOption('transparent_border_color', {
+    processor: 'boolean',
+    default: true
+  });
+
   registerOption('color_default_foreground', {
     processor: 'string',
     default: fallbackColor
@@ -159,6 +164,7 @@ const getColorCols = (editor: Editor, id: string = 'default'): number => {
 };
 
 const hasCustomColors = option('custom_colors');
+const transparentBorderColorDisabled = option('transparent_border_color');
 
 const getDefaultForegroundColor = option<string>('color_default_foreground');
 const getDefaultBackgroundColor = option<string>('color_default_background');
@@ -168,6 +174,7 @@ export {
   mapColors,
   getColorCols,
   hasCustomColors,
+  transparentBorderColorDisabled,
   getColors,
   getDefaultBackgroundColor,
   getDefaultForegroundColor,

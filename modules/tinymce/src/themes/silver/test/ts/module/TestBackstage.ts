@@ -76,6 +76,7 @@ export default (sink?: AlloyComponent): UiFactoryBackstage => {
     colorinput: {
       colorPicker: Fun.noop,
       hasCustomColors: Fun.never,
+      hasRemove: Fun.never,
       getColors: Fun.constant([]),
       getColorCols: Fun.constant(5)
     },

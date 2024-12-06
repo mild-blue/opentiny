@@ -1,13 +1,13 @@
-import { HexColour, RgbaColour } from '@ephox/acid';
-import { Arr, Cell, Fun, Optional, Optionals, Strings } from '@ephox/katamari';
-import { Css, SugarElement, SugarNode, TransformFind } from '@ephox/sugar';
+import {HexColour, RgbaColour} from '@ephox/acid';
+import {Arr, Cell, Fun, Optional, Optionals, Strings} from '@ephox/katamari';
+import {Css, SugarElement, SugarNode, TransformFind} from '@ephox/sugar';
 
 import Editor from 'tinymce/core/api/Editor';
-import { Dialog, Menu, Toolbar } from 'tinymce/core/api/ui/Ui';
-import { EditorEvent } from 'tinymce/core/api/util/EventDispatcher';
+import {Dialog, Menu, Toolbar} from 'tinymce/core/api/ui/Ui';
+import {EditorEvent} from 'tinymce/core/api/util/EventDispatcher';
 
 import * as Events from '../../../api/Events';
-import { composeUnbinders, onSetupEditableToggle } from '../ControlUtils';
+import {composeUnbinders, onSetupEditableToggle} from '../ControlUtils';
 import * as ColorCache from './ColorCache';
 import * as Options from './Options';
 
@@ -48,7 +48,7 @@ const getCurrentColor = (editor: Editor, format: ColorFormat): Optional<string> 
 const applyFormat = (editor: Editor, format: ColorFormat, value: string) => {
   editor.undoManager.transact(() => {
     editor.focus();
-    editor.formatter.apply(format, { value });
+    editor.formatter.apply(format, {value});
     editor.nodeChanged();
   });
 };
@@ -56,7 +56,7 @@ const applyFormat = (editor: Editor, format: ColorFormat, value: string) => {
 const removeFormat = (editor: Editor, format: ColorFormat) => {
   editor.undoManager.transact(() => {
     editor.focus();
-    editor.formatter.remove(format, { value: null }, undefined, true);
+    editor.formatter.remove(format, {value: null}, undefined, true);
     editor.nodeChanged();
   });
 };
@@ -71,7 +71,7 @@ const registerCommands = (editor: Editor) => {
   });
 };
 
-const getAdditionalColors = (hasCustom: boolean): Menu.ChoiceMenuItemSpec[] => {
+const getAdditionalColors = (hasCustom: boolean, hasRemove?: boolean): Menu.ChoiceMenuItemSpec[] => {
   const type: 'choiceitem' = 'choiceitem';
   const remove = {
     type,
@@ -85,10 +85,15 @@ const getAdditionalColors = (hasCustom: boolean): Menu.ChoiceMenuItemSpec[] => {
     icon: 'color-picker',
     value: 'custom'
   };
-  return hasCustom ? [
-    remove,
-    custom
-  ] : [ remove ];
+
+  let additionalColors = [];
+  if (hasRemove) {
+    additionalColors.push(remove);
+  }
+  if (hasCustom) {
+    additionalColors.push(custom);
+  }
+  return additionalColors
 };
 
 const applyColor = (editor: Editor, format: ColorFormat, value: string, onChoice: (v: string) => void) => {
@@ -110,11 +115,11 @@ const applyColor = (editor: Editor, format: ColorFormat, value: string, onChoice
   }
 };
 
-const getColors = (colors: Menu.ChoiceMenuItemSpec[], id: string, hasCustom: boolean): Menu.ChoiceMenuItemSpec[] =>
-  colors.concat(ColorCache.getCurrentColors(id).concat(getAdditionalColors(hasCustom)));
+const getColors = (colors: Menu.ChoiceMenuItemSpec[], id: string, hasCustom: boolean, hasRemove?: boolean): Menu.ChoiceMenuItemSpec[] =>
+  colors.concat(ColorCache.getCurrentColors(id).concat(getAdditionalColors(hasCustom, hasRemove)));
 
-const getFetch = (colors: Menu.ChoiceMenuItemSpec[], id: string, hasCustom: boolean) => (callback: (value: Menu.ChoiceMenuItemSpec[]) => void): void => {
-  callback(getColors(colors, id, hasCustom));
+const getFetch = (colors: Menu.ChoiceMenuItemSpec[], id: string, hasCustom: boolean, hasRemove?: boolean) => (callback: (value: Menu.ChoiceMenuItemSpec[]) => void): void => {
+  callback(getColors(colors, id, hasCustom, hasRemove));
 };
 
 const setIconColor = (splitButtonApi: Toolbar.ToolbarSplitButtonInstanceApi | Menu.NestedMenuItemInstanceApi, name: string, newColor: string) => {
@@ -142,7 +147,7 @@ const getToolTipText = (editor: Editor, format: ColorFormat, lastColor: string) 
   const colors = getColors(Options.getColors(editor, format), format, false);
   const colorText = Arr.find(colors, (c) => c.value === lastColor).getOr({ text: '' }).text;
 
-  return editor.translate([ tooltipPrefix, editor.translate(colorText) ]);
+  return editor.translate([tooltipPrefix, editor.translate(colorText)]);
 };
 
 const registerTextColorButton = (editor: Editor, name: string, format: ColorFormat, lastColor: Cell<string>) => {
@@ -152,7 +157,7 @@ const registerTextColorButton = (editor: Editor, name: string, format: ColorForm
     icon: name === 'forecolor' ? 'text-color' : 'highlight-bg-color',
     select: select(editor, format),
     columns: Options.getColorCols(editor, format),
-    fetch: getFetch(Options.getColors(editor, format), format, Options.hasCustomColors(editor)),
+    fetch: getFetch(Options.getColors(editor, format), format, Options.hasCustomColors(editor), Options.transparentBorderColorDisabled(editor)),
     onAction: (_splitButtonApi) => {
       applyColor(editor, format, lastColor.get(), Fun.noop);
     },
@@ -213,7 +218,7 @@ const registerTextColorMenuItem = (editor: Editor, name: string, format: ColorFo
               name,
               color: newColor
             });
-          } );
+          });
         },
       }
     ]
@@ -230,7 +235,7 @@ const colorPickerDialog = (editor: Editor) => (callback: ColorInputCallback, val
       callback(Optional.from(hex));
       api.close();
     } else {
-      editor.windowManager.alert(editor.translate([ 'Invalid hex color code: {0}', hex ]));
+      editor.windowManager.alert(editor.translate(['Invalid hex color code: {0}', hex]));
     }
   };
 

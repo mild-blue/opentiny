@@ -29,6 +29,7 @@ describe('headless.tinymce.themes.silver.components.colorinput.ColorInputTest', 
         }, extrasHook.access().extras.backstages.popup.shared, {
           colorPicker: (_callback, _value) => {},
           hasCustomColors: Fun.always,
+          hasRemove: Fun.always,
           getColors: () => [
             { type: 'choiceitem', text: 'Turquoise', value: '#18BC9B' },
             { type: 'choiceitem', text: 'Green', value: '#2FCC71' },

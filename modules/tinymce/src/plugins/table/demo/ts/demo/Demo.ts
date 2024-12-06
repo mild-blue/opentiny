@@ -43,6 +43,15 @@ tinymce.init({
     { title: 'Dashed', value: 'dashed' }
     // None option is automatically added if no default border style is defined and is missing from defined options
   ],
+  transparent_border_color: true,
+
+  table_default_styles: {
+    // every new table will have a border of 1px solid black
+    "border-color": "black",
+    "border-style": "solid",
+    "border-width": "1px",
+    width: "100%",
+  },
   content_style: 'td[data-mce-selected], th[data-mce-selected] { background-color: #2276d2 !important; }' + '.cat { border-color: green; color: red; background-color: }'
 });
 
