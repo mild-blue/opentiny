@@ -1,6 +1,7 @@
 import { Arr, Strings } from '@ephox/katamari';
 
 import { CharMap, Char } from './CharMap';
+import I18n from "tinymce/core/api/util/I18n";
 
 export interface CharItem {
   readonly value: string;
@@ -20,7 +21,7 @@ const scan = (group: CharMap, pattern: string): CharItem[] => {
   const matches: Char[] = [];
   const lowerCasePattern = pattern.toLowerCase();
   Arr.each(group.characters, (g) => {
-    if (charMatches(g[0], g[1], lowerCasePattern)) {
+    if (charMatches(g[0], I18n.translate([g[1]]), lowerCasePattern)) {
       matches.push(g);
     }
   });
