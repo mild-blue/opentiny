@@ -20,7 +20,6 @@ const deleteRangeMergeBlocks = (rootNode: SugarElement<Node>, selection: EditorS
       if (!Compare.eq(block1, block2)) {
         return Optional.some(() => {
           rng.deleteContents();
-
           MergeBlocks.mergeBlocks(rootNode, true, block1, block2, schema).each((pos) => {
             selection.setRng(pos.toRange());
           });
@@ -52,14 +51,25 @@ const emptyEditor = (editor: Editor): Optional<() => void> => {
     if (editor.hasEditableRoot()) {
       editor.setContent('');
     } else {
-      editor.setContent(`<div class=${editor.getParam('editable_class')}>${editor.getParam('placeholder')}</div>`);
+      const editableDiv = editor.getBody().querySelector('.editable')
+      if(editableDiv){
+        editableDiv.innerHTML = '<p><br data-mce-bogus="1"></p>';
+      } else {
+        editor.setContent(`<div class=${editor.getParam('editable_class')}>${editor.getParam('placeholder')}</div>`);
+      }
     }
     editor.selection.setCursorLocation();
   });
 };
 
 const deleteRange = (editor: Editor): Optional<() => void> => {
-  const rootNode = SugarElement.fromDom(editor.getBody());
+  let rootNode;
+  const editableDiv = editor.getBody().querySelector('.editable')
+  if(!editor.hasEditableRoot() && editableDiv){
+      rootNode = SugarElement.fromDom(editableDiv as Node);
+  } else {
+    rootNode = SugarElement.fromDom(editor.getBody());
+  }
   const rng = editor.selection.getRng();
   return isEverythingSelected(rootNode, rng) ? emptyEditor(editor) : deleteRangeMergeBlocks(rootNode, editor.selection, editor.schema);
 };
