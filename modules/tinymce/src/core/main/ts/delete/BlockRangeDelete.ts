@@ -59,7 +59,7 @@ const emptyEditor = (editor: Editor): Optional<() => void> => {
 
 const getClosestEditableDiv = (editor: Editor): HTMLElement | null => {
   const node = editor.selection.getNode();
-  return node.closest('.editable');
+  return node.closest(`.${editor.getParam('editable_class')}`);
 };
 
 const emptyEditableDiv = (editor: Editor, editableDiv: Element): Optional<() => void> => {
