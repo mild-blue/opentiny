@@ -20,7 +20,6 @@ const deleteRangeMergeBlocks = (rootNode: SugarElement<Node>, selection: EditorS
       if (!Compare.eq(block1, block2)) {
         return Optional.some(() => {
           rng.deleteContents();
-
           MergeBlocks.mergeBlocks(rootNode, true, block1, block2, schema).each((pos) => {
             selection.setRng(pos.toRange());
           });
@@ -58,14 +57,44 @@ const emptyEditor = (editor: Editor): Optional<() => void> => {
   });
 };
 
+const getClosestEditableDiv = (editor: Editor): HTMLElement | null => {
+  const node = editor.selection.getNode();
+  return node.closest(`.${editor.getParam('editable_class')}`);
+};
+
+const emptyEditableDiv = (editor: Editor, editableDiv: Element): Optional<() => void> => {
+  return Optional.some(() => {
+    editableDiv.innerHTML = '<p><br data-mce-bogus="1"></p>';
+    editor.selection.setCursorLocation();
+  });
+};
+
 const deleteRange = (editor: Editor): Optional<() => void> => {
-  const rootNode = SugarElement.fromDom(editor.getBody());
+  let rootNode;
+  const editableDiv = getClosestEditableDiv(editor);
   const rng = editor.selection.getRng();
+  if(!editor.hasEditableRoot() && editableDiv){
+      rootNode = SugarElement.fromDom(editableDiv as Node);
+      return isEverythingSelected(rootNode, rng) ? emptyEditableDiv(editor, editableDiv) : deleteRangeMergeBlocks(rootNode, editor.selection, editor.schema);
+  } 
+  rootNode = SugarElement.fromDom(editor.getBody());
   return isEverythingSelected(rootNode, rng) ? emptyEditor(editor) : deleteRangeMergeBlocks(rootNode, editor.selection, editor.schema);
 };
 
+
+const deleteSymbol = (editor: Editor): Optional<() => void> => {
+  if(editor.hasEditableRoot()){
+    return Optional.none();
+  }
+  const editableDiv = getClosestEditableDiv(editor);
+  if(editableDiv?.textContent?.length == 1){
+    return emptyEditableDiv(editor, editableDiv);
+  }
+  return Optional.none();
+}
+
 const backspaceDelete = (editor: Editor, _forward: boolean): Optional<() => void> =>
-  editor.selection.isCollapsed() ? Optional.none() : deleteRange(editor);
+  editor.selection.isCollapsed() ? deleteSymbol(editor) : deleteRange(editor);
 
 export {
   backspaceDelete
