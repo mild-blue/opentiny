@@ -286,8 +286,9 @@ const removeNodeFormatInternal = (ed: Editor, format: Format, vars?: FormatVars,
           if (currentValue) {
             // Build new class value where everything is removed except the internal prefixed classes
             let valueOut = '';
+            const editableClass = ed.getParam('editable_class');
             Arr.each(currentValue.split(/\s+/), (cls) => {
-              if (/mce\-\w+/.test(cls)) {
+              if (/mce-\w+/.test(cls) || (editableClass && cls === editableClass)) {
                 valueOut += (valueOut ? ' ' : '') + cls;
               }
             });
