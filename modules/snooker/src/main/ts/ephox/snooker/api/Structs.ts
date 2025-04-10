@@ -2,6 +2,7 @@ import { Arr } from '@ephox/katamari';
 import { SugarElement } from '@ephox/sugar';
 
 import { CellElement, RowElement, RowCell } from '../util/TableTypes';
+import { ClientRect } from "opentiny/lib/core/main/ts/geom/ClientRect";
 
 export interface Dimension {
   readonly width: number;
@@ -30,6 +31,7 @@ export interface Coords {
 
 export interface Detail<T extends CellElement = CellElement> {
   readonly element: SugarElement<T>;
+  readonly elementRect?: ClientRect;
   readonly rowspan: number;
   readonly colspan: number;
 }
