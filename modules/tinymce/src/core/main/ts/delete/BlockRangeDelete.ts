@@ -87,7 +87,8 @@ const deleteSymbol = (editor: Editor): Optional<() => void> => {
     return Optional.none();
   }
   const editableDiv = getClosestEditableDiv(editor);
-  if(editableDiv?.textContent?.length == 1){
+  console.log(editableDiv?.textContent)
+  if(editableDiv?.textContent?.length == 1 || editableDiv?.textContent?.length == 0){
     return emptyEditableDiv(editor, editableDiv);
   }
   return Optional.none();
