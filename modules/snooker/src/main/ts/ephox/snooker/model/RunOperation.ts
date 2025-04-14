@@ -89,7 +89,12 @@ const extractCells = (warehouse: Warehouse, target: TargetSelection, predicate: 
       .bind((lc) => findInWarehouse(warehouse, lc))
       .filter(predicate);
   });
-  const cells = Optionals.cat(details);
+
+  // Preserve the size of targeted cells
+  const cells = Optionals.cat(details).map((detail) => ({
+    ...detail,
+    elementRect: detail.element.dom.getBoundingClientRect()
+  }));
   return Optionals.someIf(cells.length > 0, cells);
 };
 

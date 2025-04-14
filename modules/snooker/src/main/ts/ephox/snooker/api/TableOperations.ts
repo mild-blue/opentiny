@@ -1,6 +1,8 @@
 import { Arr, Fun, Optional, Optionals } from '@ephox/katamari';
 import { ContentEditable, Remove, SugarElement, Width } from '@ephox/sugar';
 
+import * as Sizes from 'ephox/snooker/resize/Sizes';
+
 import * as Blocks from '../lookup/Blocks';
 import { findCommonCellType, findCommonRowType } from '../lookup/Type';
 import * as DetailsList from '../model/DetailsList';
@@ -361,11 +363,17 @@ const opGetRowsType = (table: SugarElement<HTMLTableElement>, target: TargetSele
   }).getOr('');
 };
 
-// Only column modifications force a resizing. Everything else just tries to preserve the table as is.
-const resize: RunOperation.Adjustment<{}> = (table, list, details, behaviours) =>
+const resizeTableWidth: RunOperation.Adjustment<{}> = (table, list, details, behaviours) =>
   Adjustments.adjustWidthTo(table, list, details, behaviours.sizing);
 
-const adjustAndRedistributeWidths: RunOperation.Adjustment<{ pixelDelta: number }> = (table, list, details, behaviours) =>
+const resizeTableHeight: RunOperation.Adjustment<Structs.DetailExt[]> = (table, list, details) => {
+  const totalErasedHeight = details.map((detail) => detail.elementRect).reduce((acc, rect) => acc + (rect?.height ?? 0), 0);
+  return Sizes.setHeight(table, table.dom.offsetHeight - totalErasedHeight);
+};
+
+const adjustAndRedistributeWidths: RunOperation.Adjustment<{
+  pixelDelta: number;
+}> = (table, list, details, behaviours) =>
   Adjustments.adjustAndRedistributeWidths(table, list, details, behaviours.sizing, behaviours.resize);
 
 // Custom selection extractors
@@ -427,10 +435,10 @@ export const insertColumnBefore = RunOperation.run(opInsertColumnBefore, insertC
 export const insertColumnsBefore = RunOperation.run(opInsertColumnsBefore, insertColumnsExtractor(true), adjustAndRedistributeWidths, Fun.noop, Generators.modification);
 export const insertColumnAfter = RunOperation.run(opInsertColumnAfter, insertColumnExtractor(false), adjustAndRedistributeWidths, Fun.noop, Generators.modification);
 export const insertColumnsAfter = RunOperation.run(opInsertColumnsAfter, insertColumnsExtractor(false), adjustAndRedistributeWidths, Fun.noop, Generators.modification);
-export const splitCellIntoColumns = RunOperation.run(opSplitCellIntoColumns, RunOperation.onUnlockedCell, resize, Fun.noop, Generators.modification);
+export const splitCellIntoColumns = RunOperation.run(opSplitCellIntoColumns, RunOperation.onUnlockedCell, resizeTableWidth, Fun.noop, Generators.modification);
 export const splitCellIntoRows = RunOperation.run(opSplitCellIntoRows, RunOperation.onUnlockedCell, Fun.noop, Fun.noop, Generators.modification);
 export const eraseColumns = RunOperation.run(opEraseColumns, eraseColumnsExtractor, adjustAndRedistributeWidths, prune, Generators.modification);
-export const eraseRows = RunOperation.run(opEraseRows, RunOperation.onCells, Fun.noop, prune, Generators.modification);
+export const eraseRows = RunOperation.run(opEraseRows, RunOperation.onCells, resizeTableHeight, prune, Generators.modification);
 export const makeColumnHeader = RunOperation.run(opMakeColumnHeader, RunOperation.onUnlockedCell, Fun.noop, Fun.noop, headerCellGenerator);
 export const makeColumnsHeader = RunOperation.run(opMakeColumnsHeader, RunOperation.onUnlockedCells, Fun.noop, Fun.noop, headerCellGenerator);
 export const unmakeColumnHeader = RunOperation.run(opUnmakeColumnHeader, RunOperation.onUnlockedCell, Fun.noop, Fun.noop, bodyCellGenerator);
@@ -445,9 +453,9 @@ export const makeCellHeader = RunOperation.run(opMakeCellHeader, RunOperation.on
 export const makeCellsHeader = RunOperation.run(opMakeCellsHeader, RunOperation.onUnlockedCells, Fun.noop, Fun.noop, headerCellGenerator);
 export const unmakeCellHeader = RunOperation.run(opUnmakeCellHeader, RunOperation.onUnlockedCell, Fun.noop, Fun.noop, bodyCellGenerator);
 export const unmakeCellsHeader = RunOperation.run(opUnmakeCellsHeader, RunOperation.onUnlockedCells, Fun.noop, Fun.noop, bodyCellGenerator);
-export const mergeCells = RunOperation.run(opMergeCells, RunOperation.onUnlockedMergable, resize, Fun.noop, Generators.merging);
-export const unmergeCells = RunOperation.run(opUnmergeCells, RunOperation.onUnlockedUnmergable, resize, Fun.noop, Generators.merging);
-export const pasteCells = RunOperation.run(opPasteCells, RunOperation.onPaste, resize, Fun.noop, Generators.modification);
+export const mergeCells = RunOperation.run(opMergeCells, RunOperation.onUnlockedMergable, resizeTableWidth, Fun.noop, Generators.merging);
+export const unmergeCells = RunOperation.run(opUnmergeCells, RunOperation.onUnlockedUnmergable, resizeTableWidth, Fun.noop, Generators.merging);
+export const pasteCells = RunOperation.run(opPasteCells, RunOperation.onPaste, resizeTableWidth, Fun.noop, Generators.modification);
 export const pasteColsBefore = RunOperation.run(opPasteColsBefore, pasteColumnsExtractor(true), Fun.noop, Fun.noop, Generators.modification);
 export const pasteColsAfter = RunOperation.run(opPasteColsAfter, pasteColumnsExtractor(false), Fun.noop, Fun.noop, Generators.modification);
 export const pasteRowsBefore = RunOperation.run(opPasteRowsBefore, RunOperation.onPasteByEditor, Fun.noop, Fun.noop, Generators.modification);
