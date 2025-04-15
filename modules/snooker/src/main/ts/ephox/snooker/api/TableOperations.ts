@@ -1,8 +1,6 @@
 import { Arr, Fun, Optional, Optionals } from '@ephox/katamari';
 import { ContentEditable, Remove, SugarElement, Width } from '@ephox/sugar';
 
-import * as Sizes from 'ephox/snooker/resize/Sizes';
-
 import * as Blocks from '../lookup/Blocks';
 import { findCommonCellType, findCommonRowType } from '../lookup/Type';
 import * as DetailsList from '../model/DetailsList';
@@ -14,6 +12,7 @@ import * as MergingOperations from '../operate/MergingOperations';
 import * as ModificationOperations from '../operate/ModificationOperations';
 import * as TransformOperations from '../operate/TransformOperations';
 import * as Adjustments from '../resize/Adjustments';
+import * as Sizes from '../resize/Sizes';
 import * as ColUtils from '../util/ColUtils';
 import { CompElm } from '../util/TableTypes';
 import { Generators, GeneratorsMerging, GeneratorsModification, GeneratorsTransform, SimpleGenerators } from './Generators';
