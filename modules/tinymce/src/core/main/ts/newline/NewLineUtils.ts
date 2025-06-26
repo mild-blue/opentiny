@@ -124,8 +124,8 @@ const isListItemParentBlock = (editor: Editor): boolean => {
   }).isSome();
 };
 
-const emptyBlock = (elm: Element): void => {
-  elm.innerHTML = '<br data-mce-bogus="1">';
+const emptyBlock = (elm: Element, addBogus: boolean = true): void => {
+  elm.innerHTML = addBogus ? '<br data-mce-bogus="1">' : '<br>';
 };
 
 const applyAttributes = (editor: Editor, node: Element, forcedRootBlockAttrs: Record<string, string>) => {
@@ -219,7 +219,8 @@ const createNewBlock = (
 
   setForcedBlockAttrs(editor, block);
 
-  emptyBlock(caretNode);
+  const addBogus = parentBlockName !== 'LI'; // do not add bogus to list item content
+  emptyBlock(caretNode, addBogus);
 
   return block;
 };
