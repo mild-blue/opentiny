@@ -46,6 +46,51 @@ const filterContextMenu = (menu: string, allowed: string[]): string => {
   return filteredGroups.join(' | ');
 };
 
+const flattenContextMenu = (menu: string, replacements: Record<string, string>): string => {
+  const groups = menu.split('|')
+    .map((group) => group.trim())
+    .filter((group) => group.length > 0);
+
+  const flattened: string[] = [];
+  const addGroup = (items: string[]) => {
+    if (items.length > 0) {
+      flattened.push(items.join(' '));
+    }
+  };
+
+  Arr.each(groups, (group) => {
+    const tokens = group.split(/\s+/).filter((token) => token.length > 0);
+    let current: string[] = [];
+
+    Arr.each(tokens, (token) => {
+      const replacement = replacements[token];
+      if (replacement === undefined) {
+        current.push(token);
+      } else if (replacement.length === 0) {
+        return;
+      } else {
+        const replacementGroups = replacement.split('|')
+          .map((repGroup) => repGroup.trim())
+          .filter((repGroup) => repGroup.length > 0);
+
+        if (replacementGroups.length === 1) {
+          current = current.concat(replacementGroups[0].split(/\s+/).filter((item) => item.length > 0));
+        } else {
+          addGroup(current);
+          current = [];
+          Arr.each(replacementGroups, (repGroup) => {
+            addGroup(repGroup.split(/\s+/).filter((item) => item.length > 0));
+          });
+        }
+      }
+    });
+
+    addGroup(current);
+  });
+
+  return flattened.join(' | ');
+};
+
 const addMenuItems = (editor: Editor, selectionTargets: SelectionTargets): void => {
   const cmd = (command: string) => () => editor.execCommand(command);
 
@@ -280,7 +325,16 @@ const addMenuItems = (editor: Editor, selectionTargets: SelectionTargets): void 
           return 'cell row column | advtablesort | tableprops deletetable';
         }
       });
-      return Options.isTableContextMenuSet(editor) ? filterContextMenu(menu, Options.getTableContextMenu(editor)) : menu;
+      const filteredMenu = Options.isTableContextMenuSet(editor) ? filterContextMenu(menu, Options.getTableContextMenu(editor)) : menu;
+      if (Options.isTableContextMenuFlatten(editor) && filteredMenu.length > 0) {
+        return flattenContextMenu(filteredMenu, {
+          cell: filteredCellMenuItems,
+          row: filteredRowMenuItems,
+          column: filteredColumnMenuItems
+        });
+      } else {
+        return filteredMenu;
+      }
     }
   });
 

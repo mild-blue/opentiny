@@ -126,6 +126,7 @@ export default (): void => {
     'bullist numlist outdent indent | link image | print preview media | forecolor backcolor emoticons table codesample code language | ltr rtl',
     contextmenu: 'link linkchecker image table lists configurepermanentpen',
     table_contextmenu: [ 'cell', 'row', 'column', 'tableprops', 'deletetable' ],
+    table_contextmenu_flatten: true,
     table_cell_contextmenu: [ 'tablecellprops', 'tablemergecells' ],
     table_row_contextmenu: [ 'tableinsertrowbefore', 'tabledeleterow', 'tablerowprops' ],
     table_column_contextmenu: [ 'tableinsertcolumnbefore', 'tabledeletecolumn' ],

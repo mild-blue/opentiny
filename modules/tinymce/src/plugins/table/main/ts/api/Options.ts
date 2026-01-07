@@ -134,6 +134,11 @@ const register = (editor: Editor): void => {
     default: []
   });
 
+  registerOption('table_contextmenu_flatten', {
+    processor: 'boolean',
+    default: false
+  });
+
   registerOption('table_row_contextmenu', {
     processor: 'string[]',
     default: []
@@ -176,6 +181,7 @@ const getRowClassList = option<UserListItem[]>('table_row_class_list');
 const getTableClassList = option<UserListItem[]>('table_class_list');
 const getToolbar = option<string>('table_toolbar');
 const getTableContextMenu = option<string[]>('table_contextmenu');
+const getTableContextMenuFlatten = option<boolean>('table_contextmenu_flatten');
 const getTableRowContextMenu = option<string[]>('table_row_contextmenu');
 const getTableColumnContextMenu = option<string[]>('table_column_contextmenu');
 const getTableCellContextMenu = option<string[]>('table_cell_contextmenu');
@@ -205,6 +211,9 @@ const getDefaultAttributes = (editor: Editor): Record<string, string> => {
 const isTableContextMenuSet = (editor: Editor): boolean =>
   editor.options.isSet('table_contextmenu');
 
+const isTableContextMenuFlatten = (editor: Editor): boolean =>
+  getTableContextMenuFlatten(editor);
+
 const isTableRowContextMenuSet = (editor: Editor): boolean =>
   editor.options.isSet('table_row_contextmenu');
 
@@ -231,6 +240,7 @@ export {
   getTableClassList,
   getToolbar,
   getTableContextMenu,
+  getTableContextMenuFlatten,
   getTableRowContextMenu,
   getTableColumnContextMenu,
   getTableCellContextMenu,
@@ -239,6 +249,7 @@ export {
   getTableBackgroundColorMap,
   getTableBorderColorMap,
   isTableContextMenuSet,
+  isTableContextMenuFlatten,
   isTableRowContextMenuSet,
   isTableColumnContextMenuSet,
   isTableCellContextMenuSet
