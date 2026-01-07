@@ -9,8 +9,8 @@ import { UserListItem, UserListValue } from '../ui/UiUtils';
 
 const defaultTableToolbar = 'tableprops tabledelete | tableinsertrowbefore tableinsertrowafter tabledeleterow | tableinsertcolbefore tableinsertcolafter tabledeletecol';
 
-const defaultTableCellInputs = 'width celltype scope halign valign class';
-const defaultTableRowInputs = 'type align height class';
+const defaultTableCellInputs = 'width height celltype scope halign valign class';
+const defaultTableRowInputs = 'type align class';
 const defaultTableInputs = 'width height cellspacing cellpadding border caption align class';
 
 const defaultCellBorderWidths = Arr.range(5, (i) => {

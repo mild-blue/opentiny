@@ -68,6 +68,7 @@ const updateAdvancedProps = (modifier: DomModifier, data: Required<CellData>, sh
 
 const applyStyleData = (editor: Editor, cells: SelectedCell[], data: CellData, wasChanged: (key: string) => boolean): void => {
   const isSingleCell = cells.length === 1;
+  const rowsSeen = new Set<HTMLTableRowElement>();
   Arr.each(cells, (item) => {
     const cellElm = item.element;
     const shouldOverrideCurrentValue = isSingleCell ? Fun.always : wasChanged;
@@ -78,6 +79,17 @@ const applyStyleData = (editor: Editor, cells: SelectedCell[], data: CellData, w
 
     if (Options.hasAdvancedCellTab(editor)) {
       updateAdvancedProps(modifier, data as Required<CellData>, shouldOverrideCurrentValue);
+    }
+
+    if (shouldOverrideCurrentValue('height')) {
+      const rowElm = cellElm.parentElement as HTMLTableRowElement | null;
+      if (rowElm !== null && !rowsSeen.has(rowElm)) {
+        rowsSeen.add(rowElm);
+        editor.dom.setStyle(rowElm, 'height', Utils.addPxSuffix(data.height));
+        if (wasChanged('height')) {
+          Array.from(rowElm.cells).forEach((cell) => editor.dom.setStyle(cell, 'height', null));
+        }
+      }
     }
 
     // Apply alignment

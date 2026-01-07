@@ -38,12 +38,6 @@ const formChildren: Dialog.BodyComponentSpec[] = [
       { text: 'Center', value: 'center' },
       { text: 'Right', value: 'right' }
     ]
-  },
-  {
-    label: 'Height',
-    name: 'height',
-    type: 'input',
-    tooltip: 'Row height in pixels (e.g., 20px).'
   }
 ];
 
