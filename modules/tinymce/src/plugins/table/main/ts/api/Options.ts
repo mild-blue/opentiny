@@ -129,6 +129,26 @@ const register = (editor: Editor): void => {
     default: defaultTableToolbar
   });
 
+  registerOption('table_contextmenu', {
+    processor: 'string[]',
+    default: []
+  });
+
+  registerOption('table_row_contextmenu', {
+    processor: 'string[]',
+    default: []
+  });
+
+  registerOption('table_column_contextmenu', {
+    processor: 'string[]',
+    default: []
+  });
+
+  registerOption('table_cell_contextmenu', {
+    processor: 'string[]',
+    default: []
+  });
+
   registerOption('table_background_color_map', {
     processor: 'object[]',
     default: []
@@ -155,6 +175,10 @@ const getCellClassList = option<UserListItem[]>('table_cell_class_list');
 const getRowClassList = option<UserListItem[]>('table_row_class_list');
 const getTableClassList = option<UserListItem[]>('table_class_list');
 const getToolbar = option<string>('table_toolbar');
+const getTableContextMenu = option<string[]>('table_contextmenu');
+const getTableRowContextMenu = option<string[]>('table_row_contextmenu');
+const getTableColumnContextMenu = option<string[]>('table_column_contextmenu');
+const getTableCellContextMenu = option<string[]>('table_cell_contextmenu');
 const getTableBackgroundColorMap = option<UserListValue[]>('table_background_color_map');
 const getTableBorderColorMap = option<UserListValue[]>('table_border_color_map');
 
@@ -178,6 +202,18 @@ const getDefaultAttributes = (editor: Editor): Record<string, string> => {
   return options.isSet('table_default_attributes') ? defaultAttributes : determineDefaultAttributes(editor, defaultAttributes);
 };
 
+const isTableContextMenuSet = (editor: Editor): boolean =>
+  editor.options.isSet('table_contextmenu');
+
+const isTableRowContextMenuSet = (editor: Editor): boolean =>
+  editor.options.isSet('table_row_contextmenu');
+
+const isTableColumnContextMenuSet = (editor: Editor): boolean =>
+  editor.options.isSet('table_column_contextmenu');
+
+const isTableCellContextMenuSet = (editor: Editor): boolean =>
+  editor.options.isSet('table_cell_contextmenu');
+
 export {
   register,
   getDefaultAttributes,
@@ -194,8 +230,16 @@ export {
   getRowClassList,
   getTableClassList,
   getToolbar,
+  getTableContextMenu,
+  getTableRowContextMenu,
+  getTableColumnContextMenu,
+  getTableCellContextMenu,
   getTableBorderWidths,
   getTableBorderStyles,
   getTableBackgroundColorMap,
-  getTableBorderColorMap
+  getTableBorderColorMap,
+  isTableContextMenuSet,
+  isTableRowContextMenuSet,
+  isTableColumnContextMenuSet,
+  isTableCellContextMenuSet
 };
