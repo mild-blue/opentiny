@@ -27,7 +27,7 @@ const children: Dialog.BodyComponentSpec[] = [
     name: 'height',
     type: 'input',
     label: 'Height',
-    tooltip: 'Row height in pixels (e.g., 20px).'
+    tooltip: 'Row height in pixels (e.g., 20px). If the height change does not apply to the row, remove the table height in Table Properties and try again.'
   },
   {
     name: 'backgroundcolor',
