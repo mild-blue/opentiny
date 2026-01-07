@@ -125,11 +125,10 @@ export default (): void => {
     toolbar: 'undo redo sidebar1 fontsizeinput | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | align lineheight fontsize fontfamily blocks styles insertfile | styles | ' +
     'bullist numlist outdent indent | link image | print preview media | forecolor backcolor emoticons table codesample code language | ltr rtl',
     contextmenu: 'link linkchecker image table lists configurepermanentpen',
-    table_contextmenu: [ 'cell', 'row', 'column', 'tableprops', 'deletetable' ],
+    table_contextmenu: [ 'cell', 'row', 'tableprops', 'deletetable' ],
     table_contextmenu_flatten: true,
-    table_cell_contextmenu: [ 'tablecellprops', 'tablemergecells' ],
-    table_row_contextmenu: [ 'tableinsertrowbefore', 'tabledeleterow', 'tablerowprops' ],
-    table_column_contextmenu: [ 'tableinsertcolumnbefore', 'tabledeletecolumn' ],
+    table_cell_contextmenu: [ 'tablecellprops', 'tablemergecells', 'tablesplitcells' ],
+    table_row_contextmenu: [ 'tablerowprops' ],
 
     // Multiple toolbar array
     // toolbar: ['undo redo sidebar1 align fontsize insertfile | fontfamily blocks styles insertfile | styles | bold italic',

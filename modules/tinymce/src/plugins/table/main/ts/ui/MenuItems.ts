@@ -8,7 +8,7 @@ import * as FakeClipboard from '../api/Clipboard';
 import * as Options from '../api/Options';
 import { SelectionTargets, LockedDisable } from '../selection/SelectionTargets';
 import { verticalAlignValues } from './CellAlignValues';
-import { applyTableCellStyle, changeColumnHeader, changeRowHeader, filterNoneItem, buildColorMenu, buildMenuItems } from './UiUtils';
+import { applyTableCellStyle, changeColumnHeader, changeRowHeader, filterNoneItem, buildColorMenu, buildMenuItems, filterContextMenu, flattenContextMenu } from './UiUtils';
 
 interface AddMenuSpec<T> {
   readonly text: string;
@@ -29,66 +29,6 @@ const onSetupEditable = (editor: Editor) => (api: Menu.MenuItemInstanceApi): Voi
   return () => {
     editor.off('NodeChange', nodeChanged);
   };
-};
-
-const filterContextMenu = (menu: string, allowed: string[]): string => {
-  if (allowed.length === 0) {
-    return '';
-  }
-
-  const allowedSet = new Set(allowed);
-  const filteredGroups = menu.split('|')
-    .map((group) => group.trim())
-    .map((group) => group.length === 0 ? [] : group.split(/\s+/).filter((item) => allowedSet.has(item)))
-    .filter((items) => items.length > 0)
-    .map((items) => items.join(' '));
-
-  return filteredGroups.join(' | ');
-};
-
-const flattenContextMenu = (menu: string, replacements: Record<string, string>): string => {
-  const groups = menu.split('|')
-    .map((group) => group.trim())
-    .filter((group) => group.length > 0);
-
-  const flattened: string[] = [];
-  const addGroup = (items: string[]) => {
-    if (items.length > 0) {
-      flattened.push(items.join(' '));
-    }
-  };
-
-  Arr.each(groups, (group) => {
-    const tokens = group.split(/\s+/).filter((token) => token.length > 0);
-    let current: string[] = [];
-
-    Arr.each(tokens, (token) => {
-      const replacement = replacements[token];
-      if (replacement === undefined) {
-        current.push(token);
-      } else if (replacement.length === 0) {
-        return;
-      } else {
-        const replacementGroups = replacement.split('|')
-          .map((repGroup) => repGroup.trim())
-          .filter((repGroup) => repGroup.length > 0);
-
-        if (replacementGroups.length === 1) {
-          current = current.concat(replacementGroups[0].split(/\s+/).filter((item) => item.length > 0));
-        } else {
-          addGroup(current);
-          current = [];
-          Arr.each(replacementGroups, (repGroup) => {
-            addGroup(repGroup.split(/\s+/).filter((item) => item.length > 0));
-          });
-        }
-      }
-    });
-
-    addGroup(current);
-  });
-
-  return flattened.join(' | ');
 };
 
 const addMenuItems = (editor: Editor, selectionTargets: SelectionTargets): void => {

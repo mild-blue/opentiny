@@ -7,7 +7,7 @@ import * as FakeClipboard from '../api/Clipboard';
 import * as Options from '../api/Options';
 import { SelectionTargets, LockedDisable } from '../selection/SelectionTargets';
 import { verticalAlignValues } from './CellAlignValues';
-import { applyTableCellStyle, changeColumnHeader, changeRowHeader, filterNoneItem, buildColorMenu, generateMenuItemsCallback } from './UiUtils';
+import { applyTableCellStyle, changeColumnHeader, changeRowHeader, filterNoneItem, buildColorMenu, generateMenuItemsCallback, filterContextMenu, flattenContextMenu } from './UiUtils';
 
 interface AddButtonSpec<T> {
   readonly tooltip: string;
@@ -30,12 +30,44 @@ const onSetupEditable = (editor: Editor) => (api: Toolbar.ToolbarButtonInstanceA
   };
 };
 
+const getFilteredRowMenuItems = (editor: Editor): string => {
+  const rowMenuItems = 'tableinsertrowbefore tableinsertrowafter tabledeleterow tablerowprops | tablecutrow tablecopyrow tablepasterowbefore tablepasterowafter';
+  return Options.isTableRowContextMenuSet(editor) ? filterContextMenu(rowMenuItems, Options.getTableRowContextMenu(editor)) : rowMenuItems;
+};
+
+const getFilteredColumnMenuItems = (editor: Editor): string => {
+  const columnMenuItems = 'tableinsertcolumnbefore tableinsertcolumnafter tabledeletecolumn | tablecutcolumn tablecopycolumn tablepastecolumnbefore tablepastecolumnafter';
+  return Options.isTableColumnContextMenuSet(editor) ? filterContextMenu(columnMenuItems, Options.getTableColumnContextMenu(editor)) : columnMenuItems;
+};
+
+const getFilteredCellMenuItems = (editor: Editor): string => {
+  const cellMenuItems = 'tablecellprops tablemergecells tablesplitcells';
+  return Options.isTableCellContextMenuSet(editor) ? filterContextMenu(cellMenuItems, Options.getTableCellContextMenu(editor)) : cellMenuItems;
+};
+
+const getTableMenuItems = (editor: Editor): string => {
+  const menu = 'inserttable | cell row column | advtablesort | tableprops deletetable';
+  const filteredMenu = Options.isTableContextMenuSet(editor) ?
+    filterContextMenu(menu, [ 'inserttable', ...Options.getTableContextMenu(editor) ]) :
+    menu;
+
+  if (Options.isTableContextMenuFlatten(editor) && filteredMenu.length > 0) {
+    return flattenContextMenu(filteredMenu, {
+      cell: getFilteredCellMenuItems(editor),
+      row: getFilteredRowMenuItems(editor),
+      column: getFilteredColumnMenuItems(editor)
+    });
+  } else {
+    return filteredMenu;
+  }
+};
+
 const addButtons = (editor: Editor, selectionTargets: SelectionTargets): void => {
   editor.ui.registry.addMenuButton('table', {
     tooltip: 'Table',
     icon: 'table',
     onSetup: onSetupEditable(editor),
-    fetch: (callback) => callback('inserttable | cell row column | advtablesort | tableprops deletetable')
+    fetch: (callback) => callback(getTableMenuItems(editor))
   });
 
   const cmd = (command: string) => () => editor.execCommand(command);
