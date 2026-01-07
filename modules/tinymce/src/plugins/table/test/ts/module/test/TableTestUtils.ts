@@ -23,8 +23,7 @@ export interface WidthData {
 const advSelectors = {
   borderwidth: 'label.tox-label:contains(Border width) + input.tox-textfield',
   borderstyle: 'label.tox-label:contains(Border style) + div.tox-listboxfield > .tox-listbox',
-  bordercolor: 'label.tox-label:contains(Border color) + div>input.tox-textfield',
-  backgroundcolor: 'label.tox-label:contains(Background color) + div>input.tox-textfield'
+  bordercolor: 'label.tox-label:contains(Border color) + div>input.tox-textfield'
 };
 
 const assertTableStructure = (editor: Editor, structure: StructAssert): void => {
@@ -118,7 +117,7 @@ const gotoGeneralTab = (): void => {
 };
 
 const gotoAdvancedTab = (): void => {
-  Mouse.clickOn(SugarBody.body(), 'div.tox-tab:contains(Advanced)');
+  Mouse.clickOn(SugarBody.body(), 'div.tox-tab:contains(Border)');
 };
 
 const setTabInputValues = (data: Record<string, any>, tabSelectors: Record<string, string>): void => {

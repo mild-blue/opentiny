@@ -31,6 +31,8 @@ describe('browser.tinymce.plugins.table.TableCellDialogTest', () => {
 
   const generalSelectors = {
     width: 'label.tox-label:contains(Width) + input.tox-textfield',
+    height: 'label.tox-label:contains(Height) + input.tox-textfield',
+    backgroundcolor: 'label.tox-label:contains(Background color) + div>input.tox-textfield',
     celltype: 'label.tox-label:contains(Cell type) + div.tox-listboxfield > .tox-listbox',
     scope: 'label.tox-label:contains(Scope) + div.tox-listboxfield > .tox-listbox',
     halign: 'label.tox-label:contains(Horizontal align) + div.tox-listboxfield > .tox-listbox',

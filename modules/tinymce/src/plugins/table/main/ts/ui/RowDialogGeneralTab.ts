@@ -38,6 +38,12 @@ const formChildren: Dialog.BodyComponentSpec[] = [
       { text: 'Center', value: 'center' },
       { text: 'Right', value: 'right' }
     ]
+  },
+  {
+    name: 'backgroundcolor',
+    type: 'colorinput',
+    label: 'Background color',
+    tooltip: 'Changes the background color of all cells in the row, except for those set individually through Cell Properties.'
   }
 ];
 

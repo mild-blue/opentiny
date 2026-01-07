@@ -30,6 +30,12 @@ const children: Dialog.BodyComponentSpec[] = [
     tooltip: 'Row height in pixels (e.g., 20px).'
   },
   {
+    name: 'backgroundcolor',
+    type: 'colorinput',
+    label: 'Background color',
+    tooltip: 'Background color of the cell.'
+  },
+  {
     name: 'celltype',
     type: 'listbox',
     label: 'Cell type',
