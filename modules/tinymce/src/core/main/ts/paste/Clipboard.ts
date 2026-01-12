@@ -133,8 +133,9 @@ const pasteImage = (editor: Editor, imageItem: FileResult): void => {
     const img = new Image();
         img.src = blobInfo.blobUri();
         img.onload = () => {
-          const contentBodyElement = editor.dom.select('.mce-content-body')[0];
-          const maxImageWidth = contentBodyElement ? parseInt(window.getComputedStyle(contentBodyElement).width) : defaultMaxImageWidthPx;
+          const contentBodyElement = editor.dom.select('.mce-content-body')[0].children[0];
+          const computedStyles = contentBodyElement ? window.getComputedStyle(contentBodyElement) : null;
+          const maxImageWidth = computedStyles ? parseInt(computedStyles.width) - parseInt(computedStyles.paddingLeft) - parseInt(computedStyles.paddingRight) : defaultMaxImageWidthPx;
           const imageWidth = Math.min(img.naturalWidth, maxImageWidth)
           pasteHtml(editor, `<img src="${ blobInfo.blobUri() }" width="${ imageWidth }px">`, false, true);
         };
