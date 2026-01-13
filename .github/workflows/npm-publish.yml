@@ -31,6 +31,11 @@ jobs:
         run: npm version "$(git tag --sort=committerdate | tail -1)" --no-git-tag-version
         working-directory: js/tinymce
 
+      - name: Clear npm auth
+        run: |
+          npm config delete //registry.npmjs.org/:_authToken
+          rm -f ~/.npmrc
+
       - name: Publish package
         run: npm publish --provenance
         working-directory: js/tinymce
