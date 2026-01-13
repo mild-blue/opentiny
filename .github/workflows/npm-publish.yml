@@ -32,5 +32,5 @@ jobs:
         working-directory: js/tinymce
 
       - name: Publish package
-        run: npm publish
+        run: npm publish --provenance
         working-directory: js/tinymce
