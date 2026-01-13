@@ -30,6 +30,16 @@ jobs:
         run: npm version "$(git tag --sort=committerdate | tail -1)" --no-git-tag-version
         working-directory: js/tinymce
 
+      - name: Verify npm auth
+        run: npm whoami
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Check npm ownership
+        run: npm owner ls opentiny
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
       - name: Publish package
         run: yarn publish
         working-directory: js/tinymce
