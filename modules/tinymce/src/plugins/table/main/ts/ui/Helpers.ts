@@ -42,7 +42,6 @@ export type TableData = {
 
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export type RowData = {
-  readonly height: string;
   readonly class: string;
   readonly align: string;
   readonly type: string;
@@ -54,6 +53,7 @@ export type RowData = {
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export type CellData = {
   readonly width: string;
+  readonly height: string;
   readonly scope: string;
   readonly celltype: 'td' | 'th';
   readonly class: string;
@@ -207,7 +207,6 @@ const extractDataFromTableElement = (editor: Editor, elm: Element, hasAdvTableTa
 const extractDataFromRowElement = (editor: Editor, elm: HTMLTableRowElement, hasAdvancedRowTab: boolean): RowData => {
   const dom = editor.dom;
   return {
-    height: dom.getStyle(elm, 'height') || dom.getAttrib(elm, 'height'),
     class: dom.getAttrib(elm, 'class', ''),
     type: getRowType(elm),
     align: getHAlignment(editor, elm),
@@ -218,11 +217,13 @@ const extractDataFromRowElement = (editor: Editor, elm: HTMLTableRowElement, has
 const extractDataFromCellElement = (editor: Editor, cell: HTMLTableCellElement, hasAdvancedCellTab: boolean, column: Optional<HTMLTableColElement>): CellData => {
   const dom = editor.dom;
   const colElm = column.getOr(cell);
+  const rowElm = cell.parentElement;
 
   const getStyle = (element: HTMLElement, style: string) => dom.getStyle(element, style) || dom.getAttrib(element, style);
 
   return {
     width: getStyle(colElm, 'width'),
+    height: rowElm ? (dom.getStyle(rowElm, 'height') || dom.getAttrib(rowElm, 'height')) : '',
     scope: dom.getAttrib(cell, 'scope'),
     celltype: Utils.getNodeName(cell) as 'td' | 'th',
     class: dom.getAttrib(cell, 'class', ''),
@@ -250,4 +251,3 @@ export {
   extractDataFromSettings,
   getValidBorderWidth
 };
-

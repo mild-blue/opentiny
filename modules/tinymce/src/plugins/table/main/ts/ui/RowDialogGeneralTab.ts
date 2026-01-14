@@ -40,10 +40,10 @@ const formChildren: Dialog.BodyComponentSpec[] = [
     ]
   },
   {
-    label: 'Height',
-    name: 'height',
-    type: 'input',
-    tooltip: 'Row height in pixels (e.g., 20px).'
+    name: 'backgroundcolor',
+    type: 'colorinput',
+    label: 'Background color',
+    tooltip: 'Changes the background color of all cells in the row, except for those set individually through Cell Properties.'
   }
 ];
 

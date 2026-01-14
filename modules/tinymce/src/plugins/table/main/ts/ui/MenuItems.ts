@@ -8,7 +8,7 @@ import * as FakeClipboard from '../api/Clipboard';
 import * as Options from '../api/Options';
 import { SelectionTargets, LockedDisable } from '../selection/SelectionTargets';
 import { verticalAlignValues } from './CellAlignValues';
-import { applyTableCellStyle, changeColumnHeader, changeRowHeader, filterNoneItem, buildColorMenu, buildMenuItems } from './UiUtils';
+import { applyTableCellStyle, changeColumnHeader, changeRowHeader, filterNoneItem, buildColorMenu, buildMenuItems, filterContextMenu, flattenContextMenu } from './UiUtils';
 
 interface AddMenuSpec<T> {
   readonly text: string;
@@ -222,27 +222,33 @@ const addMenuItems = (editor: Editor, selectionTargets: SelectionTargets): void 
   });
 
   // if any of the row menu items returned true
-  if (Arr.contains(hasRowMenuItems, true)) {
+  const rowMenuItems = 'tableinsertrowbefore tableinsertrowafter tabledeleterow tablerowprops | tablecutrow tablecopyrow tablepasterowbefore tablepasterowafter';
+  const filteredRowMenuItems = Options.isTableRowContextMenuSet(editor) ? filterContextMenu(rowMenuItems, Options.getTableRowContextMenu(editor)) : rowMenuItems;
+  if (Arr.contains(hasRowMenuItems, true) && filteredRowMenuItems.length > 0) {
     editor.ui.registry.addNestedMenuItem('row', {
       type: 'nestedmenuitem',
       text: 'Row',
-      getSubmenuItems: Fun.constant('tableinsertrowbefore tableinsertrowafter tabledeleterow tablerowprops | tablecutrow tablecopyrow tablepasterowbefore tablepasterowafter')
+      getSubmenuItems: Fun.constant(filteredRowMenuItems)
     });
   }
 
-  if (Arr.contains(hasColumnMenuItems, true)) {
+  const columnMenuItems = 'tableinsertcolumnbefore tableinsertcolumnafter tabledeletecolumn | tablecutcolumn tablecopycolumn tablepastecolumnbefore tablepastecolumnafter';
+  const filteredColumnMenuItems = Options.isTableColumnContextMenuSet(editor) ? filterContextMenu(columnMenuItems, Options.getTableColumnContextMenu(editor)) : columnMenuItems;
+  if (Arr.contains(hasColumnMenuItems, true) && filteredColumnMenuItems.length > 0) {
     editor.ui.registry.addNestedMenuItem('column', {
       type: 'nestedmenuitem',
       text: 'Column',
-      getSubmenuItems: Fun.constant('tableinsertcolumnbefore tableinsertcolumnafter tabledeletecolumn | tablecutcolumn tablecopycolumn tablepastecolumnbefore tablepastecolumnafter')
+      getSubmenuItems: Fun.constant(filteredColumnMenuItems)
     });
   }
 
-  if (Arr.contains(hasCellMenuItems, true)) {
+  const cellMenuItems = 'tablecellprops tablemergecells tablesplitcells';
+  const filteredCellMenuItems = Options.isTableCellContextMenuSet(editor) ? filterContextMenu(cellMenuItems, Options.getTableCellContextMenu(editor)) : cellMenuItems;
+  if (Arr.contains(hasCellMenuItems, true) && filteredCellMenuItems.length > 0) {
     editor.ui.registry.addNestedMenuItem('cell', {
       type: 'nestedmenuitem',
       text: 'Cell',
-      getSubmenuItems: Fun.constant('tablecellprops tablemergecells tablesplitcells')
+      getSubmenuItems: Fun.constant(filteredCellMenuItems)
     });
   }
 
@@ -251,7 +257,7 @@ const addMenuItems = (editor: Editor, selectionTargets: SelectionTargets): void 
       // context menu fires before node change, so check the selection here first
       selectionTargets.resetTargets();
       // ignoring element since it's monitored elsewhere
-      return selectionTargets.targets().fold(Fun.constant(''), (targets) => {
+      const menu = selectionTargets.targets().fold(Fun.constant(''), (targets) => {
         // If clicking in a caption, then we shouldn't show the cell/row/column options
         if (SugarNode.name(targets.element) === 'caption') {
           return 'tableprops deletetable';
@@ -259,6 +265,16 @@ const addMenuItems = (editor: Editor, selectionTargets: SelectionTargets): void 
           return 'cell row column | advtablesort | tableprops deletetable';
         }
       });
+      const filteredMenu = Options.isTableContextMenuSet(editor) ? filterContextMenu(menu, Options.getTableContextMenu(editor)) : menu;
+      if (Options.isTableContextMenuFlatten(editor) && filteredMenu.length > 0) {
+        return flattenContextMenu(filteredMenu, {
+          cell: filteredCellMenuItems,
+          row: filteredRowMenuItems,
+          column: filteredColumnMenuItems
+        });
+      } else {
+        return filteredMenu;
+      }
     }
   });
 

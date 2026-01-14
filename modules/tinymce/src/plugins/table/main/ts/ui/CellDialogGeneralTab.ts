@@ -24,6 +24,18 @@ const children: Dialog.BodyComponentSpec[] = [
     tooltip: 'Cell width in pixels or percentage (e.g., 50px or 10%).'
   },
   {
+    name: 'height',
+    type: 'input',
+    label: 'Height',
+    tooltip: 'Row height in pixels (e.g., 20px). If the height change does not apply to the row, remove the table height in Table Properties and try again.'
+  },
+  {
+    name: 'backgroundcolor',
+    type: 'colorinput',
+    label: 'Background color',
+    tooltip: 'Background color of the cell.'
+  },
+  {
     name: 'celltype',
     type: 'listbox',
     label: 'Cell type',

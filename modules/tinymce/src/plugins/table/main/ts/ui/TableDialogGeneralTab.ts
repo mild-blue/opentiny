@@ -53,6 +53,12 @@ const getItems = (editor: Editor, classes: Dialog.ListBoxItemSpec[], insertNewTa
       tooltip: 'Width of the border for the entire table and individual cells.'
     },
     {
+      name: 'backgroundcolor',
+      type: 'colorinput',
+      label: 'Background color',
+      tooltip: 'Changes the background color of all cells in the table, except for those set individually through Cell Properties or Row Properties.'
+    },
+    {
       type: 'label',
       label: 'Caption',
       name: 'caption',

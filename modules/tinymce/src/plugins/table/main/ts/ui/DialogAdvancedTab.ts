@@ -18,17 +18,6 @@ const getBorderColorTooltip = (dialogName: DialogName): string => {
   }
 };
 
-const getBackgroundColourTooltip = (dialogName: DialogName): string => {
-  switch (dialogName) {
-    case 'table':
-      return 'Changes the background color of all cells in the table, except for those set individually through Cell Properties or Row Properties.';
-    case 'row':
-      return 'Changes the background color of all cells in the row, except for those set individually through Cell Properties.';
-    case 'cell':
-      return `Background color of the cell.`;
-  }
-};
-
 const getBorderWidthTooltip = (dialogName: DialogName): string | undefined => {
   switch (dialogName) {
     case 'table':
@@ -60,12 +49,6 @@ const getAdvancedTab = (editor: Editor, dialogName: DialogName): Dialog.TabSpec 
       type: 'colorinput',
       label: 'Border color',
       tooltip: getBorderColorTooltip(dialogName)
-    },
-    {
-      name: 'backgroundcolor',
-      type: 'colorinput',
-      label: 'Background color',
-      tooltip: getBackgroundColourTooltip(dialogName)
     }
   ];
 
@@ -79,7 +62,7 @@ const getAdvancedTab = (editor: Editor, dialogName: DialogName): Dialog.TabSpec 
   const items = dialogName === 'cell' ? ([ borderWidth ] as Dialog.BodyComponentSpec[]).concat(advTabItems) : advTabItems;
 
   return {
-    title: 'Advanced',
+    title: 'Border',
     name: 'advanced',
     items
   };

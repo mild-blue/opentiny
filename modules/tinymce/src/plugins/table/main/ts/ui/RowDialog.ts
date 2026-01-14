@@ -1,6 +1,6 @@
 import { Arr, Fun, Obj } from '@ephox/katamari';
 import { TableLookup } from '@ephox/snooker';
-import { SelectorFilter, SugarElement } from '@ephox/sugar';
+import { SugarElement } from '@ephox/sugar';
 
 import Editor from 'tinymce/core/api/Editor';
 import { Dialog } from 'tinymce/core/api/ui/Ui';
@@ -22,9 +22,6 @@ const updateSimpleProps = (modifier: DomModifier, data: RowData, shouldUpdate: (
   if (shouldUpdate('class') && data.class !== 'mce-no-match') {
     modifier.setAttrib('class', data.class);
   }
-  if (shouldUpdate('height')) {
-    modifier.setStyle('height', Utils.addPxSuffix(data.height));
-  }
 };
 
 const updateAdvancedProps = (modifier: DomModifier, data: Required<RowData>, shouldUpdate: (key: string) => boolean): void => {
@@ -43,20 +40,12 @@ const applyStyleData = (editor: Editor, rows: HTMLTableRowElement[], data: RowDa
   const isSingleRow = rows.length === 1;
   const shouldOverrideCurrentValue = isSingleRow ? Fun.always : wasChanged;
   Arr.each(rows, (rowElm) => {
-    const rowCells = SelectorFilter.children<HTMLTableCellElement>(SugarElement.fromDom(rowElm), 'td,th');
     const modifier = DomModifier.normal(editor, rowElm);
 
     updateSimpleProps(modifier, data, shouldOverrideCurrentValue);
 
     if (Options.hasAdvancedRowTab(editor)) {
       updateAdvancedProps(modifier, data as Required<RowData>, shouldOverrideCurrentValue);
-    }
-
-    // TINY-10617: Simplify number of height styles when applying height on tr
-    if (wasChanged('height')) {
-      Arr.each(rowCells, (cell) => {
-        editor.dom.setStyle(cell.dom, 'height', null);
-      });
     }
 
     if (wasChanged('align')) {
@@ -165,4 +154,3 @@ const open = (editor: Editor): void => {
 };
 
 export { open };
-

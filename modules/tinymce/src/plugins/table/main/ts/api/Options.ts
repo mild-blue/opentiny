@@ -9,9 +9,9 @@ import { UserListItem, UserListValue } from '../ui/UiUtils';
 
 const defaultTableToolbar = 'tableprops tabledelete | tableinsertrowbefore tableinsertrowafter tabledeleterow | tableinsertcolbefore tableinsertcolafter tabledeletecol';
 
-const defaultTableCellInputs = 'width celltype scope halign valign class';
-const defaultTableRowInputs = 'type align height class';
-const defaultTableInputs = 'width height cellspacing cellpadding border caption align class';
+const defaultTableCellInputs = 'width height celltype scope halign valign backgroundcolor class';
+const defaultTableRowInputs = 'type align backgroundcolor class';
+const defaultTableInputs = 'width height cellspacing cellpadding border backgroundcolor caption align class';
 
 const defaultCellBorderWidths = Arr.range(5, (i) => {
   const size = `${i + 1}px`;
@@ -129,6 +129,31 @@ const register = (editor: Editor): void => {
     default: defaultTableToolbar
   });
 
+  registerOption('table_contextmenu', {
+    processor: 'string[]',
+    default: []
+  });
+
+  registerOption('table_contextmenu_flatten', {
+    processor: 'boolean',
+    default: false
+  });
+
+  registerOption('table_row_contextmenu', {
+    processor: 'string[]',
+    default: []
+  });
+
+  registerOption('table_column_contextmenu', {
+    processor: 'string[]',
+    default: []
+  });
+
+  registerOption('table_cell_contextmenu', {
+    processor: 'string[]',
+    default: []
+  });
+
   registerOption('table_background_color_map', {
     processor: 'object[]',
     default: []
@@ -155,6 +180,11 @@ const getCellClassList = option<UserListItem[]>('table_cell_class_list');
 const getRowClassList = option<UserListItem[]>('table_row_class_list');
 const getTableClassList = option<UserListItem[]>('table_class_list');
 const getToolbar = option<string>('table_toolbar');
+const getTableContextMenu = option<string[]>('table_contextmenu');
+const getTableContextMenuFlatten = option<boolean>('table_contextmenu_flatten');
+const getTableRowContextMenu = option<string[]>('table_row_contextmenu');
+const getTableColumnContextMenu = option<string[]>('table_column_contextmenu');
+const getTableCellContextMenu = option<string[]>('table_cell_contextmenu');
 const getTableBackgroundColorMap = option<UserListValue[]>('table_background_color_map');
 const getTableBorderColorMap = option<UserListValue[]>('table_border_color_map');
 
@@ -178,6 +208,21 @@ const getDefaultAttributes = (editor: Editor): Record<string, string> => {
   return options.isSet('table_default_attributes') ? defaultAttributes : determineDefaultAttributes(editor, defaultAttributes);
 };
 
+const isTableContextMenuSet = (editor: Editor): boolean =>
+  editor.options.isSet('table_contextmenu');
+
+const isTableContextMenuFlatten = (editor: Editor): boolean =>
+  getTableContextMenuFlatten(editor);
+
+const isTableRowContextMenuSet = (editor: Editor): boolean =>
+  editor.options.isSet('table_row_contextmenu');
+
+const isTableColumnContextMenuSet = (editor: Editor): boolean =>
+  editor.options.isSet('table_column_contextmenu');
+
+const isTableCellContextMenuSet = (editor: Editor): boolean =>
+  editor.options.isSet('table_cell_contextmenu');
+
 export {
   register,
   getDefaultAttributes,
@@ -194,8 +239,18 @@ export {
   getRowClassList,
   getTableClassList,
   getToolbar,
+  getTableContextMenu,
+  getTableContextMenuFlatten,
+  getTableRowContextMenu,
+  getTableColumnContextMenu,
+  getTableCellContextMenu,
   getTableBorderWidths,
   getTableBorderStyles,
   getTableBackgroundColorMap,
-  getTableBorderColorMap
+  getTableBorderColorMap,
+  isTableContextMenuSet,
+  isTableContextMenuFlatten,
+  isTableRowContextMenuSet,
+  isTableColumnContextMenuSet,
+  isTableCellContextMenuSet
 };

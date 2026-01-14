@@ -30,13 +30,14 @@ describe('browser.tinymce.plugins.table.HelpersTest', () => {
     );
     const td = UiFinder.findIn<HTMLTableCellElement>(TinyDom.body(editor), 'td.foo').getOrDie();
     const cellData = Helpers.extractDataFromCellElement(editor, td.dom, true, Optional.none());
-    assert.hasAllKeys(cellData, [ 'class', 'scope', 'celltype', 'halign', 'valign', 'width', 'backgroundcolor', 'bordercolor', 'borderstyle', 'borderwidth' ]);
+    assert.hasAllKeys(cellData, [ 'class', 'scope', 'celltype', 'halign', 'valign', 'width', 'height', 'backgroundcolor', 'bordercolor', 'borderstyle', 'borderwidth' ]);
     assert.equal(cellData.class, 'foo', 'Extracts class');
     assert.equal(cellData.scope, 'row', 'Extracts scope');
     assert.equal(cellData.celltype, 'td', 'Extracts celltype');
     assert.equal(cellData.halign, 'left', 'Extracts halign');
     assert.equal(cellData.valign, 'middle', 'Extracts valign');
     assert.equal(cellData.width, '20', 'Extracts width');
+    assert.equal(cellData.height, '30', 'Extracts height');
 
     assert.equal(cellData.backgroundcolor, '#333333', 'Extracts background-color');
     assert.equal(cellData.bordercolor, '#D91111', 'Extracts border-color');
@@ -61,13 +62,14 @@ describe('browser.tinymce.plugins.table.HelpersTest', () => {
     );
     const elements = UiFinder.findAllIn(TinyDom.body(editor), '.foo') as [ SugarElement<HTMLTableColElement>, SugarElement<HTMLTableCellElement> ];
     const cellData = Helpers.extractDataFromCellElement(editor, elements[1].dom, true, Optional.some(elements[0].dom));
-    assert.hasAllKeys(cellData, [ 'class', 'scope', 'celltype', 'halign', 'valign', 'width', 'backgroundcolor', 'bordercolor', 'borderstyle', 'borderwidth' ]);
+    assert.hasAllKeys(cellData, [ 'class', 'scope', 'celltype', 'halign', 'valign', 'width', 'height', 'backgroundcolor', 'bordercolor', 'borderstyle', 'borderwidth' ]);
     assert.equal(cellData.class, 'foo', 'Extracts class');
     assert.equal(cellData.scope, 'row', 'Extracts scope');
     assert.equal(cellData.celltype, 'td', 'Extracts celltype');
     assert.equal(cellData.halign, 'left', 'Extracts halign');
     assert.equal(cellData.valign, 'middle', 'Extracts valign');
     assert.equal(cellData.width, '20', 'Does Not Extracts width');
+    assert.equal(cellData.height, '30', 'Extracts height');
 
     assert.equal(cellData.backgroundcolor, '#333333', 'Extracts background-color');
     assert.equal(cellData.bordercolor, '#D91111', 'Extracts border-color');
@@ -89,8 +91,9 @@ describe('browser.tinymce.plugins.table.HelpersTest', () => {
     );
     const td = UiFinder.findIn<HTMLTableCellElement>(TinyDom.body(editor), 'td.foo').getOrDie();
     const cellData = Helpers.extractDataFromCellElement(editor, td.dom, true, Optional.none());
-    assert.hasAllKeys(cellData, [ 'class', 'scope', 'celltype', 'halign', 'valign', 'width', 'backgroundcolor', 'bordercolor', 'borderstyle', 'borderwidth' ]);
+    assert.hasAllKeys(cellData, [ 'class', 'scope', 'celltype', 'halign', 'valign', 'width', 'height', 'backgroundcolor', 'bordercolor', 'borderstyle', 'borderwidth' ]);
     assert.equal(cellData.width, '20px', 'Extracts width from style');
+    assert.equal(cellData.height, '30px', 'Extracts height from row');
     assert.equal(cellData.class, 'foo', 'Extracts class');
     assert.equal(cellData.celltype, 'td', 'Extracts celltype');
 
@@ -120,8 +123,9 @@ describe('browser.tinymce.plugins.table.HelpersTest', () => {
     );
     const elements = UiFinder.findAllIn(TinyDom.body(editor), '.foo') as [ SugarElement<HTMLTableColElement>, SugarElement<HTMLTableCellElement> ];
     const cellData = Helpers.extractDataFromCellElement(editor, elements[1].dom, true, Optional.some(elements[0].dom));
-    assert.hasAllKeys(cellData, [ 'class', 'scope', 'celltype', 'halign', 'valign', 'width', 'backgroundcolor', 'bordercolor', 'borderstyle', 'borderwidth' ]);
+    assert.hasAllKeys(cellData, [ 'class', 'scope', 'celltype', 'halign', 'valign', 'width', 'height', 'backgroundcolor', 'bordercolor', 'borderstyle', 'borderwidth' ]);
     assert.equal(cellData.width, '20px', 'Extracts width from style');
+    assert.equal(cellData.height, '30px', 'Extracts height from row');
     assert.equal(cellData.backgroundcolor, '#333333', 'Extracts background-color from rgb');
     assert.equal(cellData.bordercolor, '#D91111', 'Extracts border-color from rgb');
     assert.equal(cellData.class, 'foo', 'Extracts class');
@@ -181,7 +185,6 @@ describe('browser.tinymce.plugins.table.HelpersTest', () => {
     );
     const tr = UiFinder.findIn<HTMLTableRowElement>(TinyDom.body(editor), 'tr.foo').getOrDie();
     const rowData = Helpers.extractDataFromRowElement(editor, tr.dom, true);
-    assert.equal(rowData.height, '30px', 'Extracts height');
     assert.equal(rowData.class, 'foo', 'Extracts class');
     assert.equal(rowData.align, 'left', 'Extracts align');
     assert.equal(rowData.type, 'body', 'Extracts type');
