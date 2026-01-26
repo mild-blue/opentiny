@@ -114,6 +114,11 @@ const register = (editor: Editor): void => {
     default: ''
   });
 
+  registerOption('document_content_root_class', {
+    processor: 'string',
+    default: 'mce-content-body'
+  });
+
   registerOption('content_security_policy', {
     processor: 'string',
     default: ''
@@ -889,6 +894,7 @@ const getDocType = option('doctype');
 const getDocumentBaseUrl = option('document_base_url');
 const getBodyId = option('body_id');
 const getBodyClass = option('body_class');
+const getDocumentContentRootClass = option('document_content_root_class');
 const getContentSecurityPolicy = option('content_security_policy');
 const shouldPutBrInPre = option('br_in_pre');
 const getForcedRootBlock = option('forced_root_block');
@@ -1001,6 +1007,7 @@ export {
   getDocumentBaseUrl,
   getBodyId,
   getBodyClass,
+  getDocumentContentRootClass,
   getContentSecurityPolicy,
   shouldPutBrInPre,
   getForcedRootBlock,
