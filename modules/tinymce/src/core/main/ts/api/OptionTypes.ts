@@ -96,6 +96,7 @@ interface BaseEditorOptions {
   deprecation_warnings?: boolean;
   directionality?: 'ltr' | 'rtl';
   doctype?: string;
+  document_content_root_class?: string;
   document_base_url?: string;
   draggable_modal?: boolean;
   editable_class?: string;
@@ -296,6 +297,7 @@ export interface EditorOptions extends NormalizedEditorOptions {
   custom_colors: boolean;
   default_font_stack: string[];
   document_base_url: string;
+  document_content_root_class: string;
   init_content_sync: boolean;
   draggable_modal: boolean;
   editable_class: string;

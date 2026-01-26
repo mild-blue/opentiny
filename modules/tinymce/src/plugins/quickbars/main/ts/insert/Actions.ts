@@ -1,8 +1,14 @@
 import { Id } from '@ephox/katamari';
 
 import Editor from 'tinymce/core/api/Editor';
+import * as Options from 'tinymce/core/api/Options';
 
 const defaultMaxImageWidthPx = 300;
+
+const getContentRootSelector = (editor: Editor): string => {
+  const contentRootClass = Options.getDocumentContentRootClass(editor);
+  return contentRootClass.startsWith('.') ? contentRootClass : `.${contentRootClass}`;
+};
 
 const insertTable = (editor: Editor, columns: number, rows: number): void => {
   editor.execCommand('mceInsertTable', false, { rows, columns });
@@ -17,8 +23,9 @@ const insertBlob = (editor: Editor, base64: string, blob: Blob): void => {
   img.src = blobInfo.blobUri();
 
   img.onload = () => {
-    const contentBodyElement = editor.dom.select('.mce-content-body')[0];
-    const maxImageWidth = contentBodyElement ? parseInt(window.getComputedStyle(contentBodyElement).width) : defaultMaxImageWidthPx;
+    const contentRootElement = editor.dom.select(getContentRootSelector(editor))[0];
+    const computedStyles = contentRootElement ? window.getComputedStyle(contentRootElement) : null;
+    const maxImageWidth = computedStyles ? parseInt(computedStyles.width) - parseInt(computedStyles.paddingLeft) - parseInt(computedStyles.paddingRight) : defaultMaxImageWidthPx;
 
     editor.insertContent(editor.dom.createHTML('img', { src: blobInfo.blobUri(), width: `${Math.min(img.naturalWidth, maxImageWidth)}px`}));
   };
