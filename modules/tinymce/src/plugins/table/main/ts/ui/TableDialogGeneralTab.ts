@@ -47,12 +47,6 @@ const getItems = (editor: Editor, classes: Dialog.ListBoxItemSpec[], insertNewTa
       tooltip: 'Inner text padding in cells, e.g., 0px 5px (where 0px is vertical padding, and 5px is horizontal padding).'
     },
     {
-      type: 'input',
-      name: 'border',
-      label: 'Border width',
-      tooltip: 'Width of the border for the entire table and individual cells.'
-    },
-    {
       name: 'backgroundcolor',
       type: 'colorinput',
       label: 'Background color',

@@ -21,6 +21,7 @@ const getBorderColorTooltip = (dialogName: DialogName): string => {
 const getBorderWidthTooltip = (dialogName: DialogName): string | undefined => {
   switch (dialogName) {
     case 'table':
+      return 'Width of the border for the entire table and individual cells.';
     case 'row':
       return undefined;
     case 'cell':
@@ -53,13 +54,13 @@ const getAdvancedTab = (editor: Editor, dialogName: DialogName): Dialog.TabSpec 
   ];
 
   const borderWidth: Dialog.InputSpec = {
-    name: 'borderwidth',
+    name: dialogName === 'cell' ? 'borderwidth' : 'border',
     type: 'input',
     label: 'Border width',
     tooltip: getBorderWidthTooltip(dialogName)
   };
 
-  const items = dialogName === 'cell' ? ([ borderWidth ] as Dialog.BodyComponentSpec[]).concat(advTabItems) : advTabItems;
+  const items = dialogName === 'cell' || dialogName === 'table' ? ([ borderWidth ] as Dialog.BodyComponentSpec[]).concat(advTabItems) : advTabItems;
 
   return {
     title: 'Border',

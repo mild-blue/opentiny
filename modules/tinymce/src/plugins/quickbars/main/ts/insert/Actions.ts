@@ -1,12 +1,10 @@
 import { Id } from '@ephox/katamari';
 
 import Editor from 'tinymce/core/api/Editor';
-import * as Options from 'tinymce/core/api/Options';
-
 const defaultMaxImageWidthPx = 300;
 
 const getContentRootSelector = (editor: Editor): string => {
-  const contentRootClass = Options.getDocumentContentRootClass(editor);
+  const contentRootClass = editor.options.get('document_content_root_class');
   return contentRootClass.startsWith('.') ? contentRootClass : `.${contentRootClass}`;
 };
 
