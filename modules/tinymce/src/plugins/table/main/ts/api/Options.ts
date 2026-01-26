@@ -11,7 +11,7 @@ const defaultTableToolbar = 'tableprops tabledelete | tableinsertrowbefore table
 
 const defaultTableCellInputs = 'width height celltype scope halign valign backgroundcolor class';
 const defaultTableRowInputs = 'type align backgroundcolor class';
-const defaultTableInputs = 'width height cellspacing cellpadding border backgroundcolor caption align class';
+const defaultTableInputs = 'width height cellspacing cellpadding backgroundcolor caption align class';
 
 const defaultCellBorderWidths = Arr.range(5, (i) => {
   const size = `${i + 1}px`;
