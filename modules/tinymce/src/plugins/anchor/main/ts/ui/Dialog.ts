@@ -6,7 +6,7 @@ import I18n from "tinymce/core/api/util/I18n";
 const insertAnchor = (editor: Editor, newId: string): boolean => {
   if (!Anchor.isValidId(newId)) {
     editor.windowManager.alert(
-      'ID should start with a letter, followed only by letters, numbers, dashes, dots, colons or underscores.'
+      'ID should start with a letter, followed only by letters, numbers, dashes or underscores.'
     );
     return false;
   } else {
