@@ -428,6 +428,101 @@ const getMenus = (editor: Editor): Record<string, { title: string; items: string
   return Obj.map(menu, (menu) => ({ ...menu, items: menu.items }));
 };
 
+const filterContextMenu = (menu: string, allowed: string[]): string => {
+  if (allowed.length === 0) {
+    return '';
+  }
+
+  const allowedSet = new Set(allowed);
+  const filteredGroups = menu.split('|')
+    .map((group) => group.trim())
+    .map((group) => group.length === 0 ? [] : group.split(/\s+/).filter((item) => allowedSet.has(item)))
+    .filter((items) => items.length > 0)
+    .map((items) => items.join(' '));
+
+  return filteredGroups.join(' | ');
+};
+
+const flattenContextMenu = (menu: string, replacements: Record<string, string>): string => {
+  const groups = menu.split('|')
+    .map((group) => group.trim())
+    .filter((group) => group.length > 0);
+
+  const flattened: string[] = [];
+  const addGroup = (items: string[]) => {
+    if (items.length > 0) {
+      flattened.push(items.join(' '));
+    }
+  };
+
+  Arr.each(groups, (group) => {
+    const tokens = group.split(/\s+/).filter((token) => token.length > 0);
+    let current: string[] = [];
+
+    Arr.each(tokens, (token) => {
+      const replacement = replacements[token];
+      if (replacement === undefined) {
+        current.push(token);
+      } else if (replacement.length === 0) {
+        return;
+      } else {
+        const replacementGroups = replacement.split('|')
+          .map((repGroup) => repGroup.trim())
+          .filter((repGroup) => repGroup.length > 0);
+
+        if (replacementGroups.length === 1) {
+          current = current.concat(replacementGroups[0].split(/\s+/).filter((item) => item.length > 0));
+        } else {
+          addGroup(current);
+          current = [];
+          Arr.each(replacementGroups, (repGroup) => {
+            addGroup(repGroup.split(/\s+/).filter((item) => item.length > 0));
+          });
+        }
+      }
+    });
+
+    addGroup(current);
+  });
+
+  return flattened.join(' | ');
+};
+
+const getFilteredTableMenuItems = (editor: Editor, menu: string): string => {
+  if (!editor.options.isRegistered('table_contextmenu')) {
+    return menu;
+  }
+
+  const isTableContextMenuSet = editor.options.isSet('table_contextmenu');
+  const contextItems = editor.options.get<string[]>('table_contextmenu') ?? [];
+  const tableContextMenu = contextItems.length > 0 ? [ 'inserttable', ...contextItems ] : [];
+  const filteredMenu = isTableContextMenuSet ? tableContextMenu.join(' ') : menu;
+
+  if (!editor.options.get('table_contextmenu_flatten') || filteredMenu.length === 0) {
+    return filteredMenu;
+  }
+
+  const rowMenuItems = 'tableinsertrowbefore tableinsertrowafter tabledeleterow tablerowprops | tablecutrow tablecopyrow tablepasterowbefore tablepasterowafter';
+  const columnMenuItems = 'tableinsertcolumnbefore tableinsertcolumnafter tabledeletecolumn | tablecutcolumn tablecopycolumn tablepastecolumnbefore tablepastecolumnafter';
+  const cellMenuItems = 'tablecellprops tablemergecells tablesplitcells';
+
+  const filteredRowMenuItems = editor.options.isSet('table_row_contextmenu') ?
+    filterContextMenu(rowMenuItems, editor.options.get<string[]>('table_row_contextmenu') ?? []) :
+    rowMenuItems;
+  const filteredColumnMenuItems = editor.options.isSet('table_column_contextmenu') ?
+    filterContextMenu(columnMenuItems, editor.options.get<string[]>('table_column_contextmenu') ?? []) :
+    columnMenuItems;
+  const filteredCellMenuItems = editor.options.isSet('table_cell_contextmenu') ?
+    filterContextMenu(cellMenuItems, editor.options.get<string[]>('table_cell_contextmenu') ?? []) :
+    cellMenuItems;
+
+  return flattenContextMenu(filteredMenu, {
+    cell: filteredCellMenuItems,
+    row: filteredRowMenuItems,
+    column: filteredColumnMenuItems
+  });
+};
+
 export {
   register,
   getSkinUrl,
@@ -479,5 +574,6 @@ export {
   getPasteAsText,
   getSidebarShow,
   useHelpAccessibility,
-  getDefaultFontStack
+  getDefaultFontStack,
+  getFilteredTableMenuItems
 };

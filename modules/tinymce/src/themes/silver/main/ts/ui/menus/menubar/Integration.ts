@@ -73,7 +73,8 @@ const identifyMenus = (editor: Editor, registry: MenuRegistry): MenubarItemSpec[
 
   const menus: MenubarItemSpec[] = Arr.map(validMenus, (menuName) => {
     const menuData = rawMenuData[menuName];
-    return make({ title: menuData.title, items: parseItemsString(menuData.items) }, registry, editor);
+    const items = menuName === 'table' ? parseItemsString(Options.getFilteredTableMenuItems(editor, menuData.items)) : parseItemsString(menuData.items);
+    return make({ title: menuData.title, items }, registry, editor);
   });
 
   return Arr.filter(menus, (menu) => {

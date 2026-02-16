@@ -120,12 +120,34 @@ const filterContextMenu = (menu: string, allowed: string[]): string => {
     return '';
   }
 
-  const allowedSet = new Set(allowed);
-  const filteredGroups = menu.split('|')
-    .map((group) => group.trim())
-    .map((group) => group.length === 0 ? [] : group.split(/\s+/).filter((item) => allowedSet.has(item)))
-    .filter((items) => items.length > 0)
-    .map((items) => items.join(' '));
+  const menuItems = Arr.bind(menu.split('|'), (group) =>
+    group.trim().split(/\s+/).filter((item) => item.length > 0)
+  );
+  const validItems = new Set(menuItems);
+
+  const groups: string[][] = [];
+  let current: string[] = [];
+
+  Arr.each(allowed, (item) => {
+    if (item === '|') {
+      if (current.length > 0) {
+        groups.push(current);
+        current = [];
+      } else {
+        groups.push([]);
+      }
+    } else if (validItems.has(item)) {
+      current.push(item);
+    }
+  });
+
+  if (current.length > 0) {
+    groups.push(current);
+  }
+
+  const filteredGroups = Arr.bind(groups, (group) =>
+    group.length > 0 ? [ group.join(' ') ] : []
+  );
 
   return filteredGroups.join(' | ');
 };

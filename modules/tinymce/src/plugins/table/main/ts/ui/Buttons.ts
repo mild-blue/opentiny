@@ -47,9 +47,9 @@ const getFilteredCellMenuItems = (editor: Editor): string => {
 
 const getTableMenuItems = (editor: Editor): string => {
   const menu = 'inserttable | cell row column | advtablesort | tableprops deletetable';
-  const filteredMenu = Options.isTableContextMenuSet(editor) ?
-    filterContextMenu(menu, [ 'inserttable', ...Options.getTableContextMenu(editor) ]) :
-    menu;
+  const contextItems = Options.getTableContextMenu(editor);
+  const tableContextMenu = contextItems.length > 0 ? [ 'inserttable', ...contextItems ].join(' ') : '';
+  const filteredMenu = Options.isTableContextMenuSet(editor) ? tableContextMenu : menu;
 
   if (Options.isTableContextMenuFlatten(editor) && filteredMenu.length > 0) {
     return flattenContextMenu(filteredMenu, {
