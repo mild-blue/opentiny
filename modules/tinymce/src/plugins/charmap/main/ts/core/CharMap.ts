@@ -707,6 +707,7 @@ const getDefaultCharMap = (): CharMap[] => {
         [9642, 'black small square'],
         [9643, 'white medium square'],
         [9745, 'ballot box with check'],
+        [9785, 'white frowning face'],
         [9786, 'white smiling face'],
         [9826, 'black diamond suit'],
         [9984, 'black safety scissors'],
