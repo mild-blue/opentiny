@@ -9,7 +9,7 @@ import { UserListItem, UserListValue } from '../ui/UiUtils';
 
 const defaultTableToolbar = 'tableprops tabledelete | tableinsertrowbefore tableinsertrowafter tabledeleterow | tableinsertcolbefore tableinsertcolafter tabledeletecol';
 
-const defaultTableCellInputs = 'width height celltype scope halign valign backgroundcolor class';
+const defaultTableCellInputs = 'width height celltype scope halign valign backgroundcolor crossedout class';
 const defaultTableRowInputs = 'type align backgroundcolor class';
 const defaultTableInputs = 'width height cellspacing cellpadding backgroundcolor caption align class';
 
