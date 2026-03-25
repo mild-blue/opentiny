@@ -48,6 +48,28 @@ const updateSimpleProps = (modifier: DomModifier, colModifier: DomModifier, data
   if (shouldUpdate('width')) {
     colModifier.setStyle('width', Utils.addPxSuffix(data.width));
   }
+  if (shouldUpdate('crossedout')) {
+    if (data.crossedout) {
+      modifier.setStyle(
+        'background-image',
+        'url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 1 1\' preserveAspectRatio=\'none\'><line x1=\'0\' y1=\'1\' x2=\'1\' y2=\'0\' stroke=\'%23000\' stroke-width=\'1\' vector-effect=\'non-scaling-stroke\'/></svg>")'
+      );
+      modifier.setStyle('background-repeat', 'no-repeat');
+      modifier.setStyle('background-size', '100% 100%');
+      modifier.setStyle('background-position', 'left top');
+      modifier.setStyle('background-origin', 'border-box');
+      modifier.setStyle('background-clip', 'border-box');
+      modifier.setAttrib('data-mce-crossedout', '1');
+    } else {
+      modifier.setStyle('background-image', '');
+      modifier.setStyle('background-repeat', '');
+      modifier.setStyle('background-size', '');
+      modifier.setStyle('background-position', '');
+      modifier.setStyle('background-origin', '');
+      modifier.setStyle('background-clip', '');
+      modifier.setAttrib('data-mce-crossedout', '');
+    }
+  }
 };
 
 const updateAdvancedProps = (modifier: DomModifier, data: Required<CellData>, shouldUpdate: (key: string) => boolean): void => {
@@ -79,6 +101,10 @@ const applyStyleData = (editor: Editor, cells: SelectedCell[], data: CellData, w
 
     if (Options.hasAdvancedCellTab(editor)) {
       updateAdvancedProps(modifier, data as Required<CellData>, shouldOverrideCurrentValue);
+    }
+
+    if (shouldOverrideCurrentValue('crossedout') && wasChanged('crossedout') && data.crossedout) {
+      editor.dom.setHTML(cellElm, '');
     }
 
     if (shouldOverrideCurrentValue('height')) {

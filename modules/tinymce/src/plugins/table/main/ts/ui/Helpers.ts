@@ -59,6 +59,7 @@ export type CellData = {
   readonly class: string;
   readonly halign: string;
   readonly valign: string;
+  readonly crossedout: boolean;
   readonly borderwidth?: string;
   readonly borderstyle?: string;
   readonly bordercolor?: string;
@@ -78,11 +79,11 @@ const extractAdvancedStyles = (elm: Node): AdvancedStyles => {
   };
 };
 
-const getSharedValues = <T extends Record<string, string>>(data: T[]): T => {
+const getSharedValues = <T extends Record<string, string | boolean>>(data: T[]): T => {
   // TODO surely there's a better way to do this??
   // Mutates baseData to return an object that contains only the values
   // that were the same across all objects in data
-  const baseData: Record<string, string> = data[0];
+  const baseData: Record<string, string | boolean> = data[0];
   const comparisonData = data.slice(1);
 
   Arr.each(comparisonData, (items) => {
@@ -91,7 +92,13 @@ const getSharedValues = <T extends Record<string, string>>(data: T[]): T => {
         const comparisonValue = baseData[key];
         if (comparisonValue !== '' && key === itemKey) {
           if (comparisonValue !== itemValue) {
-            baseData[key] = key === 'class' ? 'mce-no-match' : '';
+            if (key === 'class') {
+              baseData[key] = 'mce-no-match';
+            } else if (Type.isBoolean(comparisonValue)) {
+              baseData[key] = false;
+            } else {
+              baseData[key] = '';
+            }
           }
         }
       });
@@ -220,6 +227,7 @@ const extractDataFromCellElement = (editor: Editor, cell: HTMLTableCellElement, 
   const rowElm = cell.parentElement;
 
   const getStyle = (element: HTMLElement, style: string) => dom.getStyle(element, style) || dom.getAttrib(element, style);
+  const isCrossedOut = dom.getAttrib(cell, 'data-mce-crossedout') === '1';
 
   return {
     width: getStyle(colElm, 'width'),
@@ -229,6 +237,7 @@ const extractDataFromCellElement = (editor: Editor, cell: HTMLTableCellElement, 
     class: dom.getAttrib(cell, 'class', ''),
     halign: getHAlignment(editor, cell),
     valign: getVAlignment(editor, cell),
+    crossedout: isCrossedOut,
     ...(hasAdvancedCellTab ? extractAdvancedStyles(cell) : {})
   };
 };

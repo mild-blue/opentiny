@@ -84,7 +84,7 @@ export default (): void => {
     ],
     importcss_append: true,
     // init_content_sync: true,
-    height: 400,
+    height: 800,
     image_advtab: true,
     file_picker_callback: (callback, _value, meta) => {
       if (meta.fieldname === 'poster') {

@@ -36,6 +36,19 @@ const children: Dialog.BodyComponentSpec[] = [
     tooltip: 'Background color of the cell.'
   },
   {
+    type: 'label',
+    label: 'Crossed out',
+    name: 'crossedout',
+    tooltip: 'Cross out the selected cell.',
+    items: [
+      {
+        type: 'checkbox',
+        name: 'crossedout',
+        label: 'Cross out the cell'
+      }
+    ]
+  },
+  {
     name: 'celltype',
     type: 'listbox',
     label: 'Cell type',
