@@ -448,6 +448,7 @@ const contentBodyLoaded = (editor: Editor): void => {
       editor.dispatch('SetAttrib', e);
     },
     force_hex_color: Options.shouldForceHexColor(editor),
+    allow_svg_data_urls: Options.shouldAllowSvgDataUrls(editor)
   });
 
   editor.parser = createParser(editor);
