@@ -65,6 +65,7 @@ export interface DOMUtilsSettings {
   contentCssCors: boolean;
   referrerPolicy: ReferrerPolicy;
   force_hex_color: ForceHexColor;
+  allow_svg_data_urls: boolean;
 }
 
 export type Target = Node | Window;
@@ -340,6 +341,7 @@ const DOMUtils = (doc: Document, settings: Partial<DOMUtilsSettings> = {}): DOMU
     url_converter: settings.url_converter,
     url_converter_scope: settings.url_converter_scope,
     force_hex_color: settings.force_hex_color,
+    allow_svg_data_urls: settings.allow_svg_data_urls,
   }, settings.schema);
 
   const events = settings.ownEvents ? new EventUtils() : EventUtils.Event;
