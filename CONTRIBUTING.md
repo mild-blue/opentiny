@@ -135,9 +135,6 @@ Note that both names must be the entire scoped `name` of the package, not the fo
 
 ## Publishing process
 
-> The upstream TinyMCE publishing process (Lerna-driven CI publishing patch releases twice a day) does **not** apply
-> to this fork.
-
 OpenTiny is published to the public npm registry as [`opentiny`](https://www.npmjs.com/package/opentiny) by the
 [`npm-publish.yml`](.github/workflows/npm-publish.yml) GitHub Actions workflow. The process is release-driven:
 
