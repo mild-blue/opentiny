@@ -46,11 +46,27 @@ Sometimes your editor requirements can be quite unique, and you need the freedom
 
 The OpenTiny [API](https://opentiny.mild.blue/opentiny/latest/apis/tinymce.root/) is exposed to make it easier for you to write custom functionality that fits within the existing framework of OpenTiny UI components.
 
+## A note on naming
+
+You will still find `tinymce` in identifiers, file names, and APIs across the codebase (e.g. the global `tinymce`
+object, the `tinymce.min.js` bundle, `js/tinymce` build output). That is expected: OpenTiny forked TinyMCE, and
+renaming every internal occurrence is a large, gradual effort that is not worth breaking consumers over. The
+project, the npm packages ([`opentiny`](https://www.npmjs.com/package/opentiny),
+[`opentiny-react`](https://www.npmjs.com/package/opentiny-react)), and the documentation are OpenTiny; some internal
+names simply lag behind.
+
 ## Compiling and contributing
 
 For information on compiling and contributing, see: [contribution guidelines](CONTRIBUTING.md).
 
 As an open source product, we encourage and support the active development of our software.
+
+## Releasing
+
+Publishing to npm is release-driven: creating a GitHub release triggers the `npm-publish.yml` workflow, which builds
+the editor and publishes it as [`opentiny`](https://www.npmjs.com/package/opentiny), taking the version from the
+release tag. After every `opentiny` release, [opentiny-react](https://github.com/mild-blue/opentiny-react) must be
+re-released against the new version. See the [publishing process](CONTRIBUTING.md#publishing-process) for details.
 
 ## Want more information?
 

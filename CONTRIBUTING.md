@@ -135,34 +135,26 @@ Note that both names must be the entire scoped `name` of the package, not the fo
 
 ## Publishing process
 
-We have a CI process set up to publish all changed libraries as patch releases twice a day. This simply describes that process, is is not intended that it be performed manually.
+> The upstream TinyMCE publishing process (Lerna-driven CI publishing patch releases twice a day) does **not** apply
+> to this fork.
 
-### Side note: major and minor version bumps
+OpenTiny is published to the public npm registry as [`opentiny`](https://www.npmjs.com/package/opentiny) by the
+[`npm-publish.yml`](.github/workflows/npm-publish.yml) GitHub Actions workflow. The process is release-driven:
 
-> In the future these will likely be automated via the lerna-supported [conventional commit](https://conventionalcommits.org) specification, for now this is done manually.
+1. Merge your changes to `main`.
+2. Create a git tag and a GitHub release for it. Tags follow the upstream-style `6.9.x` numbering — pick the next
+   patch (or minor) version as appropriate.
+3. Creating the release triggers `npm-publish.yml`, which installs dependencies, runs `yarn build`, copies
+   `publish/package.json` into `js/tinymce`, sets the package version from the latest git tag, and publishes the
+   `js/tinymce` output to npm.
 
-In theory minor bumps can be done in the package.json by hand but for consistency we recommend using the lerna tooling for both. `yarn lerna version` is the only way to do this without breaking links between packages.
+Notes:
 
-For each changed package choose major, minor or patch as appropriate depending on the flow-on effects of this version change. Afterwards, you _must_ run the git commands below to push the version and related tags correctly.
-
-Changes to minor and major versions are such a rare occurence that this manual process will suffice until we switch to conventional commits. Unfortunately manual version changes mean the next automated build will run all repository tests, since nothing has changed, but that's probably a good idea for serious version changes anyway.
-
-### CI publish process
-
-`yarn lerna publish patch`
-
-This is configured via `lerna.json` to exclude TinyMCE. We will not be using lerna to publish TinyMCE itself as it places far greater importance on the version number than library projects.
-
-`yarn lerna publish from-package`
-
-This is run after `publish patch` to catch cases where `lerna version` was run manually for a non-patch bump. It compares the source version to the NPM registry and publishes anything that doesn't match.
-
-Lerna's publish process is configured to not `git push` in case of failure, so after a successful publish this must be done manually:
-
-```
-git push
-git push --tags
-```
+- The `version` fields committed in the repository's `package.json` files are **not** what gets published — the
+  version is injected from the release tag at publish time.
+- After publishing a new `opentiny` version, update the pinned `opentiny` dependency in
+  [opentiny-react](https://github.com/mild-blue/opentiny-react) and create a release there too, so the React wrapper
+  is published against the new editor version.
 
 ## Adding globals
 
