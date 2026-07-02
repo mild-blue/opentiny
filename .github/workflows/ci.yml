@@ -1,0 +1,62 @@
+name: CI
+
+on:
+  pull_request:
+    types: [ opened, synchronize, reopened, ready_for_review ]
+    branches:
+      - main
+  # Allow re-running the pipeline by hand from the Actions tab.
+  workflow_dispatch:
+
+# Only keep the latest run per PR/branch; cancel superseded runs to save minutes.
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  typecheck:
+    name: Type check (tsc)
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.draft == false
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+
+      - name: Build oxide icons
+        run: yarn oxide-icons-ci
+
+      - name: TypeScript build
+        run: yarn tsc
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.draft == false
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+      - name: Production build
+        run: yarn build
+
+  test:
+    name: Tests (chrome-headless)
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.draft == false
+    # Drive the headless bucket through webdriverio directly instead of an
+    # external Selenium server (see Gruntfile.js).
+    env:
+      BEDROCK_NO_SELENIUM: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: ./.github/actions/setup
+
+      - name: Report Chrome version
+        run: google-chrome --version
+
+      - name: Build for tests
+        run: yarn build
+
+      - name: Run tests
+        run: yarn test

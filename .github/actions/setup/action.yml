@@ -1,0 +1,24 @@
+name: Setup
+description: Configure Node.js, restore the yarn cache and install dependencies.
+
+runs:
+  using: composite
+  steps:
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version-file: '.nvmrc'
+
+    # No yarn.lock is committed, so we cache yarn's global cache directory
+    # (keyed on the manifests) rather than relying on setup-node's lockfile cache.
+    - name: Restore yarn cache
+      uses: actions/cache@v4
+      with:
+        path: ~/.cache/yarn
+        key: yarn-${{ runner.os }}-${{ hashFiles('package.json', 'modules/*/package.json') }}
+        restore-keys: |
+          yarn-${{ runner.os }}-
+
+    - name: Install dependencies
+      shell: bash
+      run: yarn
