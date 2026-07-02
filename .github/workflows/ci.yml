@@ -56,7 +56,7 @@ jobs:
         run: google-chrome --version
 
       - name: Build for tests
-        run: yarn ci-seq
+        run: yarn build
 
       - name: Run tests
         run: yarn test
