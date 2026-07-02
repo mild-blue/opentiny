@@ -62,7 +62,9 @@ const bedrockHeadless = (tests, browser, auto) => {
         ...bedrockDefaults,
         name: 'headless-tests',
         browser,
-        useSelenium: true,
+        // Defaults to Selenium for local/dev runs; set BEDROCK_NO_SELENIUM=1
+        // (e.g. in CI) to drive the browser directly via webdriverio instead.
+        useSelenium: process.env.BEDROCK_NO_SELENIUM !== '1',
         testfiles: testFolders(tests, auto),
 
         // we have a few tests that don't play nicely when combined together in the monorepo

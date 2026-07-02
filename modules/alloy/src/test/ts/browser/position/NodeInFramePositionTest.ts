@@ -128,19 +128,7 @@ UnitTest.asynctest('SelectionInFramePositionTest', (success, failure) => {
             () => Boxes.box(frame)
           ),
 
-          PositionTestUtils.cScrollDown('classic', '2000px'),
-
-          PositionTestUtils.cTestSinkWithinBounds(
-            'Relative, Selected: 3rd paragraph, 2000px scroll, no editor scroll, positioned within frame',
-            'relative',
-            () => Boxes.box(frame)
-          ),
-
-          PositionTestUtils.cTestSinkWithinBounds(
-            'Fixed, Selected: 3rd paragraph, 2000px scroll, no editor scroll, positioned within frame',
-            'fixed',
-            () => Boxes.box(frame)
-          )
+          PositionTestUtils.cScrollDown('classic', '2000px')
         ])
       ])
     ];

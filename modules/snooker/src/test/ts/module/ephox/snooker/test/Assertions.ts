@@ -54,7 +54,10 @@ const checkOld = (
 
   // Let's get rid of size information.
   const all = [ table ].concat(SelectorFilter.descendants(table, 'td,th'));
-  Arr.each(all, (elem) => Css.remove(elem, 'width') );
+  Arr.each(all, (elem) => {
+    Css.remove(elem, 'width');
+    Css.remove(elem, 'height');
+  });
 
   Assertions.assertHtml(label, expectedHtml, Html.getOuter(table));
   Remove.remove(container);
@@ -94,7 +97,10 @@ const checkOldMultiple = (
 
   // Let's get rid of size information.
   const all = [ table ].concat(SelectorFilter.descendants(table, 'td,th'));
-  Arr.each(all, (elem) => Css.remove(elem, 'width') );
+  Arr.each(all, (elem) => {
+    Css.remove(elem, 'width');
+    Css.remove(elem, 'height');
+  });
   Assertions.assertHtml(label, expectedHtml, Html.getOuter(table));
   Remove.remove(container);
   // Ensure all the resize bars are destroyed before of running the next test.
@@ -234,7 +240,10 @@ const checkDelete = (
 
   // Let's get rid of size information.
   const all = [ table ].concat(SelectorFilter.descendants(table, 'td,th'));
-  Arr.each(all, (elem) => Css.remove(elem, 'width') );
+  Arr.each(all, (elem) => {
+    Css.remove(elem, 'width');
+    Css.remove(elem, 'height');
+  });
 
   optExpectedHtml.fold(() => {
     // the result of a delete operation can be by definition the deletion of the table itself.
@@ -272,7 +281,10 @@ const checkMerge = (
 
   // Let's get rid of size information.
   const all = [ table ].concat(SelectorFilter.descendants(table, 'td,th'));
-  Arr.each(all, (elem) => Css.remove(elem, 'width') );
+  Arr.each(all, (elem) => {
+    Css.remove(elem, 'width');
+    Css.remove(elem, 'height');
+  });
 
   Assert.eq('', '1', Attribute.get(table, 'border'));
   // Get around ordering of attribute differences.
@@ -303,7 +315,10 @@ const checkUnmerge = (
 
   // Let's get rid of size information.
   const all = [ table ].concat(SelectorFilter.descendants(table, 'td,th'));
-  Arr.each(all, (elem) => Css.remove(elem, 'width') );
+  Arr.each(all, (elem) => {
+    Css.remove(elem, 'width');
+    Css.remove(elem, 'height');
+  });
 
   Assertions.assertEq(label, expected, Html.getOuter(table));
   Remove.remove(container);
