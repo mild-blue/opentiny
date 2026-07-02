@@ -58,5 +58,12 @@ jobs:
       - name: Build for tests
         run: yarn build
 
+      # The tinymce module is named "opentiny", so bedrock serves it at
+      # /project/opentiny, but the tests hardcode /project/tinymce. bedrock falls
+      # back to serving /project from the repo root, so a root tinymce symlink
+      # makes every /project/tinymce/... path resolve to modules/tinymce.
+      - name: Expose tinymce at repo root for test URLs
+        run: ln -sfn modules/tinymce tinymce
+
       - name: Run tests
         run: yarn test
