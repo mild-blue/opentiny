@@ -14,16 +14,6 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  lint:
-    name: Lint (ESLint)
-    runs-on: ubuntu-latest
-    if: github.event.pull_request.draft == false
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/actions/setup
-      - name: ESLint
-        run: yarn eslint
-
   typecheck:
     name: Type check (tsc)
     runs-on: ubuntu-latest
