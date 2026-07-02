@@ -42,6 +42,10 @@ jobs:
     name: Tests (chrome-headless)
     runs-on: ubuntu-latest
     if: github.event.pull_request.draft == false
+    # Drive the headless bucket through webdriverio directly instead of an
+    # external Selenium server (see Gruntfile.js).
+    env:
+      BEDROCK_NO_SELENIUM: '1'
     steps:
       - uses: actions/checkout@v4
         with:
