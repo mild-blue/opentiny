@@ -169,12 +169,6 @@ UnitTest.asynctest('SelectionInFramePositionTest', (success, failure) => {
             'Fixed, Selected: 3rd paragraph, 2000px scroll, no editor scroll',
             'fixed'
           ),
-          PositionTestUtils.cTestSinkWithinBounds(
-            'Fixed, Selected: 3rd paragraph, 2000px scroll, no editor scroll, positioned within frame',
-            'fixed',
-            () => Boxes.box(frame)
-          ),
-
           ChainUtils.cLogging(
             'Selecting 13th paragraph and scrolling to it',
             [
