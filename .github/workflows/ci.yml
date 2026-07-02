@@ -1,0 +1,68 @@
+name: CI
+
+on:
+  pull_request:
+    types: [ opened, synchronize, reopened, ready_for_review ]
+    branches:
+      - main
+  # Allow re-running the pipeline by hand from the Actions tab.
+  workflow_dispatch:
+
+# Only keep the latest run per PR/branch; cancel superseded runs to save minutes.
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    name: Lint (ESLint)
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.draft == false
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+      - name: ESLint
+        run: yarn eslint
+
+  typecheck:
+    name: Type check (tsc)
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.draft == false
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+      - name: TypeScript build
+        run: yarn tsc
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.draft == false
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+      - name: Production build
+        run: yarn build
+
+  test:
+    name: Tests (chrome-headless)
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.draft == false
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: ./.github/actions/setup
+
+      - name: Report Chrome version
+        run: google-chrome --version
+
+      - name: Build for tests
+        run: yarn ci
+
+      - name: Run tests
+        run: yarn test
