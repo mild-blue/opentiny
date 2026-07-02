@@ -5,41 +5,18 @@ on:
     types: [ opened, synchronize, reopened, ready_for_review ]
     branches:
       - main
-  # Allow re-running the pipeline by hand from the Actions tab.
-  workflow_dispatch:
 
 # Only keep the latest run per PR/branch; cancel superseded runs to save minutes.
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 jobs:
-  typecheck:
-    name: Type check (tsc)
-    runs-on: ubuntu-latest
-    if: github.event.pull_request.draft == false
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/actions/setup
-
-      - name: Build oxide icons
-        run: yarn oxide-icons-ci
-
-      - name: TypeScript build
-        run: yarn tsc
-
-  build:
-    name: Build
-    runs-on: ubuntu-latest
-    if: github.event.pull_request.draft == false
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/actions/setup
-      - name: Production build
-        run: yarn build
-
-  test:
-    name: Tests (chrome-headless)
+  ci:
+    name: Build & test
     runs-on: ubuntu-latest
     if: github.event.pull_request.draft == false
     # Drive the headless bucket through webdriverio directly instead of an
@@ -50,13 +27,30 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - uses: ./.github/actions/setup
 
-      - name: Report Chrome version
-        run: google-chrome --version
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
 
-      - name: Build for tests
+      # No yarn.lock is committed, so cache yarn's global cache directory
+      # (keyed on the manifests) rather than setup-node's lockfile cache.
+      - name: Restore yarn cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/yarn
+          key: yarn-${{ runner.os }}-${{ hashFiles('package.json', 'modules/*/package.json') }}
+          restore-keys: |
+            yarn-${{ runner.os }}-
+
+      - name: Install dependencies
+        run: yarn
+
+      - name: Build
         run: yarn build
+
+      - name: Type check
+        run: yarn tsc
 
       # The tinymce module is named "opentiny", so bedrock serves it at
       # /project/opentiny, but the tests hardcode /project/tinymce. bedrock falls
@@ -64,6 +58,9 @@ jobs:
       # makes every /project/tinymce/... path resolve to modules/tinymce.
       - name: Expose tinymce at repo root for test URLs
         run: ln -sfn modules/tinymce tinymce
+
+      - name: Report Chrome version
+        run: google-chrome --version
 
       - name: Run tests
         run: yarn test
