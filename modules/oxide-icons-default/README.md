@@ -1,4 +1,4 @@
-# Default icons for TinyMCE
+# Default icons for OpenTiny
 
 This project contains the default icons for TinyMCE 7. Icons is loaded into the editor using a icon pack file. You can use this project as a basis for building your own icon packs. For instructions on how to make your own icon pack, see the [TinyMCE 7 documentation](https://www.tiny.cloud/docs/tinymce/7/creating-an-icon-pack/)
 

@@ -2,24 +2,8 @@
 
 ## Reporting a Vulnerability
 
-At Tiny, we take security seriously and will investigate all potential security risk notifications with urgency.
+If you discover a security vulnerability in OpenTiny, please report it privately
+using GitHub's ["Report a vulnerability"](https://github.com/mild-blue/opentiny/security/advisories/new)
+form rather than opening a public issue.
 
-To report a potential security vulnerability, contact our Security team at <infosec@tiny.cloud>.
-
-In line with the United States National Infrastructure Advisory Council (NIAC) [Vulnerability Disclosure Framework](https://dhs.gov/xlibrary/assets/vdwgreport.pdf), Tiny requests community members reporting potential security vulnerabilities maintain the confidentiality of their report and discovery until Tiny has investigated the issue and taken action to fix it.
-
-Tiny will communicate with you regarding the status of your report and will, with your permission, publicly attribute the security issue’s discovery to you after the issue has been fixed and disclosed.
-
-For details on how to report security issues to Tiny, refer to the [Reporting TinyMCE security issues documentation](https://tiny.cloud/docs/tinymce/6/security/#reportingtinymcesecurityissues).
-
-## Supported Versions
-
-Tiny Technologies, Inc. supports the following community versions of TinyMCE:
-
-| Version | Supported                      |
-|---------| ------------------------------ |
-| 6.8.x   | &#10004;                       |
-| 5.10.x  | &#10006;                       |
-| Other   | &#10006;                       |
-
-For supported enterprise versions of TinyMCE, refer to the enterprise [Supported TinyMCE versions documentation](https://www.tiny.cloud/docs/tinymce/6/support/#supportedversionsandplatforms).
+We will acknowledge your report and work with you on a fix and disclosure timeline.

@@ -31,13 +31,13 @@ Runs all tests manually in a browser.
 Runs all tests through selenium browsers supported are chrome, firefox, ie, MicrosoftEdge, and chrome-headless.
 
 `grunt webpack:core`
-Builds the demo js files for the core part of tinymce this is required to get the core demos working.
+Builds the demo js files for the core part of OpenTiny this is required to get the core demos working.
 
 `grunt webpack:plugins`
-Builds the demo js files for the plugins part of tinymce this is required to get the plugins demos working.
+Builds the demo js files for the plugins part of OpenTiny this is required to get the plugins demos working.
 
 `grunt webpack:themes`
-Builds the demo js files for the themes part of tinymce this is required to get the themes demos working.
+Builds the demo js files for the themes part of OpenTiny this is required to get the themes demos working.
 
 `grunt webpack:<name>-plugin`
 Builds the demo js files for the specific plugin.
@@ -56,7 +56,7 @@ Minifies the core, adds the silver theme and adds the table and paste plugin int
 
 Contributing to the OpenTiny project
 ------------------------------------
-TinyMCE is an open source software project and we encourage developers to contribute patches and code to be included in the main package of TinyMCE.
+OpenTiny is an open source software project and we encourage developers to contribute patches and code to be included in the main package of OpenTiny.
 
 __Basic Rules__
 
