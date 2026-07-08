@@ -1,6 +1,6 @@
-# The big Tiny monorepo
+# The big OpenTiny monorepo
 
-Welcome to the TinyMCE monorepo. For TinyMCE itself look to the [modules/tinymce](modules/tinymce) folder.
+Welcome to the OpenTiny monorepo. For OpenTiny itself look to the [modules/tinymce](modules/tinymce) folder.
 
 ## Some background
 
@@ -15,7 +15,7 @@ https://www.typescriptlang.org/docs/handbook/project-references.html
 
 Most monorepos use a `packages` folder to hold the included projects, but we have chosen `modules` instead. There are few reasons for this:
 
-* These projects are not extra packages of TinyMCE, they are self contained libraries used as module dependencies for the editor.
+* These projects are not extra packages of OpenTiny, they are self contained libraries used as module dependencies for the editor.
 * Enough examples exist of projects not using `packages` that we don't think it will be difficult to understand
 * It tab completes better (`packages` overlaps with `package.json`)
 
@@ -47,16 +47,16 @@ This performs compilation steps which webpack requires but are usually once-off.
 
 To build the editor in development, use `yarn tinymce-grunt`. This will output to the `modules/tinymce/js` folder (`build` is effectively `dev` followed by `tinymce-grunt`).
 
-Task names can be included, for example `yarn tinymce-grunt bundle` will execute the bundle task. More information on TinyMCE grunt tasks is available in the [TinyMCE readme](modules/tinymce/README.md).
+Task names can be included, for example `yarn tinymce-grunt bundle` will execute the bundle task. More information on the `tinymce-grunt` tasks is available in the [OpenTiny readme](modules/tinymce/README.md).
 
 ## Development scripts
 
-There are many top-level helper scripts for TinyMCE and Oxide (the default skin) defined in `package.json`.
+There are many top-level helper scripts for OpenTiny and Oxide (the default skin) defined in `package.json`.
 
-### TinyMCE
+### OpenTiny
 
 `yarn start`
-This boots the TinyMCE webpack dev server at http://localhost:3000. With this running changes to _any_ `.ts` source file in the monorepo (excluding tests) should be reflected in WebPack within a few seconds.
+This boots the OpenTiny webpack dev server at http://localhost:3000. With this running changes to _any_ `.ts` source file in the monorepo (excluding tests) should be reflected in WebPack within a few seconds.
 
 `yarn watch`
 runs `tsc -b -w` for those times when you don't need to iterate in the browser.
@@ -68,7 +68,7 @@ an alias to `tsc -b` just in case you forget
 runs `eslint` across the entire repository with the rule set that is required to pass in CI. Use `yarn eslint --fix` to automatically fix minor problems. The [ESLint vscode plugin](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) can be used to apply lint fixes on save.
 
 `yarn tinymce-grunt`
-easy access to the TinyMCE grunt commands from the root folder.
+easy access to the `tinymce-grunt` commands from the root folder.
 
 ### Oxide
 
@@ -155,7 +155,7 @@ Notes:
 
 ## Adding globals
 
-TinyMCE puts a `tinymce` object in the global namespace, and has a tree of objects down from there.
+OpenTiny puts a `tinymce` object in the global namespace, and has a tree of objects down from there.
 If you wish to add to this, you need to do the following:
 
 1. Ensure your module is located under `modules/tinymce/src/core/main/ts/api`

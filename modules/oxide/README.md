@@ -1,4 +1,4 @@
-# TinyMCE Oxide skin tools
+# OpenTiny Oxide skin tools
 This project contains the default skins as well as tools and files needed to build your own skin for TinyMCE 7.
 
 Visit the [TinyMCE 7 documentation](https://www.tiny.cloud/docs/tinymce/7/creating-a-skin/) for instructions on how to create and build skins for TinyMCE.
