@@ -257,16 +257,17 @@ const addMenuItems = (editor: Editor, selectionTargets: SelectionTargets): void 
       // context menu fires before node change, so check the selection here first
       selectionTargets.resetTargets();
       // ignoring element since it's monitored elsewhere
-      const defaultMenu = selectionTargets.targets().fold(Fun.constant(''), (targets) => {
-        // If clicking in a caption, then we shouldn't show the cell/row/column options
-        if (SugarNode.name(targets.element) === 'caption') {
+      // Outside of a table return an empty menu (even when table_contextmenu is set) so the table items don't replace the native context menu
+      const filteredMenu = selectionTargets.targets().fold(Fun.constant(''), (targets) => {
+        if (Options.isTableContextMenuSet(editor)) {
+          return Options.getTableContextMenu(editor).join(' ');
+        } else if (SugarNode.name(targets.element) === 'caption') {
+          // If clicking in a caption, then we shouldn't show the cell/row/column options
           return 'tableprops deletetable';
         } else {
           return 'cell row column | advtablesort | tableprops deletetable';
         }
       });
-      const tableContextMenu = Options.getTableContextMenu(editor).join(' ');
-      const filteredMenu = Options.isTableContextMenuSet(editor) ? tableContextMenu : defaultMenu;
       if (Options.isTableContextMenuFlatten(editor) && filteredMenu.length > 0) {
         return flattenContextMenu(filteredMenu, {
           cell: filteredCellMenuItems,
