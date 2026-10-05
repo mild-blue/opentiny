@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Plugin: checkbox Demo Page</title>
+  </head>
+
+  <body>
+    <h2>Plugin: checkbox Demo Page</h2>
+
+    <div id="ephox-ui">
+      <textarea cols="30" rows="10" class="tinymce">
+        <p>Click a box to toggle it: <span class="mce-checkbox">☐</span>&nbsp;Unchecked &nbsp; <span class="mce-checkbox">☒</span>&nbsp;Checked</p>
+        <p>Bare glyphs (as pasted from Word) are wrapped on load: ☐ one, ☑ two, ☒ three. Other glyphs are left alone: ◻</p>
+        <table style="border-collapse: collapse; width: 100%;" border="1">
+          <tbody>
+            <tr>
+              <td>Process</td>
+              <td>☐ Preanalytická &nbsp; ☐ Analytická &nbsp; ☐ Postanalytická &nbsp; ☐ Podpůrné procesy</td>
+            </tr>
+          </tbody>
+        </table>
+      </textarea>
+
+      <h3>Non-editable root (editable_root: false, editable_class: 'editable')</h3>
+      <div class="tinymce">
+        <p>Read-only form text, these do not toggle: ☐ A &nbsp; ☒ B</p>
+        <div class="editable"><p>Editable region, these toggle: ☐ C &nbsp; ☒ D</p></div>
+      </div>
+    </div>
+
+    <script src="../../../../../js/tinymce/tinymce.js"></script>
+    <script src="../../../../../scratch/demos/plugins/checkbox/demo.js"></script>
+  </body>
+</html>

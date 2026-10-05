@@ -1,0 +1,13 @@
+//
+// Checkbox
+//
+
+.mce-checkbox {
+  // Not every default font has the ballot box glyphs (U+2610-U+2612), so prefer fonts that do
+  font-family: "Segoe UI Symbol", "Apple Symbols", "DejaVu Sans", "Noto Sans Symbols 2", sans-serif;
+}
+
+// Read-only mode and non-editable roots switch contenteditable off, and then clicks don't toggle
+[contenteditable="true"] .mce-checkbox {
+  cursor: pointer;
+}
