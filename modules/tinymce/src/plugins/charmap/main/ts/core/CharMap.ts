@@ -19,14 +19,13 @@ export interface CharMap {
 const getDefaultCharMap = (): CharMap[] => {
   return [
     {
-      // First, for filling in forms. The checkbox plugin writes ballot box and ballot box with x, only reads ballot
-      // box with check, and leaves the look-alike white square as plain text.
+      // First, for filling in forms. The checkbox plugin writes ballot box and ballot box with x, and only reads
+      // ballot box with check.
       name: 'Checkboxes',
       characters: [
         [9744, 'ballot box'],
         [9746, 'ballot box with x'],
-        [9745, 'ballot box with check'],
-        [9633, 'white square']
+        [9745, 'ballot box with check']
       ]
     },
     {
@@ -714,6 +713,7 @@ const getDefaultCharMap = (): CharMap[] => {
     {
       name: 'Other',
       characters: [
+        [9633, 'white square'],
         [9642, 'black small square'],
         [9643, 'white medium square'],
         [9785, 'white frowning face'],
