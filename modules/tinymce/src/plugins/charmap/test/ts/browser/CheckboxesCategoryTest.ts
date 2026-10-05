@@ -26,14 +26,13 @@ describe('browser.tinymce.plugins.charmap.CheckboxesCategoryTest', () => {
     await Waiter.pTryUntil(`Wait for the ${name} tab`, () => assertValues(getItemValues()));
   };
 
-  it('The checkbox glyphs have their own first category and come first in All', async () => {
+  it('The checkbox glyphs have their own category, below Brackets', async () => {
     const editor = hook.editor();
     TinyUiActions.clickOnToolbar(editor, 'button[aria-label="Special character"]');
     await TinyUiActions.pWaitForDialog(editor);
 
     const tabs = Arr.map(UiFinder.findAllIn(SugarBody.body(), '[role="dialog"] .tox-dialog__body-nav-item'), TextContent.get);
-    assert.deepEqual(tabs.slice(0, 3), [ 'All', 'Checkboxes', 'Currency' ]);
-    assert.deepEqual(getItemValues().slice(0, 3), checkboxGlyphs, 'All starts with the checkbox glyphs');
+    assert.deepEqual(tabs.slice(-3), [ 'Brackets', 'Checkboxes', 'Other' ]);
 
     await pOpenTab(editor, 'Checkboxes', (values) => assert.deepEqual(values, checkboxGlyphs));
     // The look-alike white square is not a checkbox, so it stays in Other

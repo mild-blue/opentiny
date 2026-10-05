@@ -19,16 +19,6 @@ export interface CharMap {
 const getDefaultCharMap = (): CharMap[] => {
   return [
     {
-      // First, for filling in forms. The checkbox plugin writes ballot box and ballot box with x, and only reads
-      // ballot box with check.
-      name: 'Checkboxes',
-      characters: [
-        [9744, 'ballot box'],
-        [9746, 'ballot box with x'],
-        [9745, 'ballot box with check']
-      ]
-    },
-    {
       name: 'Currency',
       characters: [
         [36, 'dollar sign'],
@@ -708,6 +698,15 @@ const getDefaultCharMap = (): CharMap[] => {
         [125, 'right curly bracket'],
         [12296, 'left angle bracket'],
         [12297, 'right angle bracket'],
+      ]
+    },
+    {
+      // The checkbox plugin writes ballot box and ballot box with x, and only reads ballot box with check
+      name: 'Checkboxes',
+      characters: [
+        [9744, 'ballot box'],
+        [9746, 'ballot box with x'],
+        [9745, 'ballot box with check']
       ]
     },
     {
