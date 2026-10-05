@@ -6,39 +6,55 @@ import * as Actions from './Actions';
 import * as Checkbox from './Checkbox';
 
 const isCheckboxElement = (editor: Editor, node: Node): node is HTMLElement =>
-  editor.dom.is(node, `span.${Checkbox.checkboxClass}`) && Checkbox.isGlyph(node.textContent ?? '');
+  editor.dom.is(node, `span.${Checkbox.checkboxClass}`) && node.childNodes.length === 1 &&
+  node.firstChild?.nodeType === Node.TEXT_NODE && Checkbox.isGlyph(node.textContent ?? '');
 
 const getToggleableCheckbox = (editor: Editor, target: EventTarget | null): Optional<HTMLElement> =>
   Optional.from(target as Node | null)
     .filter((node): node is HTMLElement => isCheckboxElement(editor, node) && editor.getBody().contains(node))
     .filter((checkbox) => !editor.mode.isReadOnly() && editor.dom.isEditable(checkbox.parentNode));
 
+const hasModifierKey = (e: MouseEvent): boolean =>
+  e.ctrlKey || e.metaKey || e.shiftKey || e.altKey;
+
 const setup = (editor: Editor): void => {
-  // Bound on PreInit and prepended so these run before the core contenteditable="false" handlers
-  // (SelectionOverrides), which would otherwise select the span or show a fake caret next to it.
-  editor.on('PreInit', () => {
-    editor.on('mousedown', (e) => {
-      if (e.button === 0) {
-        getToggleableCheckbox(editor, e.target).each(() => {
-          // Keep the caret where it was
-          e.preventDefault();
-          e.stopImmediatePropagation();
-        });
-      }
-    }, true);
+  // The checkbox being clicked or tapped. Only the pointer selection of it is suppressed,
+  // keyboard navigation can still select it.
+  let pointerCheckbox: HTMLElement | null = null;
 
-    // Not prevented, so the browser still synthesizes the click that toggles the checkbox
-    editor.on('tap', (e) => {
-      getToggleableCheckbox(editor, e.target).each(() => e.stopImmediatePropagation());
-    }, true);
+  editor.on('mousedown touchstart', (e) => {
+    pointerCheckbox = getToggleableCheckbox(editor, e.target).getOrNull();
+  }, true);
 
-    editor.on('click', (e) => {
+  editor.on('keydown', () => {
+    pointerCheckbox = null;
+  });
+
+  // Core selects a clicked contenteditable="false" element. Don't, so the caret stays where it was.
+  editor.on('BeforeObjectSelected', (e) => {
+    if (e.target === pointerCheckbox) {
+      e.preventDefault();
+    }
+  });
+
+  // Core's own click handler then focuses the editor, so undo applies to this editor
+  editor.on('click', (e) => {
+    pointerCheckbox = null;
+    if (!hasModifierKey(e)) {
       getToggleableCheckbox(editor, e.target).each((checkbox) => {
         e.preventDefault();
-        e.stopImmediatePropagation();
         Actions.toggleCheckbox(editor, checkbox);
       });
-    }, true);
+    }
+  });
+
+  // Core cancels touchend on a contenteditable="false" element, so no click follows a tap
+  editor.on('tap', (e) => {
+    pointerCheckbox = null;
+    getToggleableCheckbox(editor, e.target).each((checkbox) => {
+      e.preventDefault();
+      Actions.toggleCheckbox(editor, checkbox);
+    });
   });
 };
 

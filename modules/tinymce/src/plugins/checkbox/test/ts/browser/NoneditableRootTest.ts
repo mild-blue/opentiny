@@ -53,7 +53,7 @@ describe('browser.tinymce.plugins.checkbox.NoneditableRootTest', () => {
       TinyUiActions.clickOnMenu(editor, 'button:contains("Insert")');
       await TinyUiActions.pWaitForUi(editor, '[role="menuitem"][aria-label="Checkbox"][aria-disabled="false"]');
       TinyUiActions.clickOnUi(editor, '[role="menuitem"][aria-label="Checkbox"]');
-      TinyAssertions.assertContent(editor, `<div>Noneditable content</div>\n<div contenteditable="true">Editable${box(unchecked)}&nbsp; content</div>`);
+      TinyAssertions.assertContent(editor, `<div>Noneditable content</div>\n<div contenteditable="true">Editable${box(unchecked)} content</div>`);
     });
   });
 });

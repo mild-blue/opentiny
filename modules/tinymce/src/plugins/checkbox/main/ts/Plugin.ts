@@ -11,5 +11,12 @@ export default (): void => {
     Buttons.register(editor);
     FilterContent.setup(editor);
     Click.setup(editor);
+
+    return {
+      getMetadata: () => ({
+        name: 'Checkbox',
+        url: 'https://github.com/mild-blue/opentiny/tree/main/modules/tinymce/src/plugins/checkbox'
+      })
+    };
   });
 };

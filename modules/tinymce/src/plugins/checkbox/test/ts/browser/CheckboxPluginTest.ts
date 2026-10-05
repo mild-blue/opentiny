@@ -37,6 +37,14 @@ describe('browser.tinymce.plugins.checkbox.CheckboxPluginTest', () => {
     UiFinder.exists(TinyDom.body(editor), 'span.mce-checkbox[contenteditable="false"]');
   });
 
+  it('Does not add a space after an inserted checkbox when one follows already', () => {
+    const editor = hook.editor();
+    editor.setContent('<p>a b</p>');
+    TinySelections.setCursor(editor, [ 0, 0 ], 1);
+    editor.execCommand('mceInsertCheckbox');
+    TinyAssertions.assertContent(editor, `<p>a${box(unchecked)} b</p>`);
+  });
+
   it('Insert a checkbox with the mceInsertCheckbox command, in one undo level', () => {
     const editor = hook.editor();
     editor.resetContent('<p>a</p>');
@@ -61,6 +69,34 @@ describe('browser.tinymce.plugins.checkbox.CheckboxPluginTest', () => {
     TinyAssertions.assertContent(editor, `<p>${box(unchecked)} a</p>\n<p>text</p>`);
     TinyAssertions.assertCursor(editor, [ 1, 0 ], 3);
     UiFinder.notExists(TinyDom.body(editor), '[data-mce-selected]');
+  });
+
+  it('A click still reaches other click handlers and focuses the editor', () => {
+    const editor = hook.editor();
+    editor.setContent(`<p>${box(unchecked)} a</p>`);
+    const input = document.createElement('input');
+    document.body.appendChild(input);
+    input.focus();
+    let clicks = 0;
+    const onClick = () => clicks++;
+    editor.on('click', onClick);
+    clickCheckbox(editor);
+    editor.off('click', onClick);
+    input.remove();
+    assert.equal(clicks, 1);
+    assert.isTrue(editor.hasFocus());
+    TinyAssertions.assertContent(editor, `<p>${box(checked)} a</p>`);
+  });
+
+  it('A click with a modifier key does not toggle', () => {
+    const editor = hook.editor();
+    editor.setContent(`<p>${box(unchecked)} a</p>`);
+    const checkbox = getCheckboxes(editor)[0];
+    Mouse.mouseDown(checkbox);
+    Mouse.mouseUp(checkbox);
+    Mouse.click(checkbox, { ctrlKey: true });
+    Mouse.click(checkbox, { metaKey: true });
+    TinyAssertions.assertContent(editor, `<p>${box(unchecked)} a</p>`);
   });
 
   it('Only the clicked checkbox toggles', () => {
@@ -130,8 +166,44 @@ describe('browser.tinymce.plugins.checkbox.CheckboxPluginTest', () => {
 
   it('Does not wrap a glyph that is already in a checkbox span', () => {
     const editor = hook.editor();
-    editor.setContent(`<p>${box(checked)}</p><p><span class="mce-checkbox"><strong>${unchecked}</strong></span></p>`);
-    TinyAssertions.assertContent(editor, `<p>${box(checked)}</p>\n<p><span class="mce-checkbox"><strong>${unchecked}</strong></span></p>`);
+    editor.setContent(`<p>${box(checked)}</p>`);
+    TinyAssertions.assertContent(editor, `<p>${box(checked)}</p>`);
+    assert.lengthOf(getCheckboxes(editor), 1);
+  });
+
+  it('A checkbox span that does not hold exactly one glyph is turned back into text, with its glyphs wrapped', () => {
+    const editor = hook.editor();
+    editor.setContent(`<p><span class="mce-checkbox">${unchecked} Yes</span></p><p><span class="mce-checkbox"><strong>${checked}</strong></span></p>`);
+    TinyAssertions.assertContent(editor, `<p>${box(unchecked)} Yes</p>\n<p><strong>${box(checked)}</strong></p>`);
+    UiFinder.notExists(TinyDom.body(editor), '[contenteditable="false"]:not(.mce-checkbox)');
+    clickCheckbox(editor, 1);
+    TinyAssertions.assertContent(editor, `<p>${box(unchecked)} Yes</p>\n<p><strong>${box(unchecked)}</strong></p>`);
+  });
+
+  it('Leaves glyphs in code, preformatted text and embed fallback content alone', () => {
+    const editor = hook.editor();
+    const html = `<pre>${unchecked} x</pre>\n<p><code>${unchecked}</code> <kbd>${checked}</kbd> <samp>${checked}</samp></p>\n` +
+      `<p><video src="https://example.com/x.mp4" width="300" height="150">${unchecked}</video></p>\n` +
+      `<p><iframe src="https://example.com/x" sandbox="">${unchecked}</iframe></p>`;
+    editor.setContent(html);
+    TinyAssertions.assertContent(editor, html);
+    assert.lengthOf(getCheckboxes(editor), 0);
+  });
+
+  it('Leaves the ballot box with check emoji alone', () => {
+    const editor = hook.editor();
+    editor.setContent(`<p>${checkedAlt}\uFE0F done, ${checkedAlt} form</p>`);
+    TinyAssertions.assertContent(editor, `<p>${checkedAlt}\uFE0F done, ${box(checkedAlt)} form</p>`);
+  });
+
+  it('Formats apply to checkboxes like to the surrounding text', () => {
+    const editor = hook.editor();
+    editor.setContent(`<p>a ${unchecked} b</p>`);
+    editor.execCommand('SelectAll');
+    editor.execCommand('Bold');
+    TinyAssertions.assertContent(editor, `<p><strong>a ${box(unchecked)} b</strong></p>`);
+    clickCheckbox(editor);
+    TinyAssertions.assertContent(editor, `<p><strong>a ${box(checked)} b</strong></p>`);
   });
 
   it('Wraps bare glyphs on insertContent', () => {

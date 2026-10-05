@@ -5,9 +5,17 @@
 .mce-checkbox {
   // Not every default font has the ballot box glyphs (U+2610-U+2612), so prefer fonts that do
   font-family: "Segoe UI Symbol", "Apple Symbols", "DejaVu Sans", "Noto Sans Symbols 2", sans-serif;
+  // The symbol fonts are taller than most text fonts and would otherwise make the line taller
+  line-height: 1;
 }
 
-// Read-only mode and non-editable roots switch contenteditable off, and then clicks don't toggle
-[contenteditable="true"] .mce-checkbox {
+// Clicks only toggle in editable regions, and read-only mode switches contenteditable off.
+// More specific than the core `.mce-content-body *[contentEditable=false]` cursor rule.
+.mce-content-body[contenteditable="true"] .mce-checkbox,
+.mce-content-body [contenteditable="true"] .mce-checkbox {
   cursor: pointer;
+}
+
+.mce-content-body [contenteditable="false"] .mce-checkbox {
+  cursor: default;
 }
