@@ -1,4 +1,4 @@
-import { Arr, Obj, Type } from '@ephox/katamari';
+import { Arr, Obj, Optional, Type } from '@ephox/katamari';
 
 import Editor from 'tinymce/core/api/Editor';
 import AstNode from 'tinymce/core/api/html/Node';
@@ -9,7 +9,6 @@ import * as Checkbox from './Checkbox';
 // A glyph followed by U+FE0F is the emoji presentation (e.g. the ballot box with check emoji), not a form checkbox
 const glyphSplitRegExp = /([\u2610-\u2612](?!\uFE0F))/;
 const hasGlyphRegExp = /[\u2610-\u2612](?!\uFE0F)/;
-const hasGlyphInHtmlRegExp = /[\u2610-\u2612]|&#(?:974[456]|x261[012]);/i;
 
 // Glyphs in here are literal text (code samples, embed fallback content), not form checkboxes
 const nonWrappingElements = [ 'audio', 'video', 'object', 'pre', 'code', 'kbd', 'samp' ];
@@ -21,21 +20,31 @@ const isCheckboxNode = (node: AstNode): boolean =>
   node.name === 'span' && Arr.contains(getClasses(node), Checkbox.checkboxClass);
 
 // Only a span holding exactly one glyph is a checkbox, anything else could not be toggled or edited
-const isValidCheckboxNode = (node: AstNode): boolean => {
+const getCheckboxGlyph = (node: AstNode): Optional<string> => {
   const child = node.firstChild;
-  return isCheckboxNode(node) && Type.isNonNullable(child) && child === node.lastChild && child.type === 3 && Checkbox.isGlyph(child.value ?? '');
+  return isCheckboxNode(node) && Type.isNonNullable(child) && child === node.lastChild && child.type === 3
+    ? Optional.from(child.value).filter(Checkbox.isGlyph)
+    : Optional.none();
 };
+
+const isValidCheckboxNode = (node: AstNode): boolean =>
+  getCheckboxGlyph(node).isSome();
 
 const removeCheckboxClass = (node: AstNode): void => {
   const classes = Arr.filter(getClasses(node), (cls) => cls !== Checkbox.checkboxClass);
   node.attr('class', classes.length > 0 ? classes.join(' ') : null);
 };
 
-const markAsCheckbox = (node: AstNode): void => {
+// Attributes that only exist in the editor, saved content has the bare span
+const editorOnlyAttributes = [ 'contenteditable', 'data-mce-cef-wrappable', 'role', 'aria-checked' ];
+
+const markAsCheckbox = (node: AstNode, glyph: string): void => {
   node.attr({
     'contenteditable': 'false',
     // Lets formats (bold, colors, font size) wrap the checkbox like the surrounding text
-    'data-mce-cef-wrappable': 'true'
+    'data-mce-cef-wrappable': 'true',
+    'role': 'checkbox',
+    'aria-checked': String(Checkbox.isChecked(glyph))
   });
 };
 
@@ -57,7 +66,7 @@ const createTextNode = (text: string): AstNode => {
 
 const createCheckboxNode = (glyph: string): AstNode => {
   const node = AstNode.create('span', { class: Checkbox.checkboxClass });
-  markAsCheckbox(node);
+  markAsCheckbox(node, glyph);
   node.append(createTextNode(glyph));
   return node;
 };
@@ -83,34 +92,25 @@ const setup = (editor: Editor): void => {
   editor.on('PreInit', () => {
     const { parser, serializer, schema } = editor;
 
-    // A #text filter makes the parser collect every text node, which is noticeable on large documents,
-    // so only register it once content with a ballot box shows up
-    let isTextFilterRegistered = false;
-    editor.on('BeforeSetContent', (e) => {
-      if (!isTextFilterRegistered && Type.isString(e.content) && hasGlyphInHtmlRegExp.test(e.content)) {
-        isTextFilterRegistered = true;
-        parser.addNodeFilter('#text', (nodes) => {
-          Arr.each(nodes, (node) => wrapBareGlyphs(schema, node));
-        });
-      }
+    parser.addNodeFilter('#text', (nodes) => {
+      Arr.each(nodes, (node) => wrapBareGlyphs(schema, node));
     });
 
     // Registered after the core class filters, so a class removed by valid_classes is already gone
     parser.addAttributeFilter('class', (nodes) => {
       Arr.each(nodes, (node) => {
-        if (isValidCheckboxNode(node)) {
-          markAsCheckbox(node);
-        } else if (isCheckboxNode(node)) {
-          removeCheckboxClass(node);
-        }
+        getCheckboxGlyph(node).fold(() => {
+          if (isCheckboxNode(node)) {
+            removeCheckboxClass(node);
+          }
+        }, (glyph) => markAsCheckbox(node, glyph));
       });
     });
 
     serializer.addNodeFilter('span', (nodes) => {
       Arr.each(nodes, (node) => {
         if (isCheckboxNode(node)) {
-          node.attr('contenteditable', null);
-          node.attr('data-mce-cef-wrappable', null);
+          Arr.each(editorOnlyAttributes, (name) => node.attr(name, null));
           // Read-only mode stashes contenteditable here and restores it on serialization
           node.attr('data-mce-contenteditable', null);
         }

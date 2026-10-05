@@ -1,18 +1,6 @@
-import { Optional } from '@ephox/katamari';
-
 import Editor from 'tinymce/core/api/Editor';
 
 import * as Actions from './Actions';
-import * as Checkbox from './Checkbox';
-
-const isCheckboxElement = (editor: Editor, node: Node): node is HTMLElement =>
-  editor.dom.is(node, `span.${Checkbox.checkboxClass}`) && node.childNodes.length === 1 &&
-  node.firstChild?.nodeType === Node.TEXT_NODE && Checkbox.isGlyph(node.textContent ?? '');
-
-const getToggleableCheckbox = (editor: Editor, target: EventTarget | null): Optional<HTMLElement> =>
-  Optional.from(target as Node | null)
-    .filter((node): node is HTMLElement => isCheckboxElement(editor, node) && editor.getBody().contains(node))
-    .filter((checkbox) => !editor.mode.isReadOnly() && editor.dom.isEditable(checkbox.parentNode));
 
 const hasModifierKey = (e: MouseEvent): boolean =>
   e.ctrlKey || e.metaKey || e.shiftKey || e.altKey;
@@ -23,7 +11,7 @@ const setup = (editor: Editor): void => {
   let pointerCheckbox: HTMLElement | null = null;
 
   editor.on('mousedown touchstart', (e) => {
-    pointerCheckbox = getToggleableCheckbox(editor, e.target).getOrNull();
+    pointerCheckbox = Actions.getToggleableCheckbox(editor, e.target).getOrNull();
   }, true);
 
   editor.on('keydown', () => {
@@ -41,7 +29,7 @@ const setup = (editor: Editor): void => {
   editor.on('click', (e) => {
     pointerCheckbox = null;
     if (!hasModifierKey(e)) {
-      getToggleableCheckbox(editor, e.target).each((checkbox) => {
+      Actions.getToggleableCheckbox(editor, e.target).each((checkbox) => {
         e.preventDefault();
         Actions.toggleCheckbox(editor, checkbox);
       });
@@ -51,7 +39,7 @@ const setup = (editor: Editor): void => {
   // Core cancels touchend on a contenteditable="false" element, so no click follows a tap
   editor.on('tap', (e) => {
     pointerCheckbox = null;
-    getToggleableCheckbox(editor, e.target).each((checkbox) => {
+    Actions.getToggleableCheckbox(editor, e.target).each((checkbox) => {
       e.preventDefault();
       Actions.toggleCheckbox(editor, checkbox);
     });

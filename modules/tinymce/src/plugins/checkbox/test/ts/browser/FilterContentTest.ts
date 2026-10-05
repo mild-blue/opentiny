@@ -9,14 +9,13 @@ describe('browser.tinymce.plugins.checkbox.FilterContentTest', () => {
   const unchecked = '\u2610';
   const box = (glyph: string) => `<span class="mce-checkbox">${glyph}</span>`;
 
-  describe('Fresh editor', () => {
+  describe('Default settings', () => {
     const hook = TinyHooks.bddSetupLight<Editor>({
       plugins: 'checkbox',
       base_url: '/project/tinymce/js/tinymce'
     }, [ Plugin ]);
 
-    // The text filter is only registered once content with a glyph is set, so this must run first
-    it('Wraps a glyph given as a character reference in the first content that has one', () => {
+    it('Wraps a glyph given as a character reference', () => {
       const editor = hook.editor();
       editor.setContent('<p>a</p>');
       TinySelections.setCursor(editor, [ 0, 0 ], 1);

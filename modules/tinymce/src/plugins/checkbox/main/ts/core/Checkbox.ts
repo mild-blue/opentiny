@@ -20,5 +20,6 @@ export {
   checkboxClass,
   uncheckedGlyph,
   isGlyph,
+  isChecked,
   getToggledGlyph
 };
