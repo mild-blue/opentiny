@@ -35,17 +35,10 @@ const removeCheckboxClass = (node: AstNode): void => {
   node.attr('class', classes.length > 0 ? classes.join(' ') : null);
 };
 
-// Attributes that only exist in the editor, saved content has the bare span
-const editorOnlyAttributes = [ 'contenteditable', 'data-mce-cef-wrappable', 'role', 'aria-checked' ];
+const editorOnlyAttributes = Obj.keys(Checkbox.getEditorAttributes(Checkbox.uncheckedGlyph));
 
 const markAsCheckbox = (node: AstNode, glyph: string): void => {
-  node.attr({
-    'contenteditable': 'false',
-    // Lets formats (bold, colors, font size) wrap the checkbox like the surrounding text
-    'data-mce-cef-wrappable': 'true',
-    'role': 'checkbox',
-    'aria-checked': String(Checkbox.isChecked(glyph))
-  });
+  node.attr(Checkbox.getEditorAttributes(glyph));
 };
 
 const isInNonWrappingElement = (schema: Schema, node: AstNode): boolean => {

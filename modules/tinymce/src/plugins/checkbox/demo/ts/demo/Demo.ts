@@ -4,8 +4,8 @@ declare let tinymce: TinyMCE;
 
 tinymce.init({
   selector: 'textarea.tinymce',
-  plugins: 'checkbox table charmap code',
-  toolbar: 'checkbox | table charmap | undo redo | code',
+  plugins: 'checkbox lists table charmap code',
+  toolbar: 'checkbox checklist bullist | table charmap | undo redo | code',
   menu: { insert: { title: 'Insert', items: 'checkbox charmap | inserttable' }},
   height: 600
 });

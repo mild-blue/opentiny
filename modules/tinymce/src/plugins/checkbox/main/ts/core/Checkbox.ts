@@ -16,10 +16,20 @@ const isChecked = (glyph: string): boolean =>
 const getToggledGlyph = (glyph: string): string =>
   isChecked(glyph) ? uncheckedGlyph : checkedGlyph;
 
+// Attributes a checkbox only has in the editor, saved content has the bare span
+const getEditorAttributes = (glyph: string): Record<string, string> => ({
+  'contenteditable': 'false',
+  // Lets formats (bold, colors, font size) wrap the checkbox like the surrounding text
+  'data-mce-cef-wrappable': 'true',
+  'role': 'checkbox',
+  'aria-checked': String(isChecked(glyph))
+});
+
 export {
   checkboxClass,
   uncheckedGlyph,
   isGlyph,
   isChecked,
-  getToggledGlyph
+  getToggledGlyph,
+  getEditorAttributes
 };

@@ -1,6 +1,7 @@
 import PluginManager from 'tinymce/core/api/PluginManager';
 
 import * as Commands from './api/Commands';
+import * as Checklist from './core/Checklist';
 import * as Click from './core/Click';
 import * as FilterContent from './core/FilterContent';
 import * as Keyboard from './core/Keyboard';
@@ -13,6 +14,7 @@ export default (): void => {
     FilterContent.setup(editor);
     Click.setup(editor);
     Keyboard.setup(editor);
+    Checklist.setup(editor);
 
     return {
       getMetadata: () => ({

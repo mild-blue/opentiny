@@ -8,6 +8,9 @@ const isCheckboxElement = (editor: Editor, node: Node): node is HTMLElement =>
   editor.dom.is(node, `span.${Checkbox.checkboxClass}`) && node.childNodes.length === 1 &&
   node.firstChild?.nodeType === Node.TEXT_NODE && Checkbox.isGlyph(node.textContent ?? '');
 
+const createCheckbox = (editor: Editor, glyph: string): HTMLElement =>
+  editor.dom.create('span', { class: Checkbox.checkboxClass, ...Checkbox.getEditorAttributes(glyph) }, glyph);
+
 const getToggleableCheckbox = (editor: Editor, target: EventTarget | null): Optional<HTMLElement> =>
   Optional.from(target as Node | null)
     .filter((node): node is HTMLElement => isCheckboxElement(editor, node) && editor.getBody().contains(node))
@@ -46,6 +49,8 @@ const toggleSelectedCheckbox = (editor: Editor): boolean =>
   });
 
 export {
+  isCheckboxElement,
+  createCheckbox,
   getToggleableCheckbox,
   insertCheckbox,
   toggleCheckbox,
