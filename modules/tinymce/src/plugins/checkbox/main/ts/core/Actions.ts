@@ -1,4 +1,4 @@
-import { Fun, Optional } from '@ephox/katamari';
+import { Optional } from '@ephox/katamari';
 
 import Editor from 'tinymce/core/api/Editor';
 
@@ -9,16 +9,12 @@ const isCheckboxElement = (editor: Editor, node: Node): node is HTMLElement =>
   node.firstChild?.nodeType === Node.TEXT_NODE && Checkbox.isGlyph(node.textContent ?? '');
 
 const createCheckbox = (editor: Editor, glyph: string): HTMLElement =>
-  editor.dom.create('span', { class: Checkbox.checkboxClass, ...Checkbox.getEditorAttributes(glyph) }, glyph);
+  editor.dom.create('span', { class: Checkbox.checkboxClass, ...Checkbox.editorAttributes }, glyph);
 
 const getToggleableCheckbox = (editor: Editor, target: EventTarget | null): Optional<HTMLElement> =>
   Optional.from(target as Node | null)
     .filter((node): node is HTMLElement => isCheckboxElement(editor, node) && editor.getBody().contains(node))
     .filter((checkbox) => !editor.mode.isReadOnly() && editor.dom.isEditable(checkbox.parentNode));
-
-// Arrow keys select a checkbox like any other contenteditable="false" element
-const getSelectedCheckbox = (editor: Editor): Optional<HTMLElement> =>
-  editor.selection.isCollapsed() ? Optional.none() : getToggleableCheckbox(editor, editor.selection.getNode());
 
 const isFollowedByWhitespace = (editor: Editor): boolean => {
   const rng = editor.selection.getRng();
@@ -34,25 +30,14 @@ const insertCheckbox = (editor: Editor): void => {
 
 const toggleCheckbox = (editor: Editor, checkbox: HTMLElement): void => {
   editor.undoManager.transact(() => {
-    const glyph = Checkbox.getToggledGlyph(checkbox.textContent ?? '');
-    checkbox.textContent = glyph;
-    editor.dom.setAttrib(checkbox, 'aria-checked', String(Checkbox.isChecked(glyph)));
+    checkbox.textContent = Checkbox.getToggledGlyph(checkbox.textContent ?? '');
   });
 };
-
-const toggleSelectedCheckbox = (editor: Editor): boolean =>
-  getSelectedCheckbox(editor).fold(Fun.never, (checkbox) => {
-    toggleCheckbox(editor, checkbox);
-    // Selecting it again refreshes the offscreen copy of the selection that screen readers read
-    editor.selection.select(checkbox);
-    return true;
-  });
 
 export {
   isCheckboxElement,
   createCheckbox,
   getToggleableCheckbox,
   insertCheckbox,
-  toggleCheckbox,
-  toggleSelectedCheckbox
+  toggleCheckbox
 };

@@ -1,4 +1,4 @@
-import { Arr, Obj, Optional, Type } from '@ephox/katamari';
+import { Arr, Obj, Type } from '@ephox/katamari';
 
 import Editor from 'tinymce/core/api/Editor';
 import AstNode from 'tinymce/core/api/html/Node';
@@ -21,25 +21,18 @@ const isCheckboxNode = (node: AstNode): boolean =>
   node.name === 'span' && Arr.contains(getClasses(node), Checkbox.checkboxClass);
 
 // Only a span holding exactly one glyph is a checkbox, anything else could not be toggled or edited
-const getCheckboxGlyph = (node: AstNode): Optional<string> => {
+const isValidCheckboxNode = (node: AstNode): boolean => {
   const child = node.firstChild;
-  return isCheckboxNode(node) && Type.isNonNullable(child) && child === node.lastChild && child.type === 3
-    ? Optional.from(child.value).filter(Checkbox.isGlyph)
-    : Optional.none();
+  return isCheckboxNode(node) && Type.isNonNullable(child) && child === node.lastChild && child.type === 3 && Checkbox.isGlyph(child.value ?? '');
 };
-
-const isValidCheckboxNode = (node: AstNode): boolean =>
-  getCheckboxGlyph(node).isSome();
 
 const removeCheckboxClass = (node: AstNode): void => {
   const classes = Arr.filter(getClasses(node), (cls) => cls !== Checkbox.checkboxClass);
   node.attr('class', classes.length > 0 ? classes.join(' ') : null);
 };
 
-const editorOnlyAttributes = Obj.keys(Checkbox.getEditorAttributes(Checkbox.uncheckedGlyph));
-
-const markAsCheckbox = (node: AstNode, glyph: string): void => {
-  node.attr(Checkbox.getEditorAttributes(glyph));
+const markAsCheckbox = (node: AstNode): void => {
+  node.attr(Checkbox.editorAttributes);
 };
 
 const isInNonWrappingElement = (schema: Schema, node: AstNode): boolean => {
@@ -60,7 +53,7 @@ const createTextNode = (text: string): AstNode => {
 
 const createCheckboxNode = (glyph: string): AstNode => {
   const node = AstNode.create('span', { class: Checkbox.checkboxClass });
-  markAsCheckbox(node, glyph);
+  markAsCheckbox(node);
   node.append(createTextNode(glyph));
   return node;
 };
@@ -94,7 +87,7 @@ const canSaveCheckboxes = (schema: Schema): boolean => {
 const markUnparsedCheckboxes = (editor: Editor): void => {
   Arr.each(editor.dom.select(`span.${Checkbox.checkboxClass}:not([contenteditable])`), (span) => {
     if (Actions.isCheckboxElement(editor, span)) {
-      editor.dom.setAttribs(span, Checkbox.getEditorAttributes(span.textContent ?? ''));
+      editor.dom.setAttribs(span, Checkbox.editorAttributes);
     }
   });
 };
@@ -114,18 +107,18 @@ const setup = (editor: Editor): void => {
     // Registered after the core class filters, so a class removed by valid_classes is already gone
     parser.addAttributeFilter('class', (nodes) => {
       Arr.each(nodes, (node) => {
-        getCheckboxGlyph(node).fold(() => {
-          if (isCheckboxNode(node)) {
-            removeCheckboxClass(node);
-          }
-        }, (glyph) => markAsCheckbox(node, glyph));
+        if (isValidCheckboxNode(node)) {
+          markAsCheckbox(node);
+        } else if (isCheckboxNode(node)) {
+          removeCheckboxClass(node);
+        }
       });
     });
 
     serializer.addNodeFilter('span', (nodes) => {
       Arr.each(nodes, (node) => {
         if (isCheckboxNode(node)) {
-          Arr.each(editorOnlyAttributes, (name) => node.attr(name, null));
+          Arr.each(Obj.keys(Checkbox.editorAttributes), (name) => node.attr(name, null));
           // Read-only mode stashes contenteditable here and restores it on serialization
           node.attr('data-mce-contenteditable', null);
         }

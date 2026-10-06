@@ -74,7 +74,7 @@ describe('browser.tinymce.plugins.checkbox.PointerTest', () => {
     editor.setContent('<table><tbody><tr><td>x</td></tr></tbody></table>');
     TinySelections.setCursor(editor, [ 0, 0, 0, 0, 0 ], 1);
     Clipboard.pasteItems(TinyDom.body(editor), { 'text/html': `<table><tbody><tr><td>${box(unchecked)} pasted</td></tr></tbody></table>` });
-    UiFinder.exists(TinyDom.body(editor), 'td span.mce-checkbox[contenteditable="false"][role="checkbox"]');
+    UiFinder.exists(TinyDom.body(editor), 'td span.mce-checkbox[contenteditable="false"]');
 
     Mouse.trueClick(getCheckbox(editor));
     assert.include(editor.getContent(), `${box(checked)} pasted`);

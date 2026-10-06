@@ -6,16 +6,12 @@ const hasModifierKey = (e: MouseEvent): boolean =>
   e.ctrlKey || e.metaKey || e.shiftKey || e.altKey;
 
 const setup = (editor: Editor): void => {
-  // The checkbox being clicked or tapped. Only a plain left click or a tap is handled, anything else (a right click
-  // for the context menu, a click with a modifier key) keeps the core behaviour of selecting the checkbox.
+  // The checkbox being clicked. Only a plain left click is handled, anything else (a right click for the context
+  // menu, a click with a modifier key) keeps the core behaviour of selecting the checkbox.
   let pointerCheckbox: HTMLElement | null = null;
 
   editor.on('mousedown', (e) => {
     pointerCheckbox = e.button === 0 && !hasModifierKey(e) ? Actions.getToggleableCheckbox(editor, e.target).getOrNull() : null;
-  }, true);
-
-  editor.on('touchstart', (e) => {
-    pointerCheckbox = Actions.getToggleableCheckbox(editor, e.target).getOrNull();
   }, true);
 
   editor.on('keydown', () => {
@@ -50,15 +46,6 @@ const setup = (editor: Editor): void => {
         Actions.toggleCheckbox(editor, checkbox);
       });
     }
-  });
-
-  // Core cancels touchend on a contenteditable="false" element, so no click follows a tap
-  editor.on('tap', (e) => {
-    pointerCheckbox = null;
-    Actions.getToggleableCheckbox(editor, e.target).each((checkbox) => {
-      e.preventDefault();
-      Actions.toggleCheckbox(editor, checkbox);
-    });
   });
 };
 
