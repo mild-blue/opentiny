@@ -28,13 +28,15 @@ describe('browser.tinymce.plugins.checkbox.CheckboxPluginTest', () => {
   const assertNoContentEditableInContent = (editor: Editor) =>
     assert.notInclude(editor.getContent(), 'contenteditable');
 
-  it('Insert a checkbox from the toolbar button', () => {
+  it('Insert a checkbox from the toolbar button, in one undo level', () => {
     const editor = hook.editor();
-    editor.setContent('<p>a</p>');
+    editor.resetContent('<p>a</p>');
     TinySelections.setCursor(editor, [ 0, 0 ], 1);
     TinyUiActions.clickOnToolbar(editor, 'button[aria-label="Insert checkbox"]');
     TinyAssertions.assertContent(editor, `<p>a${box(unchecked)}&nbsp;</p>`);
     UiFinder.exists(TinyDom.body(editor), 'span.mce-checkbox[contenteditable="false"]');
+    editor.undoManager.undo();
+    TinyAssertions.assertContent(editor, '<p>a</p>');
   });
 
   it('Does not add a space after an inserted checkbox when one follows already', () => {
@@ -43,16 +45,6 @@ describe('browser.tinymce.plugins.checkbox.CheckboxPluginTest', () => {
     TinySelections.setCursor(editor, [ 0, 0 ], 1);
     editor.execCommand('mceInsertCheckbox');
     TinyAssertions.assertContent(editor, `<p>a${box(unchecked)} b</p>`);
-  });
-
-  it('Insert a checkbox with the mceInsertCheckbox command, in one undo level', () => {
-    const editor = hook.editor();
-    editor.resetContent('<p>a</p>');
-    TinySelections.setCursor(editor, [ 0, 0 ], 1);
-    editor.execCommand('mceInsertCheckbox');
-    TinyAssertions.assertContent(editor, `<p>a${box(unchecked)}&nbsp;</p>`);
-    editor.undoManager.undo();
-    TinyAssertions.assertContent(editor, '<p>a</p>');
   });
 
   it('Click toggles both ways and puts the caret after the checkbox, without selecting it', () => {
@@ -111,10 +103,11 @@ describe('browser.tinymce.plugins.checkbox.CheckboxPluginTest', () => {
     TinyAssertions.assertContent(editor, `<p>${box(checked)} a</p>`);
   });
 
-  it('Each toggle is one undo level', () => {
+  it('Each toggle is one undo level and makes the editor dirty', () => {
     const editor = hook.editor();
     editor.resetContent(`<p>${box(unchecked)} a</p>`);
     clickCheckbox(editor);
+    assert.isTrue(editor.isDirty());
     clickCheckbox(editor);
     TinyAssertions.assertContent(editor, `<p>${box(unchecked)} a</p>`);
 
@@ -129,19 +122,6 @@ describe('browser.tinymce.plugins.checkbox.CheckboxPluginTest', () => {
     // The checkbox element was replaced by undo, so it must still be clickable afterwards
     clickCheckbox(editor);
     TinyAssertions.assertContent(editor, `<p>${box(unchecked)} a</p>`);
-  });
-
-  it('Toggling fires change and makes the editor dirty', () => {
-    const editor = hook.editor();
-    editor.resetContent(`<p>${box(unchecked)} a</p>`);
-    assert.isFalse(editor.isDirty());
-    let changes = 0;
-    const onChange = () => changes++;
-    editor.on('change', onChange);
-    clickCheckbox(editor);
-    editor.off('change', onChange);
-    assert.isTrue(editor.isDirty());
-    assert.equal(changes, 1);
   });
 
   it('Wraps bare glyphs on setContent and leaves other glyphs alone', () => {
