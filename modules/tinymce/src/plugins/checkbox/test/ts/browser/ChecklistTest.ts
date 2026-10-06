@@ -1,7 +1,7 @@
-import { UiFinder } from '@ephox/agar';
+import { Keys, UiFinder } from '@ephox/agar';
 import { describe, it } from '@ephox/bedrock-client';
 import { SugarBody } from '@ephox/sugar';
-import { TinyAssertions, TinyHooks, TinySelections, TinyUiActions } from '@ephox/wrap-mcagar';
+import { TinyAssertions, TinyContentActions, TinyHooks, TinySelections, TinyUiActions } from '@ephox/wrap-mcagar';
 import { assert } from 'chai';
 
 import Editor from 'tinymce/core/api/Editor';
@@ -15,6 +15,12 @@ describe('browser.tinymce.plugins.checkbox.ChecklistTest', () => {
   const box = (glyph: string) => `<span class="mce-checkbox">${glyph}</span>`;
   const item = (text: string, glyph: string = unchecked) => `<li>${box(glyph)}&nbsp;${text}</li>`;
   const checklist = (...items: string[]) => `<ul class="mce-checklist" style="list-style-type: none;">\n${items.join('\n')}\n</ul>`;
+
+  // Core puts a caret container next to the contenteditable="false" checkbox, so find the text after it
+  const setCursorInItem = (editor: Editor, index: number, offset: number) => {
+    const checkbox = editor.dom.select('li span.mce-checkbox')[index];
+    editor.selection.setCursorLocation(checkbox.nextSibling as Text, offset);
+  };
 
   describe('With the lists plugin', () => {
     const hook = TinyHooks.bddSetupLight<Editor>({
@@ -65,6 +71,37 @@ describe('browser.tinymce.plugins.checkbox.ChecklistTest', () => {
       editor.insertContent('a');
       // Text typed after the separating non-breaking space turns it into a normal one
       TinyAssertions.assertContent(editor, checklist(`<li>${box(unchecked)} a</li>`));
+    });
+
+    it('Enter at the end of an item starts a new item with an unchecked checkbox', () => {
+      const editor = hook.editor();
+      editor.setContent(checklist(item('a', checked)));
+      setCursorInItem(editor, 0, 2);
+      TinyContentActions.keystroke(editor, Keys.enter());
+      editor.insertContent('b');
+      TinyAssertions.assertContent(editor, checklist(item('a', checked), `<li>${box(unchecked)} b</li>`));
+    });
+
+    it('Enter in the middle of an item splits it, and both halves have a checkbox', () => {
+      const editor = hook.editor();
+      editor.setContent(checklist(item('ab', checked)));
+      setCursorInItem(editor, 0, 2);
+      TinyContentActions.keystroke(editor, Keys.enter());
+      TinyAssertions.assertContent(editor, checklist(item('a', checked), item('b')));
+    });
+
+    it('Enter on an item holding only its checkbox ends the list, in one undo level', () => {
+      const editor = hook.editor();
+      editor.resetContent(checklist(item('a')));
+      setCursorInItem(editor, 0, 2);
+      TinyContentActions.keystroke(editor, Keys.enter());
+      TinyAssertions.assertContent(editor, checklist(item('a'), item('')));
+
+      TinyContentActions.keystroke(editor, Keys.enter());
+      TinyAssertions.assertContent(editor, `${checklist(item('a'))}\n<p>&nbsp;</p>`);
+
+      editor.undoManager.undo();
+      TinyAssertions.assertContent(editor, checklist(item('a'), item('')));
     });
   });
 
