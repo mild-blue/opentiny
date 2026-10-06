@@ -1,7 +1,6 @@
 import { Arr, Optional, Type } from '@ephox/katamari';
 
 import Editor from 'tinymce/core/api/Editor';
-import VK from 'tinymce/core/api/util/VK';
 
 import * as Actions from './Actions';
 import * as Checkbox from './Checkbox';
@@ -24,10 +23,6 @@ const isBlankText = (node: Node): node is Text =>
 const getLeadingCheckbox = (editor: Editor, item: HTMLLIElement): Optional<HTMLElement> =>
   Arr.find(Arr.from(item.childNodes), (node) => !isBlankText(node))
     .filter((node): node is HTMLElement => Actions.isCheckboxElement(editor, node));
-
-// An item holding nothing but its checkbox, which Enter should treat as empty
-const isEmptyItem = (editor: Editor, item: HTMLLIElement): boolean =>
-  Arr.forall(Arr.from(item.childNodes), (node) => isBlankText(node) || node.nodeName === 'BR' || Actions.isCheckboxElement(editor, node));
 
 const isInChecklist = (editor: Editor): boolean =>
   isChecklist(editor.dom.getParent(editor.selection.getNode(), 'ul,ol,dl'));
@@ -85,41 +80,7 @@ const toggleChecklist = (editor: Editor): void => {
   });
 };
 
-const setup = (editor: Editor): void => {
-  // A new item, from Enter, starts with an unchecked checkbox
-  editor.on('NewBlock', (e) => {
-    if (isChecklistItem(e.newBlock)) {
-      addCheckbox(editor, e.newBlock);
-    }
-  });
-
-  // Enter on an item holding only its checkbox ends the list, like Enter on an empty bullet. Core only does that for
-  // items that are really empty, so empty the item and let core insert the new line.
-  editor.on('keydown', (e) => {
-    if (e.keyCode !== VK.ENTER || e.shiftKey || e.isDefaultPrevented() || !editor.selection.isCollapsed()) {
-      return;
-    }
-    Optional.from(editor.dom.getParent(editor.selection.getNode(), 'li'))
-      .filter((item): item is HTMLLIElement => isChecklistItem(item) && isEmptyItem(editor, item) && editor.dom.isEditable(item))
-      .each((item) => {
-        e.preventDefault();
-        const undoManager = editor.undoManager;
-        // Same as core does before Enter, so the typed text gets its own undo level
-        if (undoManager.typing) {
-          undoManager.typing = false;
-          undoManager.add();
-        }
-        undoManager.transact(() => {
-          item.innerHTML = '<br data-mce-bogus="1">';
-          editor.selection.setCursorLocation(item, 0);
-          editor.execCommand('mceInsertNewLine', false, e);
-        });
-      });
-  });
-};
-
 export {
   isInChecklist,
-  toggleChecklist,
-  setup
+  toggleChecklist
 };
