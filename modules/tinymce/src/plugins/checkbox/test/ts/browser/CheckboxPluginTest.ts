@@ -60,10 +60,10 @@ describe('browser.tinymce.plugins.checkbox.CheckboxPluginTest', () => {
     TinyAssertions.assertContent(editor, `<p>${box(unchecked)} a</p>\n<p>text</p>`);
     UiFinder.notExists(TinyDom.body(editor), '[data-mce-selected]');
 
-    // Typing goes right after the clicked checkbox, not into it and not where the caret was before
+    // Typing goes after the clicked checkbox and its space, not into it and not where the caret was before
     assert.isTrue(editor.selection.isCollapsed());
     editor.insertContent('X');
-    TinyAssertions.assertContent(editor, `<p>${box(unchecked)}X a</p>\n<p>text</p>`);
+    TinyAssertions.assertContent(editor, `<p>${box(unchecked)} Xa</p>\n<p>text</p>`);
   });
 
   it('A click still reaches other click handlers and focuses the editor', () => {

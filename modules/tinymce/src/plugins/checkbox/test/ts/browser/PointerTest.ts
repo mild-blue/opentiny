@@ -43,6 +43,19 @@ describe('browser.tinymce.plugins.checkbox.PointerTest', () => {
     assert.notInclude(editor.selection.getContent({ format: 'text' }), 'second');
   });
 
+  it('A click that leaves the caret between a checkbox and its space moves it past the space', () => {
+    const editor = hook.editor();
+    editor.setContent(`<p>${box(unchecked)} a</p>`);
+    const checkbox = getCheckbox(editor).dom;
+    const rng = editor.dom.createRng();
+    rng.setStartAfter(checkbox);
+    rng.collapse(true);
+    editor.selection.setRng(rng);
+    Mouse.click(SugarElement.fromDom(editor.dom.select('p')[0]));
+    editor.insertContent('X');
+    TinyAssertions.assertContent(editor, `<p>${box(unchecked)} Xa</p>`);
+  });
+
   it('A click that drifts does not drag the checkbox away', () => {
     const editor = hook.editor();
     editor.resetContent(`<p>${box(unchecked)} a</p><p>second paragraph</p>`);
