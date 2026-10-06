@@ -43,6 +43,7 @@
       "tinymce/plugins/autoresize/*": ["modules/tinymce/src/plugins/autoresize/main/ts/*"],
       "tinymce/plugins/autosave/*": ["modules/tinymce/src/plugins/autosave/main/ts/*"],
       "tinymce/plugins/charmap/*": ["modules/tinymce/src/plugins/charmap/main/ts/*"],
+      "tinymce/plugins/checkbox/*": ["modules/tinymce/src/plugins/checkbox/main/ts/*"],
       "tinymce/plugins/code/*": ["modules/tinymce/src/plugins/code/main/ts/*"],
       "tinymce/plugins/codesample/*": ["modules/tinymce/src/plugins/codesample/main/ts/*"],
       "tinymce/plugins/directionality/*": ["modules/tinymce/src/plugins/directionality/main/ts/*"],

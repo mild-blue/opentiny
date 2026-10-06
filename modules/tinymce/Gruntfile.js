@@ -11,7 +11,7 @@ let swag = require('@ephox/swag');
 let path = require('path');
 
 let plugins = [
-  'accordion', 'advlist', 'anchor', 'autolink', 'autoresize', 'autosave', 'charmap', 'code', 'codesample',
+  'accordion', 'advlist', 'anchor', 'autolink', 'autoresize', 'autosave', 'charmap', 'checkbox', 'code', 'codesample',
   'directionality', 'emoticons', 'help', 'fullscreen', 'image', 'importcss', 'insertdatetime',
   'link', 'lists', 'media', 'nonbreaking', 'pagebreak', 'preview', 'save', 'searchreplace',
   'table', 'visualblocks', 'visualchars', 'wordcount', 'quickbars'
