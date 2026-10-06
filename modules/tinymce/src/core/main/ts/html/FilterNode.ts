@@ -76,9 +76,9 @@ const runFilters = (matches: FilterMatches, args: ParserArgs): void => {
       let nodes = match.nodes;
 
       Arr.each(match.filter.callbacks, (callback) => {
-        // Drop already removed children, and nodes that no longer match the filter. Build a new array instead of
-        // splicing nodes out one by one, which is quadratic when many of them were removed, e.g. the whitespace
-        // text nodes of indented markup that the whitespace cleaner removes after they were matched.
+        // Keep only the nodes that are still attached and still match the filter. Filter into a new array in one
+        // pass: splicing nodes out one at a time would be quadratic when many were removed, e.g. the whitespace
+        // text nodes of indented markup, which the whitespace cleaner removes after they were matched.
         nodes = Arr.filter(nodes, (node) => {
           const valueMatches = filteringAttributes ? node.attr(match.filter.name) !== undefined : node.name === match.filter.name;
           return valueMatches && Type.isNonNullable(node.parent);
