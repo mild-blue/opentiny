@@ -20,11 +20,22 @@
   cursor: default;
 }
 
-// A checklist has no bullets, so its items start with their checkbox. Pull the checkbox into the bullet column: the
-// item text then lines up with other lists, and wrapped lines with the text.
-.mce-checklist > li > .mce-checkbox:first-child {
+// A checklist has no bullets, so its items start with their checkbox. Pull the first line into the bullet column: the
+// item text then lines up with other lists, and wrapped lines with the text. This is on the item, not the checkbox,
+// because formats like a font size wrap the checkbox in a span; the item gets the same font size.
+.mce-checklist > li {
+  text-indent: -1.25em;
+}
+
+// text-indent is inherited, and a list nested in a checklist item isn't necessarily a checklist
+.mce-checklist > li > ul:not(.mce-checklist),
+.mce-checklist > li > ol {
+  text-indent: 0;
+}
+
+.mce-checklist > li .mce-checkbox {
   display: inline-block;
-  margin-left: -1.25em;
   text-align: center;
+  text-indent: 0;
   width: 1em;
 }

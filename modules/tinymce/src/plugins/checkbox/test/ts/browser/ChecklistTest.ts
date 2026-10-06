@@ -88,6 +88,28 @@ describe('browser.tinymce.plugins.checkbox.ChecklistTest', () => {
       assert.isAtMost(checkbox.getBoundingClientRect().right, checklistItem.getBoundingClientRect().left);
     });
 
+    it('Keeps the checkbox in the bullet column when the item gets another font size', () => {
+      const editor = hook.editor();
+      editor.setContent(checklist(item('a')));
+      const listItem = editor.dom.select('li')[0];
+      const rng = editor.dom.createRng();
+      rng.setStart(listItem, 0);
+      rng.setEnd(listItem, listItem.childNodes.length);
+      editor.selection.setRng(rng);
+      editor.execCommand('FontSize', false, '24pt');
+
+      // The font size wraps the checkbox in a span, so this checks the alignment doesn't rely on it being a direct child
+      const checkbox = editor.dom.select('li span.mce-checkbox')[0];
+      assert.notEqual(checkbox.parentNode, listItem);
+      const text = checkbox.nextSibling as Text;
+      const textRange = editor.getDoc().createRange();
+      textRange.setStart(text, text.data.indexOf('a'));
+      textRange.setEnd(text, text.data.indexOf('a') + 1);
+      const itemLeft = listItem.getBoundingClientRect().left;
+      assert.isAtMost(checkbox.getBoundingClientRect().right, itemLeft);
+      assert.approximately(textRange.getBoundingClientRect().left, itemLeft, 2);
+    });
+
     it('Another list type turns a checklist into a plain list without checkboxes', () => {
       const editor = hook.editor();
       editor.setContent(checklist(item('a'), item('b')));
