@@ -19,3 +19,12 @@
 .mce-content-body [contenteditable="false"] .mce-checkbox {
   cursor: default;
 }
+
+// A checklist has no bullets, so its items start with their checkbox. Pull the checkbox into the bullet column: the
+// item text then lines up with other lists, and wrapped lines with the text.
+.mce-checklist > li > .mce-checkbox:first-child {
+  display: inline-block;
+  margin-left: -1.25em;
+  text-align: center;
+  width: 1em;
+}

@@ -73,6 +73,29 @@ describe('browser.tinymce.plugins.checkbox.ChecklistTest', () => {
       TinyAssertions.assertContent(editor, checklist(`<li>${box(unchecked)} a</li>`));
     });
 
+    it('Puts the checkbox in the bullet column, so item text lines up with a bullet list', () => {
+      const editor = hook.editor();
+      editor.setContent(`<ul style="list-style-type: circle;"><li>a</li></ul>${checklist(item('a'))}`);
+      const textLeft = (text: Text) => {
+        const rng = editor.getDoc().createRange();
+        rng.setStart(text, text.data.indexOf('a'));
+        rng.setEnd(text, text.data.indexOf('a') + 1);
+        return rng.getBoundingClientRect().left;
+      };
+      const [ bulletItem, checklistItem ] = editor.dom.select('li');
+      const checkbox = editor.dom.select('li span.mce-checkbox')[0];
+      assert.approximately(textLeft(checkbox.nextSibling as Text), textLeft(bulletItem.firstChild as Text), 1);
+      assert.isAtMost(checkbox.getBoundingClientRect().right, checklistItem.getBoundingClientRect().left);
+    });
+
+    it('Another list type turns a checklist into a plain list without checkboxes', () => {
+      const editor = hook.editor();
+      editor.setContent(checklist(item('a'), item('b')));
+      setCursorInItem(editor, 0, 2);
+      editor.execCommand('InsertOrderedList');
+      TinyAssertions.assertContent(editor, '<ol>\n<li>a</li>\n<li>b</li>\n</ol>');
+    });
+
     it('Enter at the end of an item starts a new item with an unchecked checkbox', () => {
       const editor = hook.editor();
       editor.setContent(checklist(item('a', checked)));
@@ -118,6 +141,15 @@ describe('browser.tinymce.plugins.checkbox.ChecklistTest', () => {
     };
 
     const checklistStyle = 'div.tox-selected-menu[role="menu"] div[aria-label="Checklist"]';
+
+    it('Another bullet style turns a checklist into a plain bullet list without checkboxes', async () => {
+      const editor = hook.editor();
+      editor.setContent(checklist(item('a'), item('b')));
+      setCursorInItem(editor, 0, 2);
+      await pOpenBulletStyles(editor);
+      TinyUiActions.clickOnUi(editor, 'div.tox-selected-menu[role="menu"] div[aria-label="Circle"]');
+      TinyAssertions.assertContent(editor, '<ul style="list-style-type: circle;">\n<li>a</li>\n<li>b</li>\n</ul>');
+    });
 
     it('Offers the checklist among the bullet styles and toggles it from there', async () => {
       const editor = hook.editor();

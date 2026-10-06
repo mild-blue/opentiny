@@ -69,6 +69,23 @@ const removeCheckbox = (editor: Editor, item: HTMLLIElement): void => {
   });
 };
 
+// Another list style, e.g. circle from the bullet styles or a numbered list, leaves the checklist class behind
+const isFormerChecklist = (editor: Editor, list: Node | null): list is HTMLElement =>
+  (list?.nodeName === 'UL' || list?.nodeName === 'OL') && (list as Element).classList.contains(checklistClass) &&
+  !(list.nodeName === 'UL' && editor.dom.getStyle(list as HTMLElement, 'list-style-type') === 'none');
+
+const toNormalList = (editor: Editor, list: HTMLElement): void => {
+  Arr.each(Arr.from(list.children), (item) => {
+    if (item.nodeName === 'LI') {
+      removeCheckbox(editor, item as HTMLLIElement);
+    }
+  });
+  list.classList.remove(checklistClass);
+  if (list.classList.length === 0) {
+    list.removeAttribute('class');
+  }
+};
+
 const toggleChecklist = (editor: Editor): void => {
   editor.undoManager.transact(() => {
     if (isInChecklist(editor)) {
@@ -86,6 +103,12 @@ const toggleChecklist = (editor: Editor): void => {
 };
 
 const setup = (editor: Editor): void => {
+  editor.on('ListMutation', (e) => {
+    if (isFormerChecklist(editor, e.element)) {
+      toNormalList(editor, e.element);
+    }
+  });
+
   // A new item, from Enter, starts with an unchecked checkbox
   editor.on('NewBlock', (e) => {
     if (isChecklistItem(e.newBlock)) {
