@@ -6,11 +6,15 @@ const hasModifierKey = (e: MouseEvent): boolean =>
   e.ctrlKey || e.metaKey || e.shiftKey || e.altKey;
 
 const setup = (editor: Editor): void => {
-  // The checkbox being clicked or tapped. Only the pointer selection of it is suppressed,
-  // keyboard navigation can still select it.
+  // The checkbox being clicked or tapped. Only a plain left click or a tap is handled, anything else (a right click
+  // for the context menu, a click with a modifier key) keeps the core behaviour of selecting the checkbox.
   let pointerCheckbox: HTMLElement | null = null;
 
-  editor.on('mousedown touchstart', (e) => {
+  editor.on('mousedown', (e) => {
+    pointerCheckbox = e.button === 0 && !hasModifierKey(e) ? Actions.getToggleableCheckbox(editor, e.target).getOrNull() : null;
+  }, true);
+
+  editor.on('touchstart', (e) => {
     pointerCheckbox = Actions.getToggleableCheckbox(editor, e.target).getOrNull();
   }, true);
 
@@ -18,8 +22,20 @@ const setup = (editor: Editor): void => {
     pointerCheckbox = null;
   });
 
-  // Core selects a clicked contenteditable="false" element. Don't, so the caret stays where it was.
+  // Core selects a clicked contenteditable="false" element. Put the caret after the checkbox instead, as a click on
+  // text would, so whatever acts on the selection next (Delete, a triple click, table actions) acts here.
   editor.on('BeforeObjectSelected', (e) => {
+    if (e.target === pointerCheckbox) {
+      e.preventDefault();
+      const rng = editor.dom.createRng();
+      rng.setStartAfter(e.target);
+      rng.collapse(true);
+      editor.selection.setRng(rng);
+    }
+  });
+
+  // A click that drifts a few pixels would otherwise start dragging the checkbox to another place
+  editor.on('dragstart', (e) => {
     if (e.target === pointerCheckbox) {
       e.preventDefault();
     }

@@ -55,20 +55,23 @@ describe('browser.tinymce.plugins.checkbox.CheckboxPluginTest', () => {
     TinyAssertions.assertContent(editor, '<p>a</p>');
   });
 
-  it('Click toggles both ways, keeps the selection and does not select the checkbox', () => {
+  it('Click toggles both ways and puts the caret after the checkbox, without selecting it', () => {
     const editor = hook.editor();
     editor.setContent(`<p>${box(unchecked)} a</p><p>text</p>`);
     TinySelections.setCursor(editor, [ 1, 0 ], 3);
 
     clickCheckbox(editor);
     TinyAssertions.assertContent(editor, `<p>${box(checked)} a</p>\n<p>text</p>`);
-    TinyAssertions.assertCursor(editor, [ 1, 0 ], 3);
     UiFinder.notExists(TinyDom.body(editor), '[data-mce-selected]');
 
     clickCheckbox(editor);
     TinyAssertions.assertContent(editor, `<p>${box(unchecked)} a</p>\n<p>text</p>`);
-    TinyAssertions.assertCursor(editor, [ 1, 0 ], 3);
     UiFinder.notExists(TinyDom.body(editor), '[data-mce-selected]');
+
+    // Typing goes right after the clicked checkbox, not into it and not where the caret was before
+    assert.isTrue(editor.selection.isCollapsed());
+    editor.insertContent('X');
+    TinyAssertions.assertContent(editor, `<p>${box(unchecked)}X a</p>\n<p>text</p>`);
   });
 
   it('A click still reaches other click handlers and focuses the editor', () => {

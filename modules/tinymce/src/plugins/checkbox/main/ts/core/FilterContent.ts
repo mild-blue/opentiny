@@ -4,6 +4,7 @@ import Editor from 'tinymce/core/api/Editor';
 import AstNode from 'tinymce/core/api/html/Node';
 import Schema from 'tinymce/core/api/html/Schema';
 
+import * as Actions from './Actions';
 import * as Checkbox from './Checkbox';
 
 // A glyph followed by U+FE0F is the emoji presentation (e.g. the ballot box with check emoji), not a form checkbox
@@ -81,13 +82,34 @@ const wrapBareGlyphs = (schema: Schema, node: AstNode): void => {
   node.remove();
 };
 
+// valid_elements, extended_valid_elements or valid_classes can drop the class from saved content. Wrapping glyphs then
+// would only nest one more class-less span around them on every save and load, so leave them as text.
+const canSaveCheckboxes = (schema: Schema): boolean => {
+  const validClasses = schema.getValidClasses();
+  return schema.isValid('span', 'class') && (Type.isUndefined(validClasses) ||
+    Arr.exists([ validClasses['*'], validClasses.span ], (classes) => Type.isNonNullable(classes) && Obj.has(classes, Checkbox.checkboxClass)));
+};
+
+// Content can skip the parser, e.g. a table pasted into table cells, so mark the checkboxes it brought in
+const markUnparsedCheckboxes = (editor: Editor): void => {
+  Arr.each(editor.dom.select(`span.${Checkbox.checkboxClass}:not([contenteditable])`), (span) => {
+    if (Actions.isCheckboxElement(editor, span)) {
+      editor.dom.setAttribs(span, Checkbox.getEditorAttributes(span.textContent ?? ''));
+    }
+  });
+};
+
 const setup = (editor: Editor): void => {
+  editor.on('SetContent', () => markUnparsedCheckboxes(editor));
+
   editor.on('PreInit', () => {
     const { parser, serializer, schema } = editor;
 
-    parser.addNodeFilter('#text', (nodes) => {
-      Arr.each(nodes, (node) => wrapBareGlyphs(schema, node));
-    });
+    if (canSaveCheckboxes(schema)) {
+      parser.addNodeFilter('#text', (nodes) => {
+        Arr.each(nodes, (node) => wrapBareGlyphs(schema, node));
+      });
+    }
 
     // Registered after the core class filters, so a class removed by valid_classes is already gone
     parser.addAttributeFilter('class', (nodes) => {
