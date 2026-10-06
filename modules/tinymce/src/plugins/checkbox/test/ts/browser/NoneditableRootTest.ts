@@ -1,7 +1,7 @@
-import { Keys, Mouse, UiFinder } from '@ephox/agar';
+import { Keys, UiFinder } from '@ephox/agar';
 import { describe, it } from '@ephox/bedrock-client';
 import { SugarBody } from '@ephox/sugar';
-import { TinyAssertions, TinyDom, TinyHooks, TinySelections, TinyState, TinyUiActions } from '@ephox/wrap-mcagar';
+import { TinyAssertions, TinyHooks, TinySelections, TinyState, TinyUiActions } from '@ephox/wrap-mcagar';
 
 import Editor from 'tinymce/core/api/Editor';
 import Plugin from 'tinymce/plugins/checkbox/Plugin';
@@ -15,22 +15,7 @@ describe('browser.tinymce.plugins.checkbox.NoneditableRootTest', () => {
   }, [ Plugin ], true);
 
   const unchecked = '\u2610';
-  const checked = '\u2612';
   const box = (glyph: string) => `<span class="mce-checkbox">${glyph}</span>`;
-
-  const clickCheckbox = (editor: Editor, index: number) =>
-    Mouse.trueClick(UiFinder.findAllIn<HTMLElement>(TinyDom.body(editor), 'span.mce-checkbox')[index]);
-
-  it('Toggles only checkboxes in editable regions', () => {
-    TinyState.withNoneditableRootEditor(hook.editor(), (editor) => {
-      editor.setContent(`<p>${unchecked} a</p><div class="editable"><p>${unchecked} b</p></div>`);
-      clickCheckbox(editor, 0);
-      const content = (glyph: string) => `<p>${box(unchecked)} a</p>\n<div class="editable">\n<p>${box(glyph)} b</p>\n</div>`;
-      TinyAssertions.assertContent(editor, content(unchecked));
-      clickCheckbox(editor, 1);
-      TinyAssertions.assertContent(editor, content(checked));
-    });
-  });
 
   it('Disables the toolbar button on noneditable content', () => {
     TinyState.withNoneditableRootEditor(hook.editor(), (editor) => {

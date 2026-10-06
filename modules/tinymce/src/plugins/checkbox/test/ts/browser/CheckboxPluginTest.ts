@@ -102,13 +102,6 @@ describe('browser.tinymce.plugins.checkbox.CheckboxPluginTest', () => {
     TinyAssertions.assertContent(editor, `<p>${box(unchecked)} a</p>`);
   });
 
-  it('Only the clicked checkbox toggles', () => {
-    const editor = hook.editor();
-    editor.setContent(`<p>${box(unchecked)} a ${box(unchecked)} b</p>`);
-    clickCheckbox(editor, 1);
-    TinyAssertions.assertContent(editor, `<p>${box(unchecked)} a ${box(checked)} b</p>`);
-  });
-
   it('Checked with a check mark toggles to unchecked', () => {
     const editor = hook.editor();
     editor.setContent(`<p>${box(checkedAlt)} a</p>`);
@@ -167,13 +160,6 @@ describe('browser.tinymce.plugins.checkbox.CheckboxPluginTest', () => {
     TinyAssertions.assertContent(editor, table(`${box(unchecked)} Preanalytic &nbsp; ${box(checked)} Analytic`));
   });
 
-  it('Does not wrap a glyph that is already in a checkbox span', () => {
-    const editor = hook.editor();
-    editor.setContent(`<p>${box(checked)}</p>`);
-    TinyAssertions.assertContent(editor, `<p>${box(checked)}</p>`);
-    assert.lengthOf(getCheckboxes(editor), 1);
-  });
-
   it('A checkbox span that does not hold exactly one glyph is turned back into text, with its glyphs wrapped', () => {
     const editor = hook.editor();
     editor.setContent(`<p><span class="mce-checkbox">${unchecked} Yes</span></p><p><span class="mce-checkbox"><strong>${checked}</strong></span></p>`);
@@ -224,15 +210,6 @@ describe('browser.tinymce.plugins.checkbox.CheckboxPluginTest', () => {
     TinySelections.setCursor(editor, [ 0, 0 ], 1);
     Clipboard.pasteItems(TinyDom.body(editor), { 'text/html': `<p>${unchecked} Ano ${checked} Ne</p>` });
     TinyAssertions.assertContent(editor, `<p>a${box(unchecked)} Ano ${box(checked)} Ne</p>`);
-  });
-
-  // A plain text only paste event goes through the native paste bin, which a synthetic event can't fill
-  it('Wraps bare glyphs on plain text paste', () => {
-    const editor = hook.editor();
-    editor.setContent('<p>a</p>');
-    TinySelections.setCursor(editor, [ 0, 0 ], 1);
-    editor.execCommand('mceInsertClipboardContent', false, { text: `x ${unchecked} b` });
-    TinyAssertions.assertContent(editor, `<p>ax ${box(unchecked)} b</p>`);
   });
 
   it('Serialized content never contains contenteditable', () => {

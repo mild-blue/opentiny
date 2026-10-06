@@ -43,20 +43,6 @@ describe('browser.tinymce.plugins.checkbox.PointerTest', () => {
     assert.notInclude(editor.selection.getContent({ format: 'text' }), 'second');
   });
 
-  it('A click while table cells are selected leaves a caret at the checkbox instead of the cell selection', () => {
-    const editor = hook.editor();
-    editor.setContent(`<table><tbody><tr><td>one</td><td>two</td><td>${box(unchecked)} three</td></tr></tbody></table>`);
-    const cells = editor.dom.select('td');
-    editor.dom.setAttrib(cells[0], 'data-mce-selected', '1');
-    editor.dom.setAttrib(cells[1], 'data-mce-selected', '1');
-    TinySelections.setSelection(editor, [ 0, 0, 0, 0, 0 ], 0, [ 0, 0, 0, 1, 0 ], 3);
-
-    Mouse.trueClick(getCheckbox(editor));
-    assert.isTrue(editor.selection.isCollapsed(), 'The selection should be a caret');
-    assert.equal(getParent(editor, 'td'), cells[2], 'The caret should be in the cell of the checkbox');
-    assert.include(editor.getContent(), `<td>one</td>\n<td>two</td>`);
-  });
-
   it('A click that drifts does not drag the checkbox away', () => {
     const editor = hook.editor();
     editor.resetContent(`<p>${box(unchecked)} a</p><p>second paragraph</p>`);

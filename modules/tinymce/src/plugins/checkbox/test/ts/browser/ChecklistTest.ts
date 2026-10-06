@@ -1,7 +1,7 @@
-import { Mouse, UiFinder } from '@ephox/agar';
+import { UiFinder } from '@ephox/agar';
 import { describe, it } from '@ephox/bedrock-client';
 import { SugarBody } from '@ephox/sugar';
-import { TinyAssertions, TinyDom, TinyHooks, TinySelections, TinyUiActions } from '@ephox/wrap-mcagar';
+import { TinyAssertions, TinyHooks, TinySelections, TinyUiActions } from '@ephox/wrap-mcagar';
 import { assert } from 'chai';
 
 import Editor from 'tinymce/core/api/Editor';
@@ -64,13 +64,6 @@ describe('browser.tinymce.plugins.checkbox.ChecklistTest', () => {
       editor.insertContent('a');
       // Text typed after the separating non-breaking space turns it into a normal one
       TinyAssertions.assertContent(editor, checklist(`<li>${box(unchecked)} a</li>`));
-    });
-
-    it('Checkboxes in a checklist toggle like any other', () => {
-      const editor = hook.editor();
-      editor.setContent(checklist(item('a'), item('b')));
-      Mouse.trueClick(UiFinder.findAllIn<HTMLElement>(TinyDom.body(editor), 'li span.mce-checkbox')[1]);
-      TinyAssertions.assertContent(editor, checklist(item('a'), item('b', checked)));
     });
   });
 

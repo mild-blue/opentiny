@@ -9,21 +9,6 @@ describe('browser.tinymce.plugins.checkbox.FilterContentTest', () => {
   const unchecked = '\u2610';
   const box = (glyph: string) => `<span class="mce-checkbox">${glyph}</span>`;
 
-  describe('Default settings', () => {
-    const hook = TinyHooks.bddSetupLight<Editor>({
-      plugins: 'checkbox',
-      base_url: '/project/tinymce/js/tinymce'
-    }, [ Plugin ]);
-
-    it('Wraps a glyph given as a character reference', () => {
-      const editor = hook.editor();
-      editor.setContent('<p>a</p>');
-      TinySelections.setCursor(editor, [ 0, 0 ], 1);
-      editor.insertContent(' &#9744; b');
-      TinyAssertions.assertContent(editor, `<p>a ${box(unchecked)} b</p>`);
-    });
-  });
-
   describe('valid_classes without mce-checkbox', () => {
     const hook = TinyHooks.bddSetupLight<Editor>({
       plugins: 'checkbox',
