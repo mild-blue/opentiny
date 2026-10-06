@@ -33,6 +33,12 @@ jobs:
         run: npm version "$(git tag --sort=committerdate | tail -1)" --no-git-tag-version
         working-directory: js/tinymce
 
+      # npm refuses to publish a prerelease version without a dist-tag, and it must not become "latest"
       - name: Publish package
-        run: npm publish --provenance --access public
+        run: |
+          if [[ "$(node -p "require('./package.json').version")" == *-* ]]; then
+            npm publish --provenance --access public --tag next
+          else
+            npm publish --provenance --access public
+          fi
         working-directory: js/tinymce
