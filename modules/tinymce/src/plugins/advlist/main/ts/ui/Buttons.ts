@@ -21,6 +21,13 @@ const styleValueToText = (styleValue: string): string => {
   });
 };
 
+// The checkbox plugin provides checklists, which are bullet lists, so they are offered next to the bullet styles
+const checklistCmd = 'mceToggleChecklist';
+const checklistValue = 'checklist';
+
+const hasChecklist = (editor: Editor, nodeName: ListType): boolean =>
+  nodeName === ListType.UnorderedList && editor.queryCommandSupported(checklistCmd);
+
 const normalizeStyleValue = (styleValue: string | undefined): string =>
   Type.isNullable(styleValue) || styleValue === 'default' ? '' : styleValue;
 
@@ -54,13 +61,26 @@ const addSplitButton = (editor: Editor, id: string, tooltip: string, cmd: string
           text: displayText
         };
       });
-      callback(items);
+      const checklistItems: Menu.ChoiceMenuItemSpec[] = hasChecklist(editor, nodeName) ? [{
+        type: 'choiceitem',
+        value: checklistValue,
+        icon: 'list-bull-checklist',
+        text: 'Checklist'
+      }] : [];
+      callback(items.concat(checklistItems));
     },
     onAction: () => editor.execCommand(cmd),
     onItemAction: (_splitButtonApi, value) => {
-      Actions.applyListFormat(editor, nodeName, value);
+      if (value === checklistValue) {
+        editor.execCommand(checklistCmd);
+      } else {
+        Actions.applyListFormat(editor, nodeName, value);
+      }
     },
     select: (value) => {
+      if (value === checklistValue) {
+        return editor.queryCommandState(checklistCmd);
+      }
       const listStyleType = ListUtils.getSelectedStyleType(editor);
       return listStyleType.map((listStyle) => value === listStyle).getOr(false);
     },

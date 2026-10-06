@@ -5,6 +5,7 @@ import { TinyAssertions, TinyHooks, TinySelections, TinyUiActions } from '@ephox
 import { assert } from 'chai';
 
 import Editor from 'tinymce/core/api/Editor';
+import AdvListPlugin from 'tinymce/plugins/advlist/Plugin';
 import Plugin from 'tinymce/plugins/checkbox/Plugin';
 import ListsPlugin from 'tinymce/plugins/lists/Plugin';
 
@@ -64,6 +65,36 @@ describe('browser.tinymce.plugins.checkbox.ChecklistTest', () => {
       editor.insertContent('a');
       // Text typed after the separating non-breaking space turns it into a normal one
       TinyAssertions.assertContent(editor, checklist(`<li>${box(unchecked)} a</li>`));
+    });
+  });
+
+  describe('With the advlist plugin', () => {
+    const hook = TinyHooks.bddSetupLight<Editor>({
+      plugins: 'advlist checkbox lists',
+      toolbar: 'bullist',
+      base_url: '/project/tinymce/js/tinymce'
+    }, [ AdvListPlugin, Plugin, ListsPlugin ], true);
+
+    const pOpenBulletStyles = async (editor: Editor) => {
+      TinyUiActions.clickOnToolbar(editor, '[aria-label="Bullet list"] > .tox-tbtn + .tox-split-button__chevron');
+      await TinyUiActions.pWaitForUi(editor, '.tox-menu.tox-selected-menu');
+    };
+
+    const checklistStyle = 'div.tox-selected-menu[role="menu"] div[aria-label="Checklist"]';
+
+    it('Offers the checklist among the bullet styles and toggles it from there', async () => {
+      const editor = hook.editor();
+      editor.setContent('<p>a</p>');
+      TinySelections.setCursor(editor, [ 0, 0 ], 1);
+      await pOpenBulletStyles(editor);
+      UiFinder.exists(SugarBody.body(), `${checklistStyle}[aria-checked="false"]`);
+      TinyUiActions.clickOnUi(editor, checklistStyle);
+      TinyAssertions.assertContent(editor, checklist(item('a')));
+
+      await pOpenBulletStyles(editor);
+      UiFinder.exists(SugarBody.body(), `${checklistStyle}[aria-checked="true"]`);
+      TinyUiActions.clickOnUi(editor, checklistStyle);
+      TinyAssertions.assertContent(editor, '<p>a</p>');
     });
   });
 

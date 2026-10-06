@@ -9,6 +9,7 @@ const register = (editor: Editor): void => {
   // Checklists are built with the list commands of the lists plugin
   if (editor.hasPlugin('lists')) {
     editor.addCommand('mceToggleChecklist', () => Checklist.toggleChecklist(editor));
+    editor.addQueryStateHandler('mceToggleChecklist', () => Checklist.isInChecklist(editor));
   }
 };
 
