@@ -87,9 +87,9 @@ describe('browser.tinymce.plugins.checkbox.CheckboxPluginTest', () => {
     const editor = hook.editor();
     editor.setContent(`<p>${box(unchecked)} a</p>`);
     const checkbox = getCheckboxes(editor)[0];
-    Mouse.mouseDown(checkbox);
-    Mouse.mouseUp(checkbox);
+    // Check after each click: two wrong toggles would cancel out
     Mouse.click(checkbox, { ctrlKey: true });
+    TinyAssertions.assertContent(editor, `<p>${box(unchecked)} a</p>`);
     Mouse.click(checkbox, { metaKey: true });
     TinyAssertions.assertContent(editor, `<p>${box(unchecked)} a</p>`);
   });
