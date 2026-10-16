@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="48px" height="48px" viewBox="0 0 48 48" version="1.1" xmlns="http://www.w3.org/2000/svg">
+    <title>icon-list-bull-checklist</title>
+    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <path fill="#000000" d="M8,11 L14,11 L14,17 L8,17 Z M9.2,13.6 L8.5,14.3 L10.7,16.2 L13.4,12.6 L12.6,12 L10.6,14.8 Z"></path>
+        <path fill="#000000" d="M8,21 L14,21 L14,27 L8,27 Z M9.5,22.5 L9.5,25.5 L12.5,25.5 L12.5,22.5 Z"></path>
+        <path fill="#000000" d="M8,31 L14,31 L14,37 L8,37 Z M9.5,32.5 L9.5,35.5 L12.5,35.5 L12.5,32.5 Z"></path>
+        <rect fill="#000000" opacity="0.2" x="18" y="12" width="22" height="4"></rect>
+        <rect fill="#000000" opacity="0.2" x="18" y="22" width="22" height="4"></rect>
+        <rect fill="#000000" opacity="0.2" x="18" y="32" width="22" height="4"></rect>
+    </g>
+</svg>

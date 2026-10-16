@@ -1,0 +1,18 @@
+import Editor from 'tinymce/core/api/Editor';
+
+import * as Actions from '../core/Actions';
+import * as Checklist from '../core/Checklist';
+
+const register = (editor: Editor): void => {
+  editor.addCommand('mceInsertCheckbox', () => Actions.insertCheckbox(editor));
+
+  // Checklists are built with the list commands of the lists plugin
+  if (editor.hasPlugin('lists')) {
+    editor.addCommand('mceToggleChecklist', () => Checklist.toggleChecklist(editor));
+    editor.addQueryStateHandler('mceToggleChecklist', () => Checklist.isInChecklist(editor));
+  }
+};
+
+export {
+  register
+};

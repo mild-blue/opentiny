@@ -72,20 +72,16 @@ const findMatchingNodes = (nodeFilters: ParserFilter[], attributeFilters: Parser
 const runFilters = (matches: FilterMatches, args: ParserArgs): void => {
   const run = (matchRecord: Record<string, FilterMatch>, filteringAttributes: boolean) => {
     Obj.each(matchRecord, (match) => {
-      // in theory we don't need to copy the array, it was created purely for this filtering, but the method is exported so we can't guarantee that
-      const nodes = Arr.from(match.nodes);
+      // match.nodes is never mutated, since the method is exported and we can't guarantee nobody else uses it
+      let nodes = match.nodes;
 
       Arr.each(match.filter.callbacks, (callback) => {
-        // very very carefully mutate the nodes array based on whether the filter still matches them
-        for (let i = nodes.length - 1; i >= 0; i--) {
-          const node = nodes[i];
-
-          // Remove already removed children, and nodes that no longer match the filter
+        // Keep only the nodes that are still attached and still match the filter. Filter into a new array in one
+        // pass: splicing nodes out one at a time would be quadratic when many were removed.
+        nodes = Arr.filter(nodes, (node) => {
           const valueMatches = filteringAttributes ? node.attr(match.filter.name) !== undefined : node.name === match.filter.name;
-          if (!valueMatches || Type.isNullable(node.parent)) {
-            nodes.splice(i, 1);
-          }
-        }
+          return valueMatches && Type.isNonNullable(node.parent);
+        });
 
         if (nodes.length > 0) {
           callback(nodes, match.filter.name, args);

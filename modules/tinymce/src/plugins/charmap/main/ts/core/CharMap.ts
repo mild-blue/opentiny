@@ -701,12 +701,20 @@ const getDefaultCharMap = (): CharMap[] => {
       ]
     },
     {
+      // The checkbox plugin writes ballot box and ballot box with x, and only reads ballot box with check
+      name: 'Checkboxes',
+      characters: [
+        [9744, 'ballot box'],
+        [9746, 'ballot box with x'],
+        [9745, 'ballot box with check']
+      ]
+    },
+    {
       name: 'Other',
       characters: [
         [9633, 'white square'],
         [9642, 'black small square'],
         [9643, 'white medium square'],
-        [9745, 'ballot box with check'],
         [9785, 'white frowning face'],
         [9786, 'white smiling face'],
         [9826, 'black diamond suit'],

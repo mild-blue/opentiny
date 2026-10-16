@@ -21,6 +21,7 @@
       "tinymce/plugins/autoresize/*": ["src/plugins/autoresize/main/ts/*"],
       "tinymce/plugins/autosave/*": ["src/plugins/autosave/main/ts/*"],
       "tinymce/plugins/charmap/*": ["src/plugins/charmap/main/ts/*"],
+      "tinymce/plugins/checkbox/*": ["src/plugins/checkbox/main/ts/*"],
       "tinymce/plugins/code/*": ["src/plugins/code/main/ts/*"],
       "tinymce/plugins/codesample/*": ["src/plugins/codesample/main/ts/*"],
       "tinymce/plugins/directionality/*": ["src/plugins/directionality/main/ts/*"],
